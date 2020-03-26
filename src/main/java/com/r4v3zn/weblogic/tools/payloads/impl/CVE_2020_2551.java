@@ -106,7 +106,6 @@ public class CVE_2020_2551 implements ObjectPayload {
         if(isBlank(newKey)){
             return false;
         }
-
         return null;
     }
 
