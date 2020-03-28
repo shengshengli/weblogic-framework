@@ -19,7 +19,10 @@ import java.lang.reflect.AnnotatedElement;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authors {
 
+    // r4v3zn
     String R4V3ZN = "r4v3zn";
+    // lufei
+    String LUFEI = "lufei";
 
     String[] value() default {};
 
