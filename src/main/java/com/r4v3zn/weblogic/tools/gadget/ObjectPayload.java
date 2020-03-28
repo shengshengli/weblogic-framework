@@ -4,6 +4,7 @@ package com.r4v3zn.weblogic.tools.gadget;
 import com.r4v3zn.weblogic.tools.GeneratePayload;
 import org.reflections.Reflections;
 import java.lang.reflect.Modifier;
+import java.net.URLClassLoader;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public interface ObjectPayload<T> {
      * @return 序列结果
      * @throws Exception
      */
-    T getObject(String command) throws Exception;
+    T getObject(String command, URLClassLoader urlClassLoader) throws Exception;
 
     /**
      * 获取序列化 payload
@@ -84,7 +85,7 @@ public interface ObjectPayload<T> {
             final Object payloadObject;
             try {
                 final ObjectPayload payload = payloadClass.newInstance();
-                payloadObject = payload.getObject(payloadArg);
+                payloadObject = payload.getObject(payloadArg, null);
             }
             catch ( Exception e ) {
                 throw new IllegalArgumentException("Failed to construct payload", e);

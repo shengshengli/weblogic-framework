@@ -42,7 +42,7 @@ public class GeneratePayload {
 
 		try {
 			final ObjectPayload payload = payloadClass.newInstance();
-			final Object object = payload.getObject(command);
+			final Object object = payload.getObject(command, null);
 			PrintStream out = System.out;
 			SerializerUtils.serialize(object, out);
 			ObjectPayload.Utils.releasePayload(payload, object);

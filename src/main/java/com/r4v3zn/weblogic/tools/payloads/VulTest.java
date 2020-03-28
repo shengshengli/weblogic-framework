@@ -1,5 +1,12 @@
 package com.r4v3zn.weblogic.tools.payloads;
 
+import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
+import org.reflections.Reflections;
+
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
+import java.util.Set;
+
 /**
  * Title: ObjectPayload
  * Desc: ObjectPayload
@@ -28,4 +35,20 @@ public interface VulTest {
      * @throws Exception 抛出异常
      */
     void exploit(String ip, Integer port) throws Exception;
+
+
+    public static class Utils {
+        // get payload classes by classpath scanning
+        public static Set<Class<? extends VulTest>> getVulTest() {
+            final Reflections reflections = new Reflections(VulTest.class.getPackage().getName());
+            final Set<Class<? extends VulTest>> payloadTypes = reflections.getSubTypesOf(VulTest.class);
+            for (Iterator<Class<? extends VulTest>> iterator = payloadTypes.iterator(); iterator.hasNext(); ) {
+                Class<? extends VulTest> pc = iterator.next();
+                if ( pc.isInterface() || Modifier.isAbstract(pc.getModifiers()) ) {
+                    iterator.remove();
+                }
+            }
+            return payloadTypes;
+        }
+    }
 }

