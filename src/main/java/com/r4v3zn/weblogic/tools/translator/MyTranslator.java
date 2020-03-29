@@ -2,7 +2,6 @@ package com.r4v3zn.weblogic.tools.translator;
 
 
 import javassist.*;
-
 import java.net.InetAddress;
 
 /**
@@ -16,6 +15,13 @@ import java.net.InetAddress;
  */
 public class MyTranslator implements Translator {
 
+    /**
+     * IIOP SOCKET Class name
+     * "weblogic.socket.SocketMuxer";
+     * "weblogic.iiop.MuxableSocketIIOP";
+     */
+    public static final String IIOP_SOCKET_CLASS_NAME= "weblogic.socket.SocketMuxer";
+
     private String ip;
 
     private Integer port;
@@ -27,15 +33,23 @@ public class MyTranslator implements Translator {
 
     @Override
     public void start(ClassPool cp) throws NotFoundException, CannotCompileException {
-        String classname = "weblogic.socket.SocketMuxer";
-        classname = "weblogic.iiop.MuxableSocketIIOP";
+        CtClass ctClass = cp.get(IIOP_SOCKET_CLASS_NAME);
+        if(ctClass.isFrozen()){
+            ctClass.defrost();
+        }
         String code = "{" +
                 "$1 = java.net.InetAddress.getByName(\""+ip+"\");\n" +
                 "$2 = "+port+";}";
+        code = "{\n" +
+                "    java.net.InetAddress inet = java.net.InetAddress.getByName(\""+ip+"\");\n" +
+                "    $1 = inet;\n" +
+                "    java.net.Socket var4 = new java.net.Socket();\n" +
+                "    initSocket(var4);\n" +
+                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
+                "    return var4;\n" +
+                "}";
         System.out.println(code);
-        CtClass ctClass = cp.get(classname);
-        CtMethod ctMethod = ctClass.getDeclaredMethod("connect", new CtClass[]{cp.get(InetAddress.class.getName()), cp.get("int")});
-        ctMethod.insertBefore(code);
+//        ctMethod.insertBefore(code);
 //        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
 //        ctMethod.setBody("{\n" +
 //                "    java.net.InetAddress inet = java.net.InetAddress.getByName(\""+ip+"\");\n" +
@@ -45,6 +59,9 @@ public class MyTranslator implements Translator {
 //                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
 //                "    return var4;\n" +
 //                "}");
+        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
+        ctMethod.setBody(code);
+        ctClass.toClass();
         ctClass.toClass();
     }
 

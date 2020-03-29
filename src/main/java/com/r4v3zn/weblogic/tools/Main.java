@@ -2,6 +2,7 @@ package com.r4v3zn.weblogic.tools;
 
 import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
+import com.r4v3zn.weblogic.tools.annotation.Versions;
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
 import com.r4v3zn.weblogic.tools.utils.StringUtils;
@@ -24,13 +25,14 @@ public class Main {
                 new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator()); // alphabetize
         final List<String[]> rows = new LinkedList<String[]>();
-        rows.add(new String[] {"Vul", "Authors", "Dependencies"});
-        rows.add(new String[] {"-------", "-------", "-------"});
+        rows.add(new String[] {"Vul", "Authors", "Dependencies", "Version"});
+        rows.add(new String[] {"-------", "-------", "-------", "-------"});
         for (Class<? extends VulTest> payloadClass : vulClasses) {
             rows.add(new String[] {
                     payloadClass.getSimpleName(),
                     StringUtils.join(Arrays.asList(Authors.Utils.getAuthors(payloadClass)), ", ", "@", ""),
-                    StringUtils.join(Arrays.asList(Dependencies.Utils.getDependenciesSimple(payloadClass)),", ", "", "")
+                    StringUtils.join(Arrays.asList(Dependencies.Utils.getDependenciesSimple(payloadClass)),", ", "", ""),
+                    StringUtils.join(Arrays.asList(Versions.Utils.getVersionsSimple(payloadClass)),", ", "", "")
             });
         }
 

