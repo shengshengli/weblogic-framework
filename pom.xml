@@ -124,7 +124,7 @@
 <!--            <artifactId>wlfullclient</artifactId>-->
 <!--            <version>2.2-SNAPSHOT</version>-->
 <!--            <scope>system</scope>-->
-<!--            <systemPath>lib/10.3.6.0.0/wlfullclient_back.jar</systemPath>-->
+<!--            <systemPath>lib/10.3.6.0.0/wlfullclient_1.2.jar</systemPath>-->
 <!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.bea.core.repackaged</groupId>-->

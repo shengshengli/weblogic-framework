@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -13,43 +13,16 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.13.1" level="project" />
     <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.12" level="project" />
+    <orderEntry type="library" name="Maven: com.nqzero:permit-reflect:0.4" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.27.0-GA" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.weblogic:weblogic:2.2-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/12.2.1.3.0/weblogic.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: com.weblogic:wlfullclient:2.2-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/12.2.1.3.0/wlfullclient.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: com.bea.core.repackaged:springframework.spring:1.5.0.0_2-5-3">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/12.2.1.3.0/com.bea.core.repackaged.springframework.spring.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: com.bea.core.repackaged:apache.commons.logging:1.2.4">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/12.2.1.3.0/com.bea.core.repackaged.apache.commons.logging.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:org.mozilla.javascript:1.7.5.v201504281450" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.12" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.13.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.13.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.logging.log4j:log4j-core:2.13.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.1" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: coherence:coherence:1.5.0.0_2-5-3">
         <CLASSES>
@@ -59,5 +32,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="wlfullclient_1.2" level="project" />
   </component>
 </module>
