@@ -20,3 +20,7 @@ javac -cp wlfullclient.jar -source 1.5 -target 1.5 -sourcepath weblogic -d weblo
 
 javac -cp wlfullclient.jar -source 1.5 -target 1.5 -sourcepath weblogic -d weblogic weblogic/corba/idl/RemoteDelegateImpl.java
 ```
+启动 com.bea.javascript.jar
+```
+python -m http.server 8080
+```

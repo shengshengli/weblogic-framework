@@ -1,9 +1,6 @@
 package com.r4v3zn.weblogic.tools.utils;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class StringUtils {
     public static String join(Iterable<String> strings, String sep, String prefix, String suffix) {
@@ -49,5 +46,21 @@ public class StringUtils {
 
     public static class ToStringComparator implements Comparator<Object> {
         public int compare(Object o1, Object o2) { return o1.toString().compareTo(o2.toString()); }
+    }
+
+    /**
+     * 获取指定长度随机字符串
+     * @param length
+     * @return
+     */
+    public static String getRandomString(int length){
+        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random=new Random();
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<length;i++){
+            int number=random.nextInt(62);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 }

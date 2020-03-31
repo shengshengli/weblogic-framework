@@ -34,7 +34,7 @@ public interface VulTest {
      * @param port 端口
      * @throws Exception 抛出异常
      */
-    void exploit(String ip, Integer port) throws Exception;
+    void exploit(String ip, Integer port, String... param) throws Exception;
 
 
     public static class Utils {

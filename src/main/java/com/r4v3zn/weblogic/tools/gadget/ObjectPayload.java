@@ -36,7 +36,7 @@ public interface ObjectPayload<T> {
      * @return 序列结果
      * @throws Exception
      */
-    T getObject(final byte[] codeByte, final String[] bootArgs, String className)throws Exception;
+    T getObject(final byte[] codeByte, final String[] bootArgs, String className, URLClassLoader urlClassLoader)throws Exception;
 
     public static class Utils {
 

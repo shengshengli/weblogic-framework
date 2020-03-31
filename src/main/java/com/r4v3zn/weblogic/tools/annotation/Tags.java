@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * Title: Authors
- * Desc: Authors
- * Date:2020/3/24 1:20
+ * Title: Tags
+ * Desc: 标签
+ * Date:2020/3/31 21:17
  * Email:woo0nise@gmail.com
  * Company:www.r4v3zn.com
  * @author R4v3zn
@@ -17,33 +17,22 @@ import java.lang.reflect.AnnotatedElement;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Authors {
-
-    /**
-     * r4v3zn@白帽汇安全研究院
-     */
-    String R4V3ZN = "r4v3zn@白帽汇安全研究院";
-
-    /**
-     * lufei
-     */
-    String LUFEI = "lufei";
-
-    /**
-     * 舒肤佳
-     */
-    String SHUFUJIA = "舒肤佳";
+public @interface Tags {
 
     String[] value() default {};
 
     public static class Utils {
-        public static String[] getAuthors(AnnotatedElement annotated) {
-            Authors authors = annotated.getAnnotation(Authors.class);
-            if (authors != null && authors.value() != null) {
-                return authors.value();
+        public static String[] getTags(AnnotatedElement annotated) {
+            Tags tags = annotated.getAnnotation(Tags.class);
+            if (tags != null && tags.value() != null) {
+                return tags.value();
             } else {
                 return new String[0];
             }
+        }
+
+        public static String[] getTagsSimple(AnnotatedElement annotated) {
+            return getTags(annotated);
         }
     }
 }

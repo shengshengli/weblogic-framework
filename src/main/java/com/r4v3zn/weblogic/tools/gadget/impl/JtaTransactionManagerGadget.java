@@ -58,7 +58,7 @@ public class JtaTransactionManagerGadget implements ObjectPayload<Serializable> 
      * @throws Exception
      */
     @Override
-    public Serializable getObject(byte[] codeByte, String[] bootArgs, String className) throws Exception {
+    public Serializable getObject(byte[] codeByte, String[] bootArgs, String className, URLClassLoader urlClassLoader) throws Exception {
         return null;
     }
 }
