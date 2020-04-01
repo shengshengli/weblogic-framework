@@ -1479,7 +1479,7 @@ public final class IIOPInputStream extends InputStream implements PeerInfoable, 
         Debug.assertion(var1 != null);
         AnyImpl var2 = new AnyImpl();
         var2.type(var1);
-        var2.read_value(this, var2.type());
+        var2.read_value(this, var2.type(), ior);
         return var2;
     }
 

@@ -40,6 +40,5 @@ public class Main {
         for (String line : lines) {
             System.err.println("     " + line);
         }
-//        TextTable table = new TextTable(new String[] {"Vul", "Authors", "Dependencies", "Version","Tags"}, rows);
     }
 }

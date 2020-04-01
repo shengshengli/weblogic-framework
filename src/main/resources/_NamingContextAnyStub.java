@@ -8,7 +8,6 @@ package weblogic.corba.cos.naming;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
 import java.util.Properties;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.MARSHAL;
@@ -141,212 +140,212 @@ public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAn
     public Any resolve_any(WNameComponent[] var1) throws NotFound, CannotProceed, InvalidName {
         InputStream var2 = null;
 
-        Any var4;
+        Any var3;
         try {
-            OutputStream var3 = this._request("resolve_any", true);
-            WNameHelper.write(var3, var1);
-            // copy var3
-            OutputStream var3copy = var3;
-            var2 = this._invoke(var3);
-            IOR currentIOR = null;
-            try{
-                RequestMessage requestMessage = (RequestMessage)((MessageStream)var3copy).getMessage();
-                currentIOR = requestMessage.getIOR();
-            }catch (Exception e){
-                //
+            OutputStream var4 = this._request("resolve_any", true);
+            WNameHelper.write(var4, var1);
+            OutputStream var18 = var4;
+            IOR var6 = null;
+            try {
+                RequestMessage var7 = (RequestMessage)((MessageStream)var18).getMessage();
+                var6 = var7.getIOR();
+            } catch (Exception var14) {
             }
-            if(var2 instanceof IIOPInputStream){
-                IIOPInputStream var999 = (IIOPInputStream)var2;
-                var4 = var999.read_any(currentIOR);
-            }else{
-                var4 = var2.read_any();
+            var2 = this._invoke(var4);
+
+            if (var2 instanceof IIOPInputStream) {
+                IIOPInputStream var19 = (IIOPInputStream)var2;
+                var3 = var19.read_any(var6);
+            } else {
+                var3 = var2.read_any();
             }
-            Any var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/NotFound:1.0")) {
+
+            Any var8 = var3;
+            return var8;
+        } catch (ApplicationException var15) {
+            var2 = var15.getInputStream();
+            String var5 = var15.getId();
+            if (var5.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/NotFound:1.0")) {
                 throw NotFoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/CannotProceed:1.0")) {
+            if (var5.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/CannotProceed:1.0")) {
                 throw CannotProceedHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.resolve_any(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var16) {
+            var3 = this.resolve_any(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public Any resolve_str_any(String var1) throws NotFound, CannotProceed, InvalidName {
         InputStream var2 = null;
 
-        Any var4;
+        Any var3;
         try {
-            OutputStream var3 = this._request("resolve_str_any", true);
-            WStringNameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = var2.read_any();
-            Any var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/NotFound:1.0")) {
+            OutputStream var4 = this._request("resolve_str_any", true);
+            WStringNameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = var2.read_any();
+            Any var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            String var5 = var11.getId();
+            if (var5.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/NotFound:1.0")) {
                 throw NotFoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/CannotProceed:1.0")) {
+            if (var5.equals("IDL:weblogic/corba/cos/naming/NamingContextAny/CannotProceed:1.0")) {
                 throw CannotProceedHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.resolve_str_any(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var12) {
+            var3 = this.resolve_str_any(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public String to_string(NameComponent[] var1) throws InvalidName {
         InputStream var2 = null;
 
-        String var4;
+        String var3;
         try {
-            OutputStream var3 = this._request("to_string", true);
-            NameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = StringNameHelper.read(var2);
-            String var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            var4 = var10.getId();
-            if (var4.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            OutputStream var4 = this._request("to_string", true);
+            NameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = StringNameHelper.read(var2);
+            String var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            var3 = var11.getId();
+            if (var3.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var4);
-        } catch (RemarshalException var11) {
-            var4 = this.to_string(var1);
+            throw new MARSHAL(var3);
+        } catch (RemarshalException var12) {
+            var3 = this.to_string(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public NameComponent[] to_name(String var1) throws InvalidName {
         InputStream var2 = null;
 
-        NameComponent[] var4;
+        NameComponent[] var3;
         try {
-            OutputStream var3 = this._request("to_name", true);
-            StringNameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = NameHelper.read(var2);
-            NameComponent[] var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            OutputStream var4 = this._request("to_name", true);
+            StringNameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = NameHelper.read(var2);
+            NameComponent[] var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            String var5 = var11.getId();
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.to_name(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var12) {
+            var3 = this.to_name(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public String to_url(String var1, String var2) throws InvalidAddress, InvalidName {
         InputStream var3 = null;
 
-        String var5;
+        String var4;
         try {
-            OutputStream var4 = this._request("to_url", true);
-            AddressHelper.write(var4, var1);
-            StringNameHelper.write(var4, var2);
-            var3 = this._invoke(var4);
-            var5 = URLStringHelper.read(var3);
-            String var6 = var5;
-            return var6;
-        } catch (ApplicationException var11) {
-            var3 = var11.getInputStream();
-            var5 = var11.getId();
-            if (var5.equals("IDL:omg.org/CosNaming/NamingContextExt/InvalidAddress:1.0")) {
+            OutputStream var5 = this._request("to_url", true);
+            AddressHelper.write(var5, var1);
+            StringNameHelper.write(var5, var2);
+            var3 = this._invoke(var5);
+            var4 = URLStringHelper.read(var3);
+            String var7 = var4;
+            return var7;
+        } catch (ApplicationException var12) {
+            var3 = var12.getInputStream();
+            var4 = var12.getId();
+            if (var4.equals("IDL:omg.org/CosNaming/NamingContextExt/InvalidAddress:1.0")) {
                 throw InvalidAddressHelper.read(var3);
             }
 
-            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var4.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var3);
             }
 
-            throw new MARSHAL(var5);
-        } catch (RemarshalException var12) {
-            var5 = this.to_url(var1, var2);
+            throw new MARSHAL(var4);
+        } catch (RemarshalException var13) {
+            var4 = this.to_url(var1, var2);
         } finally {
             this._releaseReply(var3);
         }
 
-        return var5;
+        return var4;
     }
 
     public Object resolve_str(String var1) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, InvalidName {
         InputStream var2 = null;
 
-        Object var4;
+        Object var3;
         try {
-            OutputStream var3 = this._request("resolve_str", true);
-            StringNameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = ObjectHelper.read(var2);
-            Object var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
+            OutputStream var4 = this._request("resolve_str", true);
+            StringNameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = ObjectHelper.read(var2);
+            Object var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            String var5 = var11.getId();
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.NotFoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.CannotProceedHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.resolve_str(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var12) {
+            var3 = this.resolve_str(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public void bind(NameComponent[] var1, Object var2) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, InvalidName, AlreadyBound {
@@ -492,37 +491,37 @@ public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAn
     public Object resolve(NameComponent[] var1) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, InvalidName {
         InputStream var2 = null;
 
-        Object var4;
+        Object var3;
         try {
-            OutputStream var3 = this._request("resolve", true);
-            NameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = ObjectHelper.read(var2);
-            Object var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
+            OutputStream var4 = this._request("resolve", true);
+            NameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = ObjectHelper.read(var2);
+            Object var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            String var5 = var11.getId();
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.NotFoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.CannotProceedHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.resolve(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var12) {
+            var3 = this.resolve(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public void unbind(NameComponent[] var1) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, InvalidName {
@@ -560,64 +559,64 @@ public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAn
     public NamingContext new_context() {
         InputStream var1 = null;
 
-        NamingContext var3;
+        NamingContext var2;
         try {
-            OutputStream var2 = this._request("new_context", true);
-            var1 = this._invoke(var2);
-            var3 = NamingContextHelper.read(var1);
-            NamingContext var4 = var3;
-            return var4;
-        } catch (ApplicationException var9) {
-            var1 = var9.getInputStream();
-            String var12 = var9.getId();
-            throw new MARSHAL(var12);
-        } catch (RemarshalException var10) {
-            var3 = this.new_context();
+            OutputStream var3 = this._request("new_context", true);
+            var1 = this._invoke(var3);
+            var2 = NamingContextHelper.read(var1);
+            NamingContext var5 = var2;
+            return var5;
+        } catch (ApplicationException var10) {
+            var1 = var10.getInputStream();
+            String var4 = var10.getId();
+            throw new MARSHAL(var4);
+        } catch (RemarshalException var11) {
+            var2 = this.new_context();
         } finally {
             this._releaseReply(var1);
         }
 
-        return var3;
+        return var2;
     }
 
     public NamingContext bind_new_context(NameComponent[] var1) throws org.omg.CosNaming.NamingContextPackage.NotFound, AlreadyBound, org.omg.CosNaming.NamingContextPackage.CannotProceed, InvalidName {
         InputStream var2 = null;
 
-        NamingContext var4;
+        NamingContext var3;
         try {
-            OutputStream var3 = this._request("bind_new_context", true);
-            NameHelper.write(var3, var1);
-            var2 = this._invoke(var3);
-            var4 = NamingContextHelper.read(var2);
-            NamingContext var5 = var4;
-            return var5;
-        } catch (ApplicationException var10) {
-            var2 = var10.getInputStream();
-            String var13 = var10.getId();
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
+            OutputStream var4 = this._request("bind_new_context", true);
+            NameHelper.write(var4, var1);
+            var2 = this._invoke(var4);
+            var3 = NamingContextHelper.read(var2);
+            NamingContext var6 = var3;
+            return var6;
+        } catch (ApplicationException var11) {
+            var2 = var11.getInputStream();
+            String var5 = var11.getId();
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/NotFound:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.NotFoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/AlreadyBound:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/AlreadyBound:1.0")) {
                 throw AlreadyBoundHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/CannotProceed:1.0")) {
                 throw org.omg.CosNaming.NamingContextPackage.CannotProceedHelper.read(var2);
             }
 
-            if (var13.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
+            if (var5.equals("IDL:omg.org/CosNaming/NamingContext/InvalidName:1.0")) {
                 throw InvalidNameHelper.read(var2);
             }
 
-            throw new MARSHAL(var13);
-        } catch (RemarshalException var11) {
-            var4 = this.bind_new_context(var1);
+            throw new MARSHAL(var5);
+        } catch (RemarshalException var12) {
+            var3 = this.bind_new_context(var1);
         } finally {
             this._releaseReply(var2);
         }
 
-        return var4;
+        return var3;
     }
 
     public void destroy() throws NotEmpty {
@@ -666,14 +665,14 @@ public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAn
     }
 
     public String[] _ids() {
-        return (String[])((String[])__ids.clone());
+        return (String[])((String[])((String[])__ids.clone()));
     }
 
     private void readObject(ObjectInputStream var1) throws IOException {
         String var2 = var1.readUTF();
         java.lang.Object var3 = null;
         java.lang.Object var4 = null;
-        ORB var5 = ORB.init((String[])var3, (Properties)var4);
+        ORB var5 = ORB.init((String[])((String[])var3), (Properties)var4);
 
         try {
             Object var6 = var5.string_to_object(var2);
@@ -688,7 +687,7 @@ public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAn
     private void writeObject(ObjectOutputStream var1) throws IOException {
         java.lang.Object var2 = null;
         java.lang.Object var3 = null;
-        ORB var4 = ORB.init((String[])var2, (Properties)var3);
+        ORB var4 = ORB.init((String[])((String[])var2), (Properties)var3);
 
         try {
             String var5 = var4.object_to_string(this);

