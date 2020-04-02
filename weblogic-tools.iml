@@ -27,6 +27,6 @@
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: au.com.bytecode:opencsv:2.4" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.1" level="project" />
-    <orderEntry type="library" name="wlfullclient_1.10" level="project" />
+    <orderEntry type="library" name="wlfullclient_1.13" level="project" />
   </component>
 </module>

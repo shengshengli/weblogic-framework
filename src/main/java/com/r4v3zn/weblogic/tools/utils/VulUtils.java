@@ -1,44 +1,55 @@
-package com.r4v3zn.weblogic.tools;
+package com.r4v3zn.weblogic.tools.utils;
 
 import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
 import com.r4v3zn.weblogic.tools.annotation.Tags;
 import com.r4v3zn.weblogic.tools.annotation.Versions;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
-import com.r4v3zn.weblogic.tools.utils.StringUtils;
-import dnl.utils.text.table.TextTable;
 
 import java.util.*;
 
 /**
- * Title: Main
- * Descrption: 程序主入口
- * Date:2020/3/23 22:34
+ * Title: VulUtils
+ * Descrption: 漏洞工具类
+ * Date:2020/4/2 21:02
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app
+ *
  * @author R4v3zn
  * @version 1.0.0
  */
-public class Main {
-    public static void main(String[] args) {
+public class VulUtils {
+
+    /**
+     * 私有化构造防止被实例化
+     */
+    private VulUtils(){}
+
+    public static List<String[]> getVulList(){
         final List<Class<? extends VulTest>> vulClasses =
                 new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
         final List<String[]> rows = new LinkedList<String[]>();
-        rows.add(new String[] {"Vul", "Authors", "Dependencies", "Version","Tags"});
-        rows.add(new String[] {"-------", "-------", "-------", "-------", "-------"});
         for (Class<? extends VulTest> payloadClass : vulClasses) {
             rows.add(new String[] {
                     payloadClass.getSimpleName().replace("_","-"),
                     StringUtils.join(Arrays.asList(Authors.Utils.getAuthors(payloadClass)), ", ", "@", ""),
                     StringUtils.join(Arrays.asList(Dependencies.Utils.getDependenciesSimple(payloadClass)),", ", "", ""),
-                    StringUtils.join(Arrays.asList(Versions.Utils.getVersionsSimple(payloadClass)),", ", "", ""),
-                    StringUtils.join(Arrays.asList(Tags.Utils.getTagsSimple(payloadClass)),", ", "", "")
+                    StringUtils.join(Arrays.asList(Versions.Utils.getVersionsSimple(payloadClass)),", ", "", "")
             });
         }
+        return rows;
+    }
+
+    /**
+     * 获取漏洞信息
+     * @return
+     */
+    public static String getVulInfo(){
+        List<String[]> rows = getVulList();
+        rows.add(0,new String[] {"Vul", "Authors", "Dependencies", "Version"});
+        rows.add(1,new String[] {"-------", "-------", "-------", "-------"});
         final List<String> lines = StringUtils.formatTable(rows);
-        for (String line : lines) {
-            System.err.println(line);
-        }
+        return String.join("\n",lines);
     }
 }

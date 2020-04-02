@@ -138,8 +138,7 @@ public class Gadgets {
     }
 
 
-    public static HashMap makeMap ( Object v1, Object v2 ) throws Exception, ClassNotFoundException, NoSuchMethodException, InstantiationException,
-            IllegalAccessException, InvocationTargetException {
+    public static HashMap makeMap ( Object v1, Object v2 ) throws Exception {
         HashMap s = new HashMap();
         ReflectionUtils.setFieldValue(s, "size", 2);
         Class nodeC;

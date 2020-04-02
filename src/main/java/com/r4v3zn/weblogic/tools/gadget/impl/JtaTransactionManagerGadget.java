@@ -19,7 +19,7 @@ import java.rmi.Remote;
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
-@Dependencies({":weblogic:com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager"})
+@Dependencies({":weblogic:JtaTransactionManager"})
 public class JtaTransactionManagerGadget implements ObjectPayload<Serializable> {
 
     /**

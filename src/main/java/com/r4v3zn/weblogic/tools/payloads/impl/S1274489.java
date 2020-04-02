@@ -37,7 +37,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
-@Dependencies({":com.tangosol.util.filter.LimitFilter"})
+@Dependencies({":Unknown"})
 @Versions({"12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"0day"})
 public class S1274489 implements VulTest {
@@ -228,7 +228,10 @@ public class S1274489 implements VulTest {
 //        hostList.add("192.168.1.12:7001");
         // 129.144.145.179:7001
         // 35.244.31.56:7001
-        hostList.add("35.244.31.56:7001");
+//        hostList.add("35.244.31.56:7001");
+//        hostList.add("150.136.146.91:7001");
+//        hostList.add("129.146.88.47:7001");
+        hostList.add("101.227.181.106:80");
         // http:///
         for (String host:hostList) {
             String ip = host.split(":")[0];

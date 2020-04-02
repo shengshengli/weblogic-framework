@@ -40,7 +40,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN,Authors.LUFEI, Authors.SHUFUJIA})
-@Dependencies({":com.bea.core.repackaged.springframework.transaction.jta.JtaTransactionManager"})
+@Dependencies({":JtaTransactionManager"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"Nday"})
 @Log4j2

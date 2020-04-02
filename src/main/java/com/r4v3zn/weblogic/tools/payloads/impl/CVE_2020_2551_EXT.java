@@ -16,7 +16,7 @@ import com.r4v3zn.weblogic.tools.payloads.VulTest;
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
-@Dependencies({":com.tangosol.util.filter.LimitFilter,commons-collections:3.1"})
+@Dependencies({":LimitFilter,commons-collections:3.1"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"0day"})
 public class CVE_2020_2551_EXT implements VulTest {

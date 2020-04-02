@@ -1,11 +1,11 @@
 package com.r4v3zn.weblogic.tools.payloads;
 
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
+import com.r4v3zn.weblogic.tools.utils.StringUtils;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Title: ObjectPayload
@@ -49,6 +49,20 @@ public interface VulTest {
                 }
             }
             return payloadTypes;
+        }
+        public static String[] getVulNames(){
+            final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(getVulTest());
+            Collections.sort(vulClasses, new StringUtils.ToStringComparator());
+            List<String> nameList = new ArrayList<>();
+            for (Class<? extends VulTest> payloadClass:vulClasses) {
+                String vulName = payloadClass.getSimpleName();
+                vulName = vulName.trim().replace("_", "-");
+                if(nameList.contains(vulName)){
+                    continue;
+                }
+                nameList.add(vulName);
+            }
+            return nameList.toArray(new String[0]);
         }
     }
 }

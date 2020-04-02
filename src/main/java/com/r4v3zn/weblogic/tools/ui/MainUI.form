@@ -1,53 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.r4v3zn.weblogic.tools.ui.MainUI">
-  <grid id="27dc6" binding="MainPanel" custom-create="true" layout-manager="GridBagLayout">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="20" y="20" width="850" height="500"/>
+      <xy x="20" y="20" width="738" height="639"/>
     </constraints>
-    <properties>
-      <maximumSize width="850" height="500"/>
-      <minimumSize width="850" height="500"/>
-      <opaque value="true"/>
-      <preferredSize width="850" height="500"/>
-      <requestFocusEnabled value="false"/>
-      <toolTipText value="Weblogic 检测工具 r4v3zn@白帽汇安全研究院"/>
-    </properties>
+    <properties/>
     <clientProperties>
-      <html.disable class="java.lang.Boolean" value="true"/>
+      <html.disable class="java.lang.Boolean" value="false"/>
     </clientProperties>
     <border type="none"/>
     <children>
-      <component id="e09aa" class="javax.swing.JButton" binding="checkButton" custom-create="true">
+      <component id="f885d" class="javax.swing.JLabel" binding="javascriptUrlLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="5" fill="0" indent="0" use-parent-layout="false">
-            <minimum-size width="50" height="50"/>
-            <preferred-size width="50" height="50"/>
-            <maximum-size width="50" height="50"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="89" height="27"/>
           </grid>
-          <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <alignmentX value="0.5"/>
-          <autoscrolls value="false"/>
-          <enabled value="true"/>
-          <hideActionText value="false"/>
-          <horizontalAlignment value="0"/>
-          <horizontalTextPosition value="0"/>
-          <iconTextGap value="28"/>
-          <inheritsPopupMenu value="true"/>
-          <maximumSize width="100" height="30"/>
-          <minimumSize width="100" height="30"/>
-          <preferredSize width="100" height="30"/>
-          <requestFocusEnabled value="false"/>
-          <rolloverEnabled value="false"/>
-          <selected value="false"/>
-          <text value="检测"/>
-          <verticalAlignment value="0"/>
-          <verticalTextPosition value="0"/>
+          <text value="javascript 地址"/>
+        </properties>
+      </component>
+      <component id="3ab27" class="javax.swing.JTextField" binding="javascriptUrlText">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="27"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="https://baidu.com/com.bea.javascript.jar"/>
+        </properties>
+      </component>
+      <component id="35671" class="javax.swing.JLabel" binding="ldapUrlLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="LDAP 地址"/>
+        </properties>
+      </component>
+      <component id="fc248" class="javax.swing.JTextField" binding="ldapUrlText">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="ldap://127.0.0.1:1099/#Poc"/>
+        </properties>
+      </component>
+      <hspacer id="d4d93">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <tabbedpane id="36ec0" binding="tabbedPane">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties>
+          <tabLayoutPolicy value="1"/>
+          <tabPlacement value="1"/>
         </properties>
         <clientProperties>
-          <hideActionText class="java.lang.Boolean" value="false"/>
+          <html.disable class="java.lang.Boolean" value="true"/>
         </clientProperties>
+        <border type="none"/>
+        <children>
+          <grid id="92428" binding="serverInfoTab" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="服务信息"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="99786" class="javax.swing.JTextArea" binding="serverInfoText" custom-create="true">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="&#10;&#10;点击 `验证` 会自动测试目标是否存在关于 Weblogic 的漏洞.&#10;&#10;目前支持检测：CVE-2020-25551、CVE-2020-2555.&#10;&#10;------------------------------------------------------&#10;&#10;更新日志：&#10;&#10;1. 2020-04-01&#10;&#10;  1) 修改 weblogic 文件 13 个版本，支持 NAT 网络.&#10;"/>
+                </properties>
+              </component>
+              <component id="a9ce5" class="javax.swing.JButton" binding="checkButton" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="验证"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="c2c98" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="命令执行"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <grid id="f488a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="批量验证"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+        </children>
+      </tabbedpane>
+      <component id="cdbf9" class="javax.swing.JLabel" binding="targetLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="89" height="27"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="目标地址"/>
+        </properties>
+      </component>
+      <component id="fb319" class="javax.swing.JTextField" binding="targetText">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="27"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="http://fofa.so:7001"/>
+        </properties>
+      </component>
+      <component id="603ee" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="漏洞利用编号"/>
+        </properties>
+      </component>
+      <component id="edff4" class="javax.swing.JComboBox" binding="vulComboBox">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <model>
+            <item value="请选择"/>
+          </model>
+        </properties>
       </component>
     </children>
   </grid>

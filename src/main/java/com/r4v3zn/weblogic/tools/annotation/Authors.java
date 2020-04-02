@@ -22,7 +22,7 @@ public @interface Authors {
     /**
      * r4v3zn@白帽汇安全研究院
      */
-    String R4V3ZN = "r4v3zn@白帽汇安全研究院";
+    String R4V3ZN = "r4v3zn@BMH";
 
     /**
      * lufei
@@ -32,7 +32,7 @@ public @interface Authors {
     /**
      * 舒肤佳
      */
-    String SHUFUJIA = "舒肤佳";
+    String SHUFUJIA = "舒肤佳@绿盟";
 
     String[] value() default {};
 
