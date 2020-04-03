@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="20" y="20" width="731" height="601"/>
+      <xy x="20" y="20" width="765" height="650"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -23,7 +23,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="http://fofa.so:7001"/>
+          <text value="http://10.10.10.172:7001"/>
         </properties>
       </component>
       <component id="cb236" class="javax.swing.JLabel" binding="javascriptLabel">
@@ -98,22 +98,11 @@
           <grid id="1a997" binding="serverInfoPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <tabbedpane title="服务器信息"/>
+              <tabbedpane title="漏洞验证"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="347a8" class="javax.swing.JTextArea" binding="serverInfoText">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <editable value="false"/>
-                  <text value="&#10;------------------------------------------------------&#10;&#10;更新日志：&#10;&#10;1. 2020-04-01&#10;&#10;  1) 修改 weblogic 文件 13 个版本，支持 NAT 网络.&#10;"/>
-                </properties>
-              </component>
               <component id="99361" class="javax.swing.JButton" binding="checkButton">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -122,44 +111,89 @@
                   <text value="验证"/>
                 </properties>
               </component>
+              <scrollpane id="925ba" binding="serverInfoScrollPane">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="347a8" class="javax.swing.JTextArea" binding="serverInfoText">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <lineWrap value="true"/>
+                      <text value="&#10;------------------------------------------------------&#10;&#10;更新日志：&#10;&#10;1. 2020-04-01&#10;&#10;  1) 修改 weblogic 文件 13 个版本，支持 NAT 网络.&#10;"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
-          <grid id="c9312" binding="cmdExecutePanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="c9312" binding="cmdExecutePanel" layout-manager="GridLayoutManager" row-count="2" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="命令执行"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
-          </grid>
-          <grid id="dad1d" binding="validatePanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="批量验证"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children/>
-          </grid>
-          <grid id="d42cc" binding="vulPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="漏洞版本"/>
-            </constraints>
-            <properties>
-              <enabled value="false"/>
-            </properties>
-            <border type="none"/>
             <children>
-              <component id="36268" class="javax.swing.JTable" binding="vulTable">
+              <component id="849de" class="javax.swing.JLabel" binding="tokenLabel">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="token"/>
+                </properties>
+              </component>
+              <component id="4084f" class="javax.swing.JTextField" binding="tokenText">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties/>
               </component>
+              <component id="b93e5" class="javax.swing.JLabel" binding="cmdLabel">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="执行命令"/>
+                </properties>
+              </component>
+              <component id="4c1ef" class="javax.swing.JTextField" binding="cmdText">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="5e1" class="javax.swing.JButton" binding="executeButton">
+                <constraints>
+                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="执行"/>
+                </properties>
+              </component>
+              <scrollpane id="8397d" binding="cmdScrollPane">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="6" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="53ca2" class="javax.swing.JTextArea" binding="cmdRspTextArea">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <lineWrap value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
         </children>

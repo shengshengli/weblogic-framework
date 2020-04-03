@@ -3,6 +3,7 @@ package com.r4v3zn.weblogic.tools.payloads;
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
 import com.r4v3zn.weblogic.tools.utils.StringUtils;
 import org.reflections.Reflections;
+import weblogic.cluster.singleton.ClusterMasterRemote;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -34,7 +35,7 @@ public interface VulTest {
      * @param port 端口
      * @throws Exception 抛出异常
      */
-    void exploit(String ip, Integer port, String... param) throws Exception;
+    String exploit(String ip, Integer port, String... param) throws Exception;
 
 
     public static class Utils {

@@ -23,6 +23,11 @@ public class StringUtils {
     }
 
     public static List<String> formatTable(List<String[]> rows) {
+        Integer colLength = rows.get(0).length;
+        Integer[] maxLength = new Integer[rows.get(0).length];
+        for (int i = 0; i < colLength; i++) {
+//            rows.get(i);
+        }
         final Integer[] maxLengths = new Integer[rows.get(0).length];
         for (String[] row : rows) {
             if (maxLengths.length != row.length) throw new IllegalStateException("mismatched columns");

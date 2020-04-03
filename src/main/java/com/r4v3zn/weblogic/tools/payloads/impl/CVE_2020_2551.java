@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @author R4v3zn
  * @version 1.0.0
  */
-@Authors({Authors.R4V3ZN,Authors.LUFEI, Authors.SHUFUJIA})
+@Authors({Authors.R4V3ZN,Authors.LUFEI})
 @Dependencies({":JtaTransactionManager"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"Nday"})
@@ -74,7 +74,6 @@ public class CVE_2020_2551 implements VulTest {
         // weblogic version
         String version = getVersion(ip, port);
         System.out.println("[*] weblogic version --> "+version);
-//        log.info("[*] weblogic version --> "+version);
         if(isBlank(version) || !VUL_VERSIONS.contains(version)){
             return false;
         }
@@ -152,8 +151,9 @@ public class CVE_2020_2551 implements VulTest {
      * @throws Exception 抛出异常
      */
     @Override
-    public void exploit(String ip, Integer port, String... param) throws Exception {
+    public String exploit(String ip, Integer port, String... param) throws Exception {
         // no
+        return null;
     }
 
     public static void main(String[] args) throws Exception {

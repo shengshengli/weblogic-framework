@@ -31,7 +31,7 @@ public class CVE_2020_2551_EXT implements VulTest {
      */
     @Override
     public Boolean vulnerable(String ip, Integer port, String... param) throws Exception {
-        return null;
+        return false;
     }
 
     /**
@@ -42,8 +42,8 @@ public class CVE_2020_2551_EXT implements VulTest {
      * @throws Exception 抛出异常
      */
     @Override
-    public void exploit(String ip, Integer port, String... param) throws Exception {
-
+    public String exploit(String ip, Integer port, String... param) throws Exception {
+        return null;
     }
 
     public static void main(String[] args) {

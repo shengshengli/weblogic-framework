@@ -34,8 +34,8 @@ public class VulUtils {
             rows.add(new String[] {
                     payloadClass.getSimpleName().replace("_","-"),
                     StringUtils.join(Arrays.asList(Authors.Utils.getAuthors(payloadClass)), ", ", "@", ""),
-                    StringUtils.join(Arrays.asList(Dependencies.Utils.getDependenciesSimple(payloadClass)),", ", "", ""),
-                    StringUtils.join(Arrays.asList(Versions.Utils.getVersionsSimple(payloadClass)),", ", "", "")
+//                    StringUtils.join(Arrays.asList(Dependencies.Utils.getDependenciesSimple(payloadClass)),", ", "", ""),
+//                    StringUtils.join(Arrays.asList(Versions.Utils.getVersionsSimple(payloadClass)),", ", "", "")
             });
         }
         return rows;
@@ -47,9 +47,8 @@ public class VulUtils {
      */
     public static String getVulInfo(){
         List<String[]> rows = getVulList();
-        rows.add(0,new String[] {"Vul", "Authors", "Dependencies", "Version"});
-        rows.add(1,new String[] {"-------", "-------", "-------", "-------"});
-        final List<String> lines = StringUtils.formatTable(rows);
-        return String.join("\n",lines);
+        rows.add(0,new String[] {"Vul", "Authors"});
+        TablePrintUtil printUtil = TablePrintUtil.build(rows).setAlign(TablePrintUtil.ALIGN_LEFT).setEquilong(true);
+        return printUtil.getTableString();
     }
 }

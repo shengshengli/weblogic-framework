@@ -20,9 +20,9 @@ import java.lang.reflect.AnnotatedElement;
 public @interface Authors {
 
     /**
-     * r4v3zn@白帽汇安全研究院
+     * r4v3zn
      */
-    String R4V3ZN = "r4v3zn@BMH";
+    String R4V3ZN = "r4v3zn";
 
     /**
      * lufei
@@ -32,7 +32,7 @@ public @interface Authors {
     /**
      * 舒肤佳
      */
-    String SHUFUJIA = "舒肤佳@绿盟";
+    String SHUFUJIA = "舒肤佳";
 
     String[] value() default {};
 
