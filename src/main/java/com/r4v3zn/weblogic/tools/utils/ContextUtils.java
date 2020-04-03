@@ -1,5 +1,22 @@
 package com.r4v3zn.weblogic.tools.utils;
 
+import com.r4v3zn.weblogic.tools.entity.ContextPojo;
+import com.r4v3zn.weblogic.tools.entity.MyException;
+import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
+import com.r4v3zn.weblogic.tools.gadget.impl.LimitFilterGadget;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Hashtable;
+
+import static com.r4v3zn.weblogic.tools.payloads.impl.S1274489.*;
+import static com.r4v3zn.weblogic.tools.utils.SocketUtils.hexStrToBinaryStr;
+import static com.r4v3zn.weblogic.tools.utils.VersionUtils.getVersion;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 /**
  * Title: Context
  * Desc: TODO
@@ -11,5 +28,10 @@ package com.r4v3zn.weblogic.tools.utils;
  */
 public class ContextUtils {
 
-    
+
+    /**
+     * 私有化构造
+     */
+    private ContextUtils(){}
+
 }

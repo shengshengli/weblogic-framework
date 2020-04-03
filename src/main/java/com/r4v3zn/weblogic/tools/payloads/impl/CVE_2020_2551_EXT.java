@@ -43,6 +43,7 @@ public class CVE_2020_2551_EXT implements VulTest {
      */
     @Override
     public String exploit(String ip, Integer port, String... param) throws Exception {
+
         return null;
     }
 
