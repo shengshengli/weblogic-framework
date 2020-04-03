@@ -9,21 +9,18 @@ import com.r4v3zn.weblogic.tools.entity.MyException;
 import com.r4v3zn.weblogic.tools.gadget.ObjectPayload;
 import com.r4v3zn.weblogic.tools.gadget.impl.LimitFilterGadget;
 import com.r4v3zn.weblogic.tools.payloads.VulTest;
-import lombok.Data;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Scanner;
 
-import static com.r4v3zn.weblogic.tools.payloads.impl.CallRsp.callInfo;
+import static com.r4v3zn.weblogic.tools.utils.CallUtils.callInfo;
 import static com.r4v3zn.weblogic.tools.utils.SocketUtils.hexStrToBinaryStr;
 import static com.r4v3zn.weblogic.tools.utils.StringUtils.getRandomString;
 import static com.r4v3zn.weblogic.tools.utils.VersionUtils.getVersion;

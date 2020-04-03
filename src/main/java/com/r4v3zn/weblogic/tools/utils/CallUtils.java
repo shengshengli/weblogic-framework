@@ -1,15 +1,17 @@
-package com.r4v3zn.weblogic.tools.payloads.impl;
+package com.r4v3zn.weblogic.tools.utils;
 
 import com.r4v3zn.weblogic.tools.entity.MyException;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * Title: CallRsp
- * Desc: 回显操作
+ * Title: CallUtils
+ * Desc: 回显工具类
  * Date:2020/4/3 18:59
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app
@@ -17,12 +19,22 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @author R4v3zn
  * @version 1.0.0
  */
-public class CallRsp {
+public class CallUtils {
 
     /**
      * 私有化构造防止被实例化
      */
-    private CallRsp(){}
+    private CallUtils(){}
+
+    public static final List<String> CALL_CLASS = new ArrayList<String>(){{
+        add("ClusterMasterRemote");
+        add("NamingNode");
+        add("RemoteChannelService");
+        add("RemoteLeasingBasis");
+        add("RemoteMigratableServiceCoordinator");
+        add("SingletonMonitorRemote");
+        add("SubCoordinatorRM");
+    }};
 
     /**
      * 执行命令并且回显
@@ -41,4 +53,5 @@ public class CallRsp {
         cmd += "@@"+currentOs;
         return remote.getServerLocation(cmd);
     }
+
 }

@@ -1,23 +1,19 @@
-import weblogic.cluster.migration.MigrationException;
-import weblogic.cluster.migration.RemoteMigratableServiceCoordinator;
-import weblogic.store.PersistentStoreException;
-
+import weblogic.cluster.singleton.ClusterMasterRemote;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.*;
 import java.rmi.RemoteException;
 
 /**
- * Title: PocServerRemoteMigratableServiceCoordinator
- * Desc: PocServer for RemoteMigratableServiceCoordinator
- * Date:2020/4/3 21:24
+ * Title: RmiPocServerClusterMasterRemote
+ * Desc: PocServer for ClusterMasterRemote
+ * Date:2020/3/22 0:36
  * Email:woo0nise@gmail.com
- * Company:www.j2ee.app
- *
+ * Company:www.r4v3zn.com
  * @author R4v3zn
  * @version 1.0.0
  */
-public class PocServerRemoteMigratableServiceCoordinator implements RemoteMigratableServiceCoordinator {
+public class RmiPocServerClusterMasterRemote implements ClusterMasterRemote {
 
     /**
      * rmi bind
@@ -26,7 +22,7 @@ public class PocServerRemoteMigratableServiceCoordinator implements RemoteMigrat
      */
     public void rmiBind(String clientName) {
         try {
-            PocServerRemoteMigratableServiceCoordinator rmiServer = new PocServerRemoteMigratableServiceCoordinator();
+            RmiPocServerClusterMasterRemote rmiServer = new RmiPocServerClusterMasterRemote();
             Context context = new InitialContext();
             context.rebind(clientName, rmiServer);
         } catch (Exception e) {
@@ -35,27 +31,17 @@ public class PocServerRemoteMigratableServiceCoordinator implements RemoteMigrat
     }
 
     @Override
-    public void migrateJTA(String s, String s1, boolean b, boolean b1) throws MigrationException {
+    public void setServerLocation(String s, String s1) throws RemoteException {
 
     }
 
     @Override
-    public void deactivateJTA(String s, String s1) throws RemoteException, MigrationException {
-
-    }
-
-    @Override
-    public String getCurrentLocationOfJTA(String cmd) throws RemoteException, PersistentStoreException {
+    public String getServerLocation(String cmd) throws RemoteException {
         String[] splitArr = cmd.split("@@");
         cmd = splitArr[0];
         String charsetName = splitArr[1];
         charsetName = charsetName.trim().toUpperCase();
         return execCmd(cmd, charsetName);
-    }
-
-    @Override
-    public void setCurrentLocation(String s, String s1) throws RemoteException, PersistentStoreException {
-
     }
 
     /**

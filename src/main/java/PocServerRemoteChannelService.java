@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 
 /**
  * Title: PocServerRemoteChannelService
- * Desc: TODO
+ * Desc: Poc Server for RemoteChannelService
  * Date:2020/4/3 19:39
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app

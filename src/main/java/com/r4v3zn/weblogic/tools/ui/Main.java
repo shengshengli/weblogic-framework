@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
+import static com.r4v3zn.weblogic.tools.utils.CallUtils.CALL_CLASS;
 import static com.r4v3zn.weblogic.tools.utils.VulUtils.getVulInfo;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -47,6 +48,10 @@ public class Main extends JFrame {
     private JLabel cmdLabel;
     private JScrollPane cmdScrollPane;
     private JScrollPane serverInfoScrollPane;
+    private JComboBox callComboBox;
+    private JComboBox charsetComboBox;
+    private JLabel charsetLabel;
+    private JLabel callText;
 
     private Map<String, VulTest> vulMap = new HashMap<>(16);
 
@@ -66,6 +71,13 @@ public class Main extends JFrame {
         this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        /**
+         * set call class
+         */
+        for (String className:CALL_CLASS) {
+            callComboBox.addItem(className);
+        }
+
         checkButton.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.

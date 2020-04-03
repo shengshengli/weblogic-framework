@@ -13,16 +13,13 @@ import com.r4v3zn.weblogic.tools.payloads.VulTest;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 import weblogic.jndi.Environment;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import static com.r4v3zn.weblogic.tools.payloads.impl.CallRsp.callInfo;
+import static com.r4v3zn.weblogic.tools.utils.CallUtils.callInfo;
 import static com.r4v3zn.weblogic.tools.payloads.impl.S1274489.*;
 import static com.r4v3zn.weblogic.tools.utils.SocketUtils.hexStrToBinaryStr;
 import static com.r4v3zn.weblogic.tools.utils.StringUtils.getRandomString;

@@ -15,27 +15,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-<!--                    <archive>-->
-<!--                        &lt;!&ndash;自动添加META-INF/MANIFEST.MF &ndash;&gt;-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                        </manifest>-->
-<!--                        <manifestEntries>-->
-<!--                            <Premain-Class>com.r4v3zn.weblogic.tools.agent.ClientAgent</Premain-Class>-->
-<!--                            <Agent-Class>com.r4v3zn.weblogic.tools.agent.ClientAgent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
-<!--                        </manifestEntries>-->
-<!--                    </archive>-->
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>8</source>
@@ -44,12 +23,6 @@
             </plugin>
         </plugins>
     </build>
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>j-text-utils-repo</id>-->
-<!--            <url>http://jexem.googlecode.com/svn/trunk/repo/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
