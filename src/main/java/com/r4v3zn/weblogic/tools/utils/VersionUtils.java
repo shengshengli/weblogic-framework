@@ -1,6 +1,7 @@
 package com.r4v3zn.weblogic.tools.utils;
 
 import cn.hutool.core.util.ReUtil;
+import com.r4v3zn.weblogic.tools.entity.MyException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -9,10 +10,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
 import static com.r4v3zn.weblogic.tools.utils.SocketUtils.send;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Title: VersionUtils
@@ -47,6 +50,7 @@ public class VersionUtils {
         if("".equals(version)){
             version = getVersionByT3(ip, port);
         }
+        System.out.println("[*] weblogic version --> "+version);
         return version;
     }
 
@@ -97,6 +101,23 @@ public class VersionUtils {
         String getVersionRegex = "[\\d\\.]+";
         List<String> result = ReUtil.findAll(getVersionRegex, content, 0 , new ArrayList<String>());
         return  result != null && result.size() > 0 ? result.get(0) : "";
+    }
+
+    /**
+     * 检测是否属于影响范围
+     * @param version 版本
+     * @param vulVersions 影响版本
+     * @return
+     */
+    public static Boolean checkVersion(String version, final String... vulVersions){
+        if (isBlank(version)){
+            throw new MyException("版本不能为空");
+        }
+        version = version.replace(".0.0",".0");
+        if(vulVersions.length == 0){
+            throw new MyException("影响版本不能为空");
+        }
+        return Arrays.asList(vulVersions).contains(version);
     }
 
     public static void main(String[] args) throws NamingException {

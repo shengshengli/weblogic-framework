@@ -117,7 +117,7 @@ public class Main extends JFrame {
                             // 反射执行 vulClasses
                             for (Class<? extends VulTest> clazz : vulClasses) {
                                 VulTest vulTest = clazz.newInstance();
-                                Boolean flag = vulTest.vulnerable(ip, port);
+                                Boolean flag = vulTest.vulnerable(host);
                                 String token = "";
                                 if (flag) {
                                     try {
@@ -148,7 +148,7 @@ public class Main extends JFrame {
                                     continue;
                                 }
                                 VulTest vulTest = clazz.newInstance();
-                                Boolean flag = vulTest.vulnerable(ip, port);
+                                Boolean flag = vulTest.vulnerable(host);
                                 String token = "";
                                 if (flag) {
                                     try {

