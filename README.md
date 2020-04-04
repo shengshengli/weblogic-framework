@@ -24,3 +24,10 @@ javac -cp wlfullclient.jar -source 1.5 -target 1.5 -sourcepath weblogic -d weblo
 ```
 python -m http.server 8080
 ```
+
+## 更新日志
+
+2020-04-04
+
+- 取消入口为 ip + port 方式修改为 url 方式
+- 修改部分实现

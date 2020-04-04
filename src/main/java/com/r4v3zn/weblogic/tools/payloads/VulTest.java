@@ -21,13 +21,12 @@ public interface VulTest {
 
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
-     * @param ip ip
-     * @param port 端口
+     * @param url url
      * @param param 执行参数
      * @return 漏洞存在返回 true 否则返回 false
      * @throws Exception 抛出异常
      */
-    Boolean vulnerable(String ip, Integer port, String... param) throws Exception;
+    Boolean vulnerable(String url, String... param) throws Exception;
 
     /**
      * 漏洞利用
@@ -36,6 +35,7 @@ public interface VulTest {
      * @throws Exception 抛出异常
      */
     String exploit(String ip, Integer port, String... param) throws Exception;
+
 
 
     public static class Utils {

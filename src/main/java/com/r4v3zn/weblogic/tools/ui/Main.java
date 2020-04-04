@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
+import static com.r4v3zn.weblogic.tools.utils.CallUtils.CALL_CLASS;
 import static com.r4v3zn.weblogic.tools.utils.VulUtils.getVulInfo;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -47,6 +48,10 @@ public class Main extends JFrame {
     private JLabel cmdLabel;
     private JScrollPane cmdScrollPane;
     private JScrollPane serverInfoScrollPane;
+    private JComboBox callComboBox;
+    private JComboBox charsetComboBox;
+    private JLabel charsetLabel;
+    private JLabel callText;
 
     private Map<String, VulTest> vulMap = new HashMap<>(16);
 
@@ -66,6 +71,13 @@ public class Main extends JFrame {
         this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        /**
+         * set call class
+         */
+        for (String className:CALL_CLASS) {
+            callComboBox.addItem(className);
+        }
+
         checkButton.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -79,6 +91,7 @@ public class Main extends JFrame {
                     @SneakyThrows
                     @Override
                     public void run() {
+                        vulMap.clear();
                         serverInfoText.setText("");
                         cmdRspTextArea.setText("");
                         String vulName = vulComboBox.getSelectedItem().toString();
@@ -95,16 +108,16 @@ public class Main extends JFrame {
                             ip = host.split(":")[0];
                             port = Integer.parseInt(host.split(":")[1]);
                         }
+                        // 探测所有
+                        final List<Class<? extends VulTest>> vulClasses = new ArrayList<>(VulTest.Utils.getVulTest());
+                        Collections.sort(vulClasses, new StringUtils.ToStringComparator());
                         if ("请选择".equals(vulName)) {
-                            // 探测所有
-                            final List<Class<? extends VulTest>> vulClasses = new ArrayList<>(VulTest.Utils.getVulTest());
-                            Collections.sort(vulClasses, new StringUtils.ToStringComparator());
                             String tmp = "";
                             serverInfoText.setText(tmp);
                             // 反射执行 vulClasses
                             for (Class<? extends VulTest> clazz : vulClasses) {
                                 VulTest vulTest = clazz.newInstance();
-                                Boolean flag = vulTest.vulnerable(ip, port);
+                                Boolean flag = vulTest.vulnerable(host);
                                 String token = "";
                                 if (flag) {
                                     try {
@@ -117,16 +130,46 @@ public class Main extends JFrame {
                                     }
                                 }
                                 String tmpStr = "";
-                                if (flag){
-                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  " + flag + " token : " + token + "\n\n";
+                                if(flag){
+                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  漏洞存在 " + " token : " + token + "\n\n";
                                 }else{
-                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  " + flag + " token : " + token + "\n\n";
+                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  漏洞不存在" + " token : " + token + "\n\n";
                                 }
                                 tmp += tmpStr;
                                 serverInfoText.setText(tmp);
                             }
                         } else {
+                            String tmp = "";
                             // 探测指定版本
+                            for (Class<? extends VulTest> clazz : vulClasses) {
+                                String simpleName = clazz.getSimpleName();
+                                vulName = vulName.replace("-", "_");
+                                if(!simpleName.equals(vulName)){
+                                    continue;
+                                }
+                                VulTest vulTest = clazz.newInstance();
+                                Boolean flag = vulTest.vulnerable(host);
+                                String token = "";
+                                if (flag) {
+                                    try {
+                                        Field bindNameField = clazz.getDeclaredField("bindName");
+                                        bindNameField.setAccessible(true);
+                                        token = bindNameField.get(vulTest).toString();
+                                        vulMap.put(token, vulTest);
+                                    } catch (NoSuchFieldException nosuch) {
+                                        // TODO:
+                                    }
+                                }
+                                String tmpStr = "";
+                                if(flag){
+                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  漏洞存在 " + " token : " + token + "\n\n";
+                                }else{
+                                    tmpStr = clazz.getSimpleName() + "  " + ip + ":" + port + "  漏洞不存在" + " token : " + token + "\n\n";
+                                }
+                                tmp += tmpStr;
+                                serverInfoText.setText(tmp);
+                                break;
+                            }
                         }
                     }
                 }).start();

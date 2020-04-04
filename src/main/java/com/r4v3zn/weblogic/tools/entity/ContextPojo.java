@@ -1,13 +1,12 @@
 package com.r4v3zn.weblogic.tools.entity;
 
 import lombok.Data;
-
 import javax.naming.Context;
 import java.net.URLClassLoader;
 
 /**
  * Title: ContextPojo
- * Descrption: TODO
+ * Desc: 内容对象
  * Date:2020/4/3 11:30
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app

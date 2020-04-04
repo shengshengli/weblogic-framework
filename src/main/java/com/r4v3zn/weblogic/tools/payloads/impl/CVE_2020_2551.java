@@ -44,7 +44,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"Nday"})
 @Log4j2
-public class CVE_2020_2551 implements VulTest {
+public class CVE_2020_2551 {
+
     private static final String POC_NAME = "com.bea.core.repackaged.springframework.spring.jar";
     private static final String POC_LOG = "com.bea.core.repackaged.apache.commons.logging.jar";
     private static final String FULL_CLIENT = "wlfullclient.jar";
@@ -69,7 +70,6 @@ public class CVE_2020_2551 implements VulTest {
      * @param port 端口
      * @return 漏洞存在返回 true 否则返回 false
      */
-    @Override
     public Boolean vulnerable(String ip, Integer port,String... param) throws Exception{
         // weblogic version
         String version = getVersion(ip, port);
@@ -150,11 +150,11 @@ public class CVE_2020_2551 implements VulTest {
      * @param port 端口
      * @throws Exception 抛出异常
      */
-    @Override
     public String exploit(String ip, Integer port, String... param) throws Exception {
         // no
         return null;
     }
+
 
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
