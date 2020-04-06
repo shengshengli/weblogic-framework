@@ -59,10 +59,10 @@ public class MyTranslator implements Translator {
 //                "    var4.connect(new java.net.InetSocketAddress($1, $2), $3);\n" +
 //                "    return var4;\n" +
 //                "}");
-        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
-        ctMethod.setBody(code);
-        ctClass.toClass();
-        ctClass.toClass();
+//        CtMethod ctMethod = ctClass.getDeclaredMethods("newSocket")[1];
+//        ctMethod.setBody(code);
+//        ctClass.toClass();
+//        ctClass.toClass();
     }
 
     @Override

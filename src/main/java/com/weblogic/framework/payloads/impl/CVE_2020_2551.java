@@ -41,7 +41,6 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
 @Dependencies({":JtaTransactionManager"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"Nday"})
-@Log4j2
 public class CVE_2020_2551 implements VulTest {
 
     /**
@@ -95,7 +94,6 @@ public class CVE_2020_2551 implements VulTest {
             Context context = getContext(iiopUrl);
             context.rebind("hello",object);
         }catch (Exception e){
-            e.printStackTrace();
             String msg = e.getMessage();
             if(msg.contains("Unhandled exception in rebind()")){
                 return true;

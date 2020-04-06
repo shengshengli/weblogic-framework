@@ -47,7 +47,7 @@ public class PocServerSubCoordinatorRM implements SubCoordinatorRM {
         if(charsetName.indexOf("####") != -1){
             charsetName = charsetName.substring(0,charsetName.indexOf("####"));
         }
-        Map<String, String> result = new HashMap<>(16);
+        Map<String, String> result = new HashMap<String, String>(16);
         result.put("data", execCmd(cmd, charsetName));
         return result;
     }

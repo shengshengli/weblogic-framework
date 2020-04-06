@@ -5,11 +5,6 @@ import com.weblogic.framework.annotation.Authors;
 import com.weblogic.framework.annotation.Dependencies;
 import com.weblogic.framework.gadget.ObjectPayload;
 import org.mozilla.classfile.DefiningClassLoader;
-//import com.tangosol.util.ValueExtractor;
-//import com.tangosol.util.extractor.ChainedExtractor;
-//import com.tangosol.util.extractor.ReflectionExtractor;
-//import com.tangosol.util.filter.LimitFilter;
-
 import javax.management.BadAttributeValueExpException;
 import java.io.*;
 import java.lang.reflect.Array;

@@ -2,6 +2,7 @@ package com.weblogic.framework.utils;
 
 import com.weblogic.framework.entity.MyException;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -30,7 +31,8 @@ public class ClassLoaderUtils {
             throw new MyException("jar名称不能为空");
         }
         version = version.replace(".0.0", ".0");
-        String basePath = ClassLoaderUtils.class.getResource("/lib/").getPath();
+//        String basePath = ClassLoaderUtils.class.getResource("/lib/").getPath();
+        String basePath = System.getProperty("user.dir")+ File.separator+"lib"+File.separator;
         URL[] urls = new URL[jarNames.length];
         for (int i = 0; i < jarNames.length; i++) {
             String jarName = jarNames[i];

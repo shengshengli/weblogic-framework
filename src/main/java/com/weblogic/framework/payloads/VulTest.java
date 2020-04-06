@@ -25,8 +25,8 @@ public interface VulTest {
 
     /**
      * 漏洞利用
-     * @param ip ip
-     * @param port 端口
+     * @param url url
+     * @param param 执行参数
      * @throws Exception 抛出异常
      */
     String exploit(String url, String... param) throws Exception;
@@ -49,7 +49,7 @@ public interface VulTest {
         public static String[] getVulNames(){
             final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(getVulTest());
             Collections.sort(vulClasses, new StringUtils.ToStringComparator());
-            List<String> nameList = new ArrayList<>();
+            List<String> nameList = new ArrayList<String>();
             for (Class<? extends VulTest> payloadClass:vulClasses) {
                 String vulName = payloadClass.getSimpleName();
                 vulName = vulName.trim().replace("_", "-");

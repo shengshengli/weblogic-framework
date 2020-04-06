@@ -78,7 +78,7 @@ public class TablePrintUtil {
      */
     public static TablePrintUtil build(String[][] data){
         TablePrintUtil self = new TablePrintUtil();
-        self.data = new ArrayList<>(Arrays.asList(data));
+        self.data = new ArrayList<String[]>(Arrays.asList(data));
         return self;
     }
 
@@ -92,7 +92,7 @@ public class TablePrintUtil {
     @SuppressWarnings("unchecked")
     public static <T> TablePrintUtil build(List<T> data){
         TablePrintUtil self = new TablePrintUtil();
-        self.data = new ArrayList<>();
+        self.data = new ArrayList<String[]>();
         if(data.size()<=0) throw new RuntimeException("数据源至少得有一行吧");
         Object obj = data.get(0);
 
@@ -123,7 +123,11 @@ public class TablePrintUtil {
                     String value = null;
                     try{
                         value = obj.getClass().getMethod(colList.get(j).getMethodName).invoke(data.get(i)).toString();
-                    }catch(IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
+                    } catch(IllegalAccessException e){
+                        e.printStackTrace();
+                    } catch(InvocationTargetException e){
+                        e.printStackTrace();
+                    } catch(NoSuchMethodException e){
                         e.printStackTrace();
                     }
                     item[j] = value == null ? "null" : value;
@@ -146,7 +150,7 @@ public class TablePrintUtil {
      * @return
      */
     private static List<Col> getColList(Object obj) {
-        List<Col> colList = new ArrayList<>();
+        List<Col> colList = new ArrayList<Col>();
         Method[] methods = obj.getClass().getMethods();
         for (Method m : methods){
             StringBuilder getMethodName = new StringBuilder(m.getName());
