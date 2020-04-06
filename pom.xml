@@ -4,58 +4,77 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.r4v3zn</groupId>
-    <artifactId>weblogic-tools</artifactId>
-    <version>0.0.1</version>
+    <groupId>com.balabala</groupId>
+    <artifactId>weblogic-framework</artifactId>
+    <version>0.0.4</version>
     <packaging>jar</packaging>
+    <url>https://github.com/0nise/weblogic-tools</url>
     <properties>
         <java.version>1.8</java.version>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
-<!--                    <archive>-->
-<!--                        &lt;!&ndash;自动添加META-INF/MANIFEST.MF &ndash;&gt;-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                        </manifest>-->
-<!--                        <manifestEntries>-->
-<!--                            <Premain-Class>com.r4v3zn.weblogic.tools.agent.ClientAgent</Premain-Class>-->
-<!--                            <Agent-Class>com.r4v3zn.weblogic.tools.agent.ClientAgent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
-<!--                        </manifestEntries>-->
-<!--                    </archive>-->
+                    <!-- maximize compatibility -->
+                    <source>6</source>
+                    <target>6</target>
+                    <fork>true</fork>
+                    <encoding>utf8</encoding>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <finalName>${project.artifactId}-${project.version}-all</finalName>
+                    <appendAssemblyId>true</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.weblogic.framework.ui.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                    <systemPropertyVariables>
+                        <java.rmi.server.useCodebaseOnly>false</java.rmi.server.useCodebaseOnly>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>j-text-utils-repo</id>-->
-<!--            <url>http://jexem.googlecode.com/svn/trunk/repo/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>3.7</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
         <dependency>
@@ -67,13 +86,13 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.2.4</version>
+            <version>4.1.9</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
+            <version>0.9.9</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.nqzero/permit-reflect -->
         <dependency>
@@ -81,17 +100,11 @@
             <artifactId>permit-reflect</artifactId>
             <version>0.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
+        <!-- https://mvnrepository.com/artifact/javassist/javassist -->
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.27.0-GA</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime/org.mozilla.javascript -->
-        <dependency>
-            <groupId>org.eclipse.birt.runtime</groupId>
-            <artifactId>org.mozilla.javascript</artifactId>
-            <version>1.7.5.v201504281450</version>
+            <version>3.19.0-GA</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -113,6 +126,22 @@
             <artifactId>j-text-utils</artifactId>
             <version>0.3.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>jsafeFIPS</artifactId>
+            <version>0.01</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>weblogic</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.intellij/forms_rt -->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+            <version>7.0.3</version>
+        </dependency>
 
 
         <!-- gadget dependecies -->
@@ -123,42 +152,5 @@
             <version>3.1</version>
         </dependency>
 
-
-        <!-- test weblogic dependencies -->
-<!--        <dependency>-->
-<!--            <groupId>com.weblogic</groupId>-->
-<!--            <artifactId>weblogic</artifactId>-->
-<!--            <version>2.2-SNAPSHOT</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/12.2.1.3.0/weblogic.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.weblogic</groupId>-->
-<!--            <artifactId>wlfullclient</artifactId>-->
-<!--            <version>2.2-SNAPSHOT</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>lib/10.3.6.0.0/wlfullclient_1.2.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.bea.core.repackaged</groupId>-->
-<!--            <artifactId>springframework.spring</artifactId>-->
-<!--            <version>1.5.0.0_2-5-3</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/12.2.1.4.0/com.bea.core.repackaged.springframework.spring.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.bea.core.repackaged</groupId>-->
-<!--            <artifactId>apache.commons.logging</artifactId>-->
-<!--            <version>1.2.4</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/12.2.1.4.0/com.bea.core.repackaged.apache.commons.logging.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>coherence</groupId>-->
-<!--            <artifactId>coherence</artifactId>-->
-<!--            <version>1.5.0.0_2-5-3</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/12.2.1.3.0/coherence.jar</systemPath>-->
-<!--        </dependency>-->
     </dependencies>
 </project>
