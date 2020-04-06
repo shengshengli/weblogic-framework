@@ -107,7 +107,7 @@ public class VersionUtils {
      */
     public static Boolean checkVersion(String version, final String... vulVersions){
         if (isBlank(version)){
-            throw new MyException("版本不能为空");
+            throw new MyException("无法获取版本");
         }
         version = version.replace(".0.0",".0");
         if(vulVersions.length == 0){

@@ -1,9 +1,8 @@
 package com.weblogic.framework.utils;
 
+import com.google.common.collect.Multimap;
 import com.weblogic.framework.call.Call;
-import com.weblogic.framework.call.PocServerRemoteChannelService;
 import com.weblogic.framework.entity.MyException;
-import com.weblogic.framework.payloads.VulTest;
 import org.reflections.Reflections;
 import weblogic.cluster.migration.RemoteMigratableServiceCoordinator;
 import weblogic.cluster.singleton.ClusterMasterRemote;
@@ -11,14 +10,9 @@ import weblogic.cluster.singleton.RemoteLeasingBasis;
 import weblogic.cluster.singleton.SingletonMonitorRemote;
 import weblogic.server.channels.RemoteChannelService;
 import weblogic.transaction.internal.SubCoordinatorRM;
-
-import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
-
-import static com.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -52,9 +46,17 @@ public class CallUtils {
     public static Set<Class<? extends Remote>> callTypes(){
         String packageName = Call.class.getPackage().getName();
         final Reflections reflections = new Reflections(packageName);
-        final Set<Class<? extends Remote>> callTypes = reflections.getSubTypesOf(Remote.class);
-        callTypes.removeIf(pc -> pc.isInterface() || Modifier.isAbstract(pc.getModifiers()));
-        return callTypes;
+        Multimap<String, String> multimap =  reflections.getStore().get("SubTypesScanner");
+        Set<String> keySet = multimap.keySet();
+        Set<Class<? extends Remote>> classSet = new HashSet<Class<? extends Remote>>();
+        for (String key:keySet) {
+            try {
+                classSet.add((Class<? extends Remote>) Class.forName(multimap.get(key).iterator().next()));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return classSet;
     }
 
     /**
@@ -62,9 +64,9 @@ public class CallUtils {
      * @return
      */
     public static String[] getCallName(){
-        final List<Class<? extends Remote>> callClasses = new ArrayList<>(callTypes());
+        final List<Class<? extends Remote>> callClasses = new ArrayList<Class<? extends Remote>>(callTypes());
         Collections.sort(callClasses, new StringUtils.ToStringComparator());
-        List<String> nameList = new ArrayList<>();
+        List<String> nameList = new ArrayList<String>();
         for (Class<? extends Remote> callClass:callClasses) {
             String name = callClass.getInterfaces()[0].getSimpleName();
             if(nameList.contains(name)){
@@ -80,10 +82,10 @@ public class CallUtils {
      * @return
      */
     public static Map<String, Class<? extends Remote>> callTypeMap(){
-        final List<Class<? extends Remote>> callClasses = new ArrayList<>(callTypes());
+        final List<Class<? extends Remote>> callClasses = new ArrayList<Class<? extends Remote>>(callTypes());
         Collections.sort(callClasses, new StringUtils.ToStringComparator());
-        Map<String, Class<? extends Remote>> result = new HashMap<>();
-        List<String> nameList = new ArrayList<>();
+        Map<String, Class<? extends Remote>> result = new HashMap<String, Class<? extends Remote>>();
+        List<String> nameList = new ArrayList<String>();
         for (Class<? extends Remote> callClass:callClasses) {
             String name = callClass.getInterfaces()[0].getSimpleName();
             if(nameList.contains(name)){
@@ -150,7 +152,4 @@ public class CallUtils {
         return remote.getServerLocation(cmd);
     }
 
-    public static void main(String[] args) {
-        System.out.println(CALL_MAP.get("RemoteChannelService").getSimpleName());
-    }
 }

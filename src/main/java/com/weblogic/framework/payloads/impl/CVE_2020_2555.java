@@ -10,34 +10,25 @@ import com.weblogic.framework.entity.ContextPojo;
 import com.weblogic.framework.entity.MyException;
 import com.weblogic.framework.gadget.ObjectPayload;
 import com.weblogic.framework.gadget.impl.LimitFilterGadget;
-import com.weblogic.framework.manager.WeblogicTrustManager;
 import com.weblogic.framework.payloads.VulTest;
-import com.weblogic.framework.utils.CallUtils;
 import com.weblogic.framework.utils.VulUtils;
 import javassist.ClassPool;
 import javassist.CtClass;
 import weblogic.cluster.singleton.ClusterMasterRemote;
-import weblogic.jndi.Environment;
 import javax.naming.Context;
-import javax.naming.NamingException;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.Remote;
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static com.weblogic.framework.utils.CallUtils.CALL_MAP;
 import static com.weblogic.framework.utils.CallUtils.callExec;
 import static com.weblogic.framework.utils.ClassLoaderUtils.loadJar;
 import static com.weblogic.framework.utils.ContextUtils.rebind;
-import static com.weblogic.framework.utils.SocketUtils.hexStrToBinaryStr;
 import static com.weblogic.framework.utils.StringUtils.getRandomString;
 import static com.weblogic.framework.utils.UrlUtils.checkUrl;
 import static com.weblogic.framework.utils.VersionUtils.checkVersion;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Title: CVE_2020_2555

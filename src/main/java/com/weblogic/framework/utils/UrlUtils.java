@@ -4,6 +4,8 @@ import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.http.HttpUtil;
 import com.weblogic.framework.entity.MyException;
 
+import java.io.File;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -22,7 +24,7 @@ public class UrlUtils {
      * check url 是否合法
      * @param url
      */
-    public static String checkUrl(String url){
+    public static String checkUrl(String url)throws Exception{
         if(isBlank(url)){
             throw new MyException("URL 不能为空");
         }
