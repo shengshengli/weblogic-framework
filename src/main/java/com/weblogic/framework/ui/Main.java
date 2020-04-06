@@ -227,9 +227,9 @@ public class Main extends JFrame {
                 tmpStr = clazz.getSimpleName() + "  " + host + "  " + msg + "\n\n";
             } else {
                 if (flag) {
-                    tmpStr = clazz.getSimpleName() + "  " + host + "  漏洞存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_","-") + "  " + host + "  漏洞存在  " + " token : " + token + "\n\n";
                 } else {
-                    tmpStr = clazz.getSimpleName() + "  " + host + "  漏洞不存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_","-") + "  " + host + "  漏洞不存在  " + " token : " + token + "\n\n";
                 }
             }
             tmp += tmpStr;
