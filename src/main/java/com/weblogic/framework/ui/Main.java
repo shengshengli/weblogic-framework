@@ -166,10 +166,11 @@ public class Main extends JFrame {
         }
         String vulName = vulComboBox.getSelectedItem().toString();
         String host = targetText.getText().trim();
-        host = host.replace("\\", "/");
+        host = host.replace("\\", "/").replace("http://", "http:\\\\").replace("https://", "https:\\\\");
         if (host.lastIndexOf("/") != -1) {
             host = host.substring(0, host.lastIndexOf("/"));
         }
+        host = host.replace("http:\\\\", "http://").replace("https:\\\\", "https://");
         // 探测所有POC
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
@@ -270,6 +271,7 @@ public class Main extends JFrame {
                 if (ex instanceof MyException) {
                     cmdRspTextArea.setText(ex.getMessage());
                 } else {
+                    ex.printStackTrace();
                     cmdRspTextArea.setText("执行失败");
                 }
             }
