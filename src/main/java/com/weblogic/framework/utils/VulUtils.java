@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.*;
 import static com.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static com.weblogic.framework.utils.CallUtils.callExec;
+import static com.weblogic.framework.utils.UrlUtils.checkUrl;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -57,6 +58,7 @@ public class VulUtils {
      * @return 执行结果
      */
     public static String exploit(String url, Object remote, String... param) throws Exception {
+        url = checkUrl(url);
         String cmd = param[0];
         String charsetName = defaultCharsetName;
         if(isBlank(cmd)){

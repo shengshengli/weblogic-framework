@@ -34,7 +34,7 @@ import org.mozilla.classfile.DefiningClassLoader;
  * Date:2020/4/5 3:48
  * @version 1.0.0
  */
-@Authors({Authors.R4V3ZN,Authors.LUFEI})
+@Authors({Authors.R4V3ZN})
 @Dependencies({":JtaTransactionManager"})
 @Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 @Tags({"0day"})
