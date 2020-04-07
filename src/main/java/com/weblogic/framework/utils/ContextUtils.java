@@ -110,8 +110,9 @@ public class ContextUtils {
     public static Boolean unbind(Context context,String name){
         try{
             context.unbind(name);
-            return false;
+            return true;
         }catch (Exception e){
+            e.printStackTrace();
             return false;
         }
     }
