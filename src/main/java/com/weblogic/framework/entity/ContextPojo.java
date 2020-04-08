@@ -23,4 +23,20 @@ public class ContextPojo {
      * url class loader
      */
     private URLClassLoader urlClassLoader;
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public URLClassLoader getUrlClassLoader() {
+        return urlClassLoader;
+    }
+
+    public void setUrlClassLoader(URLClassLoader urlClassLoader) {
+        this.urlClassLoader = urlClassLoader;
+    }
 }

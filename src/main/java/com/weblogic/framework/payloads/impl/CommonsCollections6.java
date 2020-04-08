@@ -11,7 +11,6 @@ import com.weblogic.framework.payloads.VulTest;
 import com.weblogic.framework.utils.VulUtils;
 import javassist.ClassPool;
 import javassist.CtClass;
-import lombok.extern.log4j.Log4j2;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 import javax.naming.Context;
 import java.io.Serializable;
@@ -26,7 +25,6 @@ import static com.weblogic.framework.utils.UrlUtils.checkUrl;
 import static com.weblogic.framework.utils.VersionUtils.checkVersion;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import org.mozilla.classfile.DefiningClassLoader;
 
 /**
  * Title: CommonsCollections6
