@@ -4,7 +4,6 @@ import com.weblogic.framework.annotation.Authors;
 import com.weblogic.framework.annotation.Dependencies;
 import com.weblogic.framework.gadget.ObjectPayload;
 import com.weblogic.framework.utils.Gadgets;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;

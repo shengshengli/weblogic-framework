@@ -32,7 +32,19 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
 
 /**
  * Title: CVE_2020_2555
- * Desc: CVE-2020-2555
+ * Desc:
+ * <p>
+ *     CVE-2020-2555
+ *     Oracle Fusion中间件Oracle Coherence存在缺陷，攻击者可利用该漏洞在未经授权下通过构造T3协议请求，获取Weblogic服务器权限，执行任意命令。
+ *     该漏洞主要是因为 com.tangosol.util.filter.LimitFilter#toString 触发。
+ *     漏洞影响版本:
+ *     Oracle Coherence 3.7.1.17
+ *     Oracle Coherence & Weblogic 12.1.3.0.0
+ *     Oracle Coherence & Weblogic 12.2.1.3.0
+ *     Oracle Coherence & Weblogic 12.2.1.4.0
+ *     github: https://github.com/0nise/CVE-2020-2555
+ *     paper: https://www.r4v3zn.com/posts/975312a1/
+ * </p>
  * Date:2020/3/31 21:31
  * @version 1.0.0
  */

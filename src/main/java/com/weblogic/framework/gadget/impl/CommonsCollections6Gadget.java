@@ -10,8 +10,6 @@ import org.apache.commons.collections.functors.ConstantTransformer;
 import org.apache.commons.collections.functors.InvokerTransformer;
 import org.apache.commons.collections.keyvalue.TiedMapEntry;
 import org.apache.commons.collections.map.LazyMap;
-import org.mozilla.classfile.DefiningClassLoader;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
@@ -22,6 +20,18 @@ import java.util.Map;
 /**
  * Title: CommonsCollections6Gadget
  * Desc: CommonsCollections6 Gadget
+ * Gadget chain:
+ *     java.io.ObjectInputStream.readObject()
+ *         java.util.HashSet.readObject()
+ *             java.util.HashMap.put()
+ *             java.util.HashMap.hash()
+ *                 org.apache.commons.collections.keyvalue.TiedMapEntry.hashCode()
+ *                 org.apache.commons.collections.keyvalue.TiedMapEntry.getValue()
+ *                     org.apache.commons.collections.map.LazyMap.get()
+ *                         org.apache.commons.collections.functors.ChainedTransformer.transform()
+ *                         org.apache.commons.collections.functors.InvokerTransformer.transform()
+ *                         java.lang.reflect.Method.invoke()
+ *                             java.lang.Runtime.exec()
  * Date:2020/3/29 0:35
  * @version 1.0.0
  */

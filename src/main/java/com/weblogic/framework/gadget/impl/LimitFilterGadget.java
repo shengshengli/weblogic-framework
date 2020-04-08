@@ -19,7 +19,21 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Title: LimitFilterGadget
- * Desc: LimitFilterGadget
+ * Desc: LimitFilter Gadget
+ * Gadget chain:
+ *        ObjectInputStream.readObject()
+ *            BadAttributeValueExpException.readObject()
+ *                LimitFilter.toString()
+ *                    ChainedExtractor.extract()
+ *                            ReflectionExtractor.extract()
+ *                                Method.invoke()
+ *                                    Class.getMethod()
+ *                            ReflectionExtractor.extract()
+ *                                Method.invoke()
+ *                                    Runtime.getRuntime()
+ *                            ReflectionExtractor.extract()
+ *                                Method.invoke()
+ *                                    Runtime.exec()
  * Date:2020/3/29 1:31
  * @version 1.0.0
  */

@@ -23,7 +23,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
 
 /**
  * Title: CVE_2020_2551
- * Descrption:
+ * Desc:
  * <p>
  *     攻击者可以通过 IIOP 协议远程访问 Weblogic Server 服务器上的远程接口，传入恶意数据，从而获取服务器 权限并在未授权情况下远程执行任意代码。
  *     漏洞影响版本:
@@ -32,6 +32,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  *     Oracle WebLogic Server 12.2.1.3.0
  *     Oracle WebLogic Server 12.2.1.4.0
  *     github: https://github.com/0nise/CVE-2020-2551
+ *     paper: https://www.r4v3zn.com/posts/b64d9185/
  * </p>
  * Date:2020/3/23 23:05
  * Email:woo0nise@gmail.com
