@@ -18,6 +18,7 @@
 package com.weblogic.framework;
 import com.sun.org.apache.bcel.internal.classfile.Utility;
 import com.sun.org.apache.bcel.internal.util.ClassLoader;
+import com.tangosol.util.filter.LimitFilter;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -56,6 +57,8 @@ public class Test {
 //        Class clazz = Class.forName(result,true, new ClassLoader());
         ClassLoader classLoader = new ClassLoader();
 //        Class.forName("")
+//        LimitFilter.main();
+
         Thread.currentThread().setContextClassLoader(new ClassLoader());
 //        Class clazz1 = classLoader.getParent().loadClass("weblogic.cluster.singleton.ClusterMasterRemote");
         Class clazz1 = classLoader.loadClass("weblogic.cluster.singleton.ClusterMasterRemote");
