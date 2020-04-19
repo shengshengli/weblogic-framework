@@ -1,10 +1,26 @@
+/*
+ * Copyright (c) 2020. r4v3zn.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.weblogic.framework.ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.weblogic.framework.entity.MyException;
-import com.weblogic.framework.payloads.VulTest;
+import com.weblogic.framework.entity.VulCheckParam;
+import com.weblogic.framework.vuls.VulTest;
 import com.weblogic.framework.utils.StringUtils;
 import com.weblogic.framework.utils.CallUtils;
 import com.weblogic.framework.utils.VulUtils;
@@ -16,10 +32,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
 import static com.weblogic.framework.utils.ContextUtils.clearContext;
+import static com.weblogic.framework.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -59,6 +77,8 @@ public class Main extends JFrame {
     private JLabel charsetLabel;
     private JLabel callText;
     private JTextField ldapUrlText;
+    private JLabel protocolLabel;
+    private JComboBox protocolComboBox;
 
     private Map<String, VulTest> vulMap = new HashMap<String, VulTest>(16);
 
@@ -171,24 +191,36 @@ public class Main extends JFrame {
             host = host.substring(0, host.lastIndexOf("/"));
         }
         host = host.replace("http:\\\\", "http://").replace("https:\\\\", "https://");
+        String protocol = protocolComboBox.getSelectedItem().toString();
+        if (isBlank(protocol)) {
+            protocol = "iiop";
+        } else if (protocol.contains("iiop")) {
+            protocol = "iiop";
+        } else if (protocol.contains("t3")) {
+            protocol = "t3";
+        } else {
+            protocol = "iiop";
+        }
         // 探测所有POC
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
         serverInfoText.setText("漏洞验证中.....");
-        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName);
+        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
+        serverInfoText.append("漏洞验证完毕");
     }
 
     /**
      * 漏洞验证
-     * @param host host
+     *
+     * @param host          host
      * @param javascriptUrl javascript url
-     * @param ldapUrl ldap url
-     * @param charsetName 编码
-     * @param callName 回调类
-     * @param vulClasses 所有漏洞名称
-     * @param vulName 当前选择漏洞
+     * @param ldapUrl       ldap url
+     * @param charsetName   编码
+     * @param callName      回调类
+     * @param vulClasses    所有漏洞名称
+     * @param vulName       当前选择漏洞
      */
-    public void validateVul(String host, String javascriptUrl, String ldapUrl, String charsetName, String callName, List<Class<? extends VulTest>> vulClasses, String vulName) {
+    public void validateVul(String host, String javascriptUrl, String ldapUrl, String charsetName, String callName, List<Class<? extends VulTest>> vulClasses, String vulName, String protocol) {
         String tmp = "";
         // 反射执行 vulClasses
         for (Class<? extends VulTest> clazz : vulClasses) {
@@ -198,11 +230,23 @@ public class Main extends JFrame {
                 continue;
             }
             VulTest vulTest = null;
-            Boolean flag = false;
+            boolean flag = false;
             String msg = "";
             try {
                 vulTest = clazz.newInstance();
-                flag = vulTest.vulnerable(host, javascriptUrl, ldapUrl, charsetName, callName);
+                String version = getVersion(host);
+                if (isBlank(version)) {
+                    return;
+                }
+                VulCheckParam vulCheckParam = new VulCheckParam();
+                vulCheckParam.setVersion(version);
+                vulCheckParam.setCallName(callName);
+                vulCheckParam.setJavascriptUrl(javascriptUrl);
+                vulCheckParam.setJndiUrl(ldapUrl);
+                vulCheckParam.setCharsetName(charsetName);
+                vulCheckParam.setProtocol(protocol);
+                flag = vulTest.vulnerable(host, vulCheckParam);
+//                flag = vulTest.vulnerable(host, javascriptUrl, ldapUrl, charsetName, callName);
             } catch (Exception e) {
                 if (e instanceof MyException) {
                     msg = e.getMessage();
@@ -228,9 +272,9 @@ public class Main extends JFrame {
                 tmpStr = clazz.getSimpleName() + "  " + host + "  " + msg + "\n\n";
             } else {
                 if (flag) {
-                    tmpStr = clazz.getSimpleName().replace("_","-") + "  " + host + "  漏洞存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞存在  " + " token : " + token + "\n\n";
                 } else {
-                    tmpStr = clazz.getSimpleName().replace("_","-") + "  " + host + "  漏洞不存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞不存在  " + " token : " + token + "\n\n";
                 }
             }
             tmp += tmpStr;
@@ -292,32 +336,34 @@ public class Main extends JFrame {
         $$$setupUI$$$();
     }
 
-    /** Method generated by IntelliJ IDEA GUI Designer
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
+     *
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(6, 6, new Insets(10, 10, 10, 10), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(6, 8, new Insets(10, 10, 10, 10), -1, -1));
         targetLabel = new JLabel();
         targetLabel.setText("目标地址");
         mainPanel.add(targetLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         targetText = new JTextField();
         targetText.setText("http://10.10.10.172:7001");
-        mainPanel.add(targetText, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        mainPanel.add(targetText, new GridConstraints(0, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         javascriptLabel = new JLabel();
         javascriptLabel.setText("javascript 地址");
         mainPanel.add(javascriptLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         javascriptText = new JTextField();
         javascriptText.setText("https://baidu.com/com.bea.javascript.jar");
-        mainPanel.add(javascriptText, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        mainPanel.add(javascriptText, new GridConstraints(1, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label1 = new JLabel();
         label1.setText("LDAP 地址");
         mainPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         ldapUrlText = new JTextField();
         ldapUrlText.setText("ldap://127.0.0.1:1099/#Poc");
-        mainPanel.add(ldapUrlText, new GridConstraints(2, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        mainPanel.add(ldapUrlText, new GridConstraints(2, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         vulNumberLabel = new JLabel();
         vulNumberLabel.setText("漏洞编号");
         mainPanel.add(vulNumberLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -328,9 +374,9 @@ public class Main extends JFrame {
         vulComboBox.setModel(defaultComboBoxModel1);
         mainPanel.add(vulComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 6, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 8, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         dataPanel = new JTabbedPane();
-        mainPanel.add(dataPanel, new GridConstraints(5, 0, 1, 6, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        mainPanel.add(dataPanel, new GridConstraints(5, 0, 1, 8, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         serverInfoPanel = new JPanel();
         serverInfoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         dataPanel.addTab("漏洞验证", serverInfoPanel);
@@ -368,22 +414,34 @@ public class Main extends JFrame {
         cmdScrollPane.setViewportView(cmdRspTextArea);
         callText = new JLabel();
         callText.setText("回显类");
-        mainPanel.add(callText, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(callText, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callComboBox = new JComboBox();
-        mainPanel.add(callComboBox, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(callComboBox, new GridConstraints(3, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         charsetLabel = new JLabel();
         charsetLabel.setText("编码");
-        mainPanel.add(charsetLabel, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(charsetLabel, new GridConstraints(3, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         charsetComboBox = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("自动");
         defaultComboBoxModel2.addElement("UTF-8");
         defaultComboBoxModel2.addElement("GBK");
         charsetComboBox.setModel(defaultComboBoxModel2);
-        mainPanel.add(charsetComboBox, new GridConstraints(3, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(charsetComboBox, new GridConstraints(3, 7, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        protocolLabel = new JLabel();
+        protocolLabel.setText("协议");
+        mainPanel.add(protocolLabel, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        protocolComboBox = new JComboBox();
+        protocolComboBox.setEnabled(true);
+        final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
+        defaultComboBoxModel3.addElement("IIOP");
+        defaultComboBoxModel3.addElement("T3");
+        protocolComboBox.setModel(defaultComboBoxModel3);
+        mainPanel.add(protocolComboBox, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
-    /** @noinspection ALL */
+    /**
+     * @noinspection ALL
+     */
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }

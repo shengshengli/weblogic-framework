@@ -13,13 +13,46 @@
  * limitations under the License.
  */
 
-package com.weblogic.framework.call;
+package com.weblogic.framework.entity;
+
+import lombok.Data;
 
 /**
- * Title: Call
- * Desc: Call
- * Date:2020/4/4 23:18
+ * Title: VulCheckParam
+ * Desc: 漏洞验证参数实体类
+ * Date: 2020/4/19 17:24
+ *
  * @version 1.0.0
  */
-public class Call {
+@Data
+public class VulCheckParam {
+    /**
+     * JNDI Url
+     */
+    private String jndiUrl;
+
+    /**
+     * javascript.jar 文件 URL
+     */
+    private String javascriptUrl;
+
+    /**
+     * 版本
+     */
+    private String version;
+
+    /**
+     * 编码
+     */
+    private String charsetName;
+
+    /**
+     * 回调实体类名称
+     */
+    private String callName;
+
+    /**
+     * 协议名称
+     */
+    private String protocol;
 }

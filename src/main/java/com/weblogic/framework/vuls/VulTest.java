@@ -1,5 +1,21 @@
-package com.weblogic.framework.payloads;
+/*
+ * Copyright (c) 2020. r4v3zn.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package com.weblogic.framework.vuls;
+
+import com.weblogic.framework.entity.VulCheckParam;
 import com.weblogic.framework.utils.StringUtils;
 import org.reflections.Reflections;
 
@@ -17,11 +33,11 @@ public interface VulTest {
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
      * @param url url
-     * @param param 执行参数
+     * @param vulCheckParam 漏洞校验额外参数
      * @return 漏洞存在返回 true 否则返回 false
      * @throws Exception 抛出异常
      */
-    Boolean vulnerable(String url, String... param) throws Exception;
+    Boolean vulnerable(String url, VulCheckParam vulCheckParam) throws Exception;
 
     /**
      * 漏洞利用

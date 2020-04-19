@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-package com.weblogic.framework.call;
+package com.weblogic.framework.gadget;
+
 
 /**
- * Title: Call
- * Desc: Call
- * Date:2020/4/4 23:18
- * @version 1.0.0
+ * @author mbechler
+ *
  */
-public class Call {
+public interface ReleaseableObjectGadget<T> extends ObjectGadget<T> {
+
+    void release(T obj) throws Exception;
 }

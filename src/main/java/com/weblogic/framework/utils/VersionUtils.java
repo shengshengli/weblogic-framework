@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2020. r4v3zn.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.weblogic.framework.utils;
 
 import cn.hutool.core.util.ReUtil;
@@ -8,7 +23,9 @@ import org.jsoup.nodes.Document;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -18,7 +35,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Title: VersionUtils
- * Descrption: weblogic 版本工具类
+ * Desc: weblogic 版本工具类
  * Date:2020/3/23 22:37
  * @version 1.0.0
  */
@@ -61,7 +78,7 @@ public class VersionUtils {
         try {
             Document doc = Jsoup.connect(url).get();
             String versionTmpStr = doc.getElementById("footerVersion").text();
-            version = getVersion(versionTmpStr);
+            version = getVersionByContent(versionTmpStr);
         } catch (Exception e) {
             version = "";
         }
@@ -80,7 +97,7 @@ public class VersionUtils {
             Socket socket = new Socket(ip, port);
             byte[] rspByte = SocketUtils.send(VERSION_T3, socket);
             socket.close();
-            version = getVersion(new String(rspByte));
+            version = getVersionByContent(new String(rspByte));
         } catch (Exception e) {
             version = "";
         }
@@ -89,10 +106,29 @@ public class VersionUtils {
 
     /**
      * 根据内容提取版本号
-     * @param content 内容信息
+     * @param url 内容信息
      * @return 版本号
      */
-    public static String getVersion(String content){
+    public static String getVersion(String url){
+        try {
+            if(!url.startsWith("http")){
+                return "";
+            }
+            URL checkUrl = new URL(url);
+            int port = checkUrl.getPort() == -1 ? 80 : checkUrl.getPort();
+            String ip = checkUrl.getHost();
+            return getVersion(ip, port);
+        } catch (MalformedURLException e) {
+            return "";
+        }
+    }
+
+    /**
+     * 获取版本号
+     * @param content
+     * @return
+     */
+    public static String getVersionByContent(String content){
         content = content.replace("HELO:", "").replace(".false","").replace(".true", "");
         String getVersionRegex = "[\\d\\.]+";
         List<String> result = ReUtil.findAll(getVersionRegex, content, 0 , new ArrayList<String>());

