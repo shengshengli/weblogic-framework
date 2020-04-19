@@ -13,13 +13,40 @@
  * limitations under the License.
  */
 
-package com.weblogic.framework.call;
+package com.weblogic.framework.entity;
+
+import lombok.Data;
+
+import java.net.URLClassLoader;
 
 /**
- * Title: Call
- * Desc: Call
- * Date:2020/4/4 23:18
+ * Title: GadgetParam
+ * Desc: GadgetParam
+ * Date: 2020/4/19 18:15
+ *
  * @version 1.0.0
  */
-public class Call {
+@Data
+public class GadgetParam {
+    // final byte[] codeByte, final String[] bootArgs, String className, URLClassLoader urlClassLoader
+
+    /**
+     * 字节码
+     */
+    private byte[] codeByte;
+
+    /**
+     * 命令执行参数
+     */
+    private String[] bootArgs;
+
+    /**
+     * 反射生成的 class Name
+     */
+    private String className;
+
+    /**
+     * urlClassLoader
+     */
+    private URLClassLoader urlClassLoader;
 }

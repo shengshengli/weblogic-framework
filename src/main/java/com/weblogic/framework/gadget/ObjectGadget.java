@@ -1,23 +1,22 @@
 /*
- * Copyright  2020.  r4v3zn
- *
+ * Copyright (c) 2020. r4v3zn.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.weblogic.framework.gadget;
 
 
+import com.weblogic.framework.entity.GadgetParam;
 import org.reflections.Reflections;
 import java.lang.reflect.Modifier;
 import java.net.URLClassLoader;
@@ -31,7 +30,7 @@ import java.util.Set;
  * @version 1.0.0
  */
 @SuppressWarnings ( "rawtypes" )
-public interface ObjectPayload<T> {
+public interface ObjectGadget<T> {
 
     /**
      * 获取序列化 payload (Runtime)
@@ -51,30 +50,32 @@ public interface ObjectPayload<T> {
      */
     T getObject(final byte[] codeByte, final String[] bootArgs, String className, URLClassLoader urlClassLoader)throws Exception;
 
+    /**
+     * 获取序列化 payload
+     * @param param 参数
+     * @return
+     * @throws Exception
+     */
+    T getObject(GadgetParam param) throws Exception;
+
     public static class Utils {
 
         // get payload classes by classpath scanning
-        public static Set<Class<? extends ObjectPayload>> getPayloadClasses () {
-            final Reflections reflections = new Reflections(ObjectPayload.class.getPackage().getName());
-            final Set<Class<? extends ObjectPayload>> payloadTypes = reflections.getSubTypesOf(ObjectPayload.class);
-            for ( Iterator<Class<? extends ObjectPayload>> iterator = payloadTypes.iterator(); iterator.hasNext(); ) {
-                Class<? extends ObjectPayload> pc = iterator.next();
+        public static Set<Class<? extends ObjectGadget>> getPayloadClasses () {
+            final Reflections reflections = new Reflections(ObjectGadget.class.getPackage().getName());
+            final Set<Class<? extends ObjectGadget>> payloadTypes = reflections.getSubTypesOf(ObjectGadget.class);
+            for ( Iterator<Class<? extends ObjectGadget>> iterator = payloadTypes.iterator(); iterator.hasNext(); ) {
+                Class<? extends ObjectGadget> pc = iterator.next();
                 if ( pc.isInterface() || Modifier.isAbstract(pc.getModifiers()) ) {
                     iterator.remove();
                 }
             }
             return payloadTypes;
         }
-
-
-
-
-
-
         @SuppressWarnings ( "unchecked" )
-        public static void releasePayload ( ObjectPayload payload, Object object ) throws Exception {
-            if ( payload instanceof ReleaseableObjectPayload ) {
-                ( (ReleaseableObjectPayload) payload ).release(object);
+        public static void releasePayload (ObjectGadget payload, Object object ) throws Exception {
+            if ( payload instanceof ReleaseableObjectGadget ) {
+                ( (ReleaseableObjectGadget) payload ).release(object);
             }
         }
     }

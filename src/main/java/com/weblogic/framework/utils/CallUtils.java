@@ -1,18 +1,16 @@
 /*
- * Copyright  2020.  r4v3zn
- *
+ * Copyright (c) 2020. r4v3zn.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.weblogic.framework.utils;
@@ -20,6 +18,10 @@ package com.weblogic.framework.utils;
 import com.google.common.collect.Multimap;
 import com.weblogic.framework.call.Call;
 import com.weblogic.framework.entity.MyException;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import org.reflections.Reflections;
 import weblogic.cluster.migration.RemoteMigratableServiceCoordinator;
 import weblogic.cluster.singleton.ClusterMasterRemote;
@@ -27,9 +29,13 @@ import weblogic.cluster.singleton.RemoteLeasingBasis;
 import weblogic.cluster.singleton.SingletonMonitorRemote;
 import weblogic.server.channels.RemoteChannelService;
 import weblogic.transaction.internal.SubCoordinatorRM;
+
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
+
+import static com.weblogic.framework.utils.StringUtils.getRandomString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -55,6 +61,49 @@ public class CallUtils {
      */
     public static final Map<String, Class<? extends Remote>> CALL_MAP = callTypeMap();
 
+    /**
+     * 默认回调类
+     */
+    public static final String DEFAULT_CALL =  ClusterMasterRemote.class.getSimpleName();
+
+
+    /**
+     * 通过回调类名称构建对应的字节码
+     * @param callName 回调类名称
+     * @return
+     * @throws Exception
+     */
+    public static byte[] buildBytes(String callName) throws Exception {
+        Class<? extends Remote> callClazz = CALL_MAP.get(callName);
+        return buildBytes(callClazz);
+    }
+
+    /**
+     * 通过回调实现类构建对应的字节码
+     * @param callClazz 回调实现类
+     * @return
+     * @throws Exception
+     */
+    public static byte[] buildBytes(Class<? extends Remote> callClazz) throws Exception {
+        ClassPool pool = ClassPool.getDefault();
+        CtClass ctClass =  pool.get(callClazz.getName());
+        if(ctClass.isFrozen()){
+            ctClass.defrost();
+        }
+        ctClass.setName(callClazz.getSimpleName());
+        byte[] bytes = ctClass.toBytecode();
+        ctClass.defrost();
+        return bytes;
+    }
+
+    /**
+     * 构建默认构建字节码，默认字节码为 ClusterMasterRemote
+     * @return
+     * @throws Exception
+     */
+    public static byte[] buildBytes() throws Exception {
+        return buildBytes(DEFAULT_CALL);
+    }
 
     /**
      * 获取可回调所有类
