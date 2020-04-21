@@ -5,18 +5,10 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="wlfullclient_1.13" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
-    <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.2.4" level="project" />
-    <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.12" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.27.0-GA" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:org.mozilla.javascript:1.7.5.v201504281450" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.13.1" level="project" />
     <orderEntry type="library" name="Maven: cn.hutool:hutool-all:4.1.9" level="project" />
@@ -42,6 +34,5 @@
     <orderEntry type="library" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.1" level="project" />
-    <orderEntry type="library" name="coherence" level="project" />
   </component>
 </module>

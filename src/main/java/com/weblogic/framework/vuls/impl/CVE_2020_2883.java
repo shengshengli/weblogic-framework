@@ -18,7 +18,6 @@ import com.weblogic.framework.gadget.impl.ReflectionExtractorGadget;
 import com.weblogic.framework.entity.VulCheckParam;
 import com.weblogic.framework.utils.PayloadUtils;
 import com.weblogic.framework.utils.VulUtils;
-import com.weblogic.framework.vuls.BaseVulTest;
 import com.weblogic.framework.vuls.VulTest;
 import javax.naming.Context;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
@@ -40,7 +39,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  *
  * @version 1.0.0
  */
-public class CVE_2020_2883 extends BaseVulTest implements VulTest {
+public class CVE_2020_2883 implements VulTest {
 
     /**
      * 漏洞利用 jar 文件名称
@@ -55,17 +54,17 @@ public class CVE_2020_2883 extends BaseVulTest implements VulTest {
     /**
      * current context
      */
-//    private Context currentContext = null;
+    private Context currentContext = null;
 
     /**
      * remote
      */
-//    private Object remote = null;
+    private Object remote = null;
 
     /**
      * bind name
      */
-//    private String bindName;
+    private String bindName;
 
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
