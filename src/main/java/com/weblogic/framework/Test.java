@@ -18,13 +18,9 @@ import com.sun.org.apache.bcel.internal.classfile.Utility;
 import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.NotFoundException;
 import weblogic.cluster.singleton.ClusterMasterRemote;
-
 import java.rmi.Remote;
-
 import static com.weblogic.framework.utils.CallUtils.CALL_MAP;
-import static com.weblogic.framework.utils.StringUtils.getRandomString;
 
 /**
  * Title: Test
@@ -50,17 +46,14 @@ public class Test {
         byte[] bytes = ctClass.toBytecode();
         String result = Utility.encode(bytes, true);
         System.out.println(result);
-//        result = "$$BCEL$$"+result;
-//        Class clazz = Class.forName(result,true, new ClassLoader());
-        ClassLoader classLoader = new ClassLoader();
-//        Class.forName("")
-//        LimitFilter.main();
+        result = "$$BCEL$$"+result;
 
-        Thread.currentThread().setContextClassLoader(new ClassLoader());
+
+        ClassLoader classLoader = new ClassLoader();
 //        Class clazz1 = classLoader.getParent().loadClass("weblogic.cluster.singleton.ClusterMasterRemote");
-        Class clazz1 = classLoader.loadClass("weblogic.cluster.singleton.ClusterMasterRemote");
-        Class clazz = classLoader.loadClass("$$BCEL$$"+result);
+//        Class clazz1 = classLoader.loadClass("weblogic.cluster.singleton.ClusterMasterRemote");
+//        Class clazz = classLoader.loadClass("$$BCEL$$"+result);
         // $$BCEL$$$
-        System.out.println(clazz.getName());
+//        System.out.println(clazz.getName());
     }
 }
