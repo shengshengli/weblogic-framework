@@ -39,7 +39,20 @@ public class PocServerSingletonMonitorRemote implements SingletonMonitorRemote {
     /**
      * rmi bind
      * @param clientName bind 名称
-     * @throws RemoteException
+     */
+    public static void jndiBind(String clientName) {
+        try {
+            PocServerSingletonMonitorRemote rmiServer = new PocServerSingletonMonitorRemote();
+            Context context = new InitialContext();
+            context.rebind(clientName, rmiServer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * rmi bind
+     * @param clientName bind 名称
      */
     public void rmiBind(String clientName) {
         try {

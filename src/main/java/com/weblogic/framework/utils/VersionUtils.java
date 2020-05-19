@@ -60,7 +60,7 @@ public class VersionUtils {
     public static String getVersion(String ip, Integer port){
         String webLogicUrl = "http://"+ip+":"+port;
         String version = getVersionByHttp(webLogicUrl);
-        if("".equals(version)){
+        if("".equals(version) || version.length() < 3){
             version = getVersionByT3(ip, port);
         }
         System.out.println("[*] weblogic version --> "+version);
@@ -129,6 +129,9 @@ public class VersionUtils {
      * @return
      */
     public static String getVersionByContent(String content){
+        if (content.contains("404") && content.contains("NotFound")){
+            return "";
+        }
         content = content.replace("HELO:", "").replace(".false","").replace(".true", "");
         String getVersionRegex = "[\\d\\.]+";
         List<String> result = ReUtil.findAll(getVersionRegex, content, 0 , new ArrayList<String>());
@@ -150,5 +153,10 @@ public class VersionUtils {
             throw new MyException("影响版本不能为空");
         }
         return Arrays.asList(vulVersions).contains(version);
+    }
+
+    public static void main(String[] args) {
+        String url = "http://10.128.133.182/";
+        getVersion("10.128.133.182",80);
     }
 }

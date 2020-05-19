@@ -35,6 +35,25 @@ public class PocServerClusterMasterRemote implements ClusterMasterRemote {
         pocServer.rmiBind(clientName);
     }
 
+    private static String CLIENT_NAME = "999999";
+
+    static {
+        jndiBind("");
+    }
+
+    public static void jndiBind(String clientName) {
+        try {
+            if("".equals(clientName)){
+                return;
+            }
+            PocServerClusterMasterRemote rmiServer = new PocServerClusterMasterRemote();
+            Context context = new InitialContext();
+            context.rebind(clientName, rmiServer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * rmi bind
      * @param clientName bind 名称

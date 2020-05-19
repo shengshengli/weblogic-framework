@@ -37,10 +37,25 @@ public class PocServerRemoteChannelService implements RemoteChannelService {
         String clientName = args[0];
         pocServer.rmiBind(clientName);
     }
+
     /**
      * rmi bind
      * @param clientName bind 名称
-     * @throws RemoteException
+     */
+    public static void jndiBind(String clientName) {
+        try {
+            PocServerRemoteChannelService rmiServer = new PocServerRemoteChannelService();
+            Context context = new InitialContext();
+            context.rebind(clientName, rmiServer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * rmi bind
+     * @param clientName bind 名称
      */
     public void rmiBind(String clientName) {
         try {

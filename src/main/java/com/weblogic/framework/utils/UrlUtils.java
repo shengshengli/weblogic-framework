@@ -36,7 +36,7 @@ public class UrlUtils {
      */
     private UrlUtils(){}
 
-    private static final Integer DEFAULT_TIME_OUT = 5;
+    private static final Integer DEFAULT_TIME_OUT = 100;
 
     /**
      * check url 是否合法

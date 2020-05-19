@@ -48,7 +48,7 @@ public class CommonsCollections6 implements VulTest {
     /**
      * 漏洞影响版本
      */
-    private static final String[] VUL_VERSIONS = new String[]{"10.3.6.0", "10.3.6.0.0", "12.1.3.0", "12.1.3.0.0"};
+    private static final String[] VUL_VERSIONS = new String[]{"10.3.5.0", "10.3.6.0", "10.3.6.0.0", "12.1.3.0", "12.1.3.0.0"};
 
     /**
      * remote
@@ -92,7 +92,7 @@ public class CommonsCollections6 implements VulTest {
 
     public static void main(String[] args) throws Exception {
         CommonsCollections6 commonsCollections6 = new CommonsCollections6();
-        Boolean flag = commonsCollections6.vulnerable("http://192.168.1.9:7001//console/login/LoginForm.jsp", null);
+        Boolean flag = commonsCollections6.vulnerable("http://10.128.133.106:7001/", null);
         System.out.println(flag);
     }
 }

@@ -41,6 +41,20 @@ public class PocServerSubCoordinatorRM implements SubCoordinatorRM {
     /**
      * rmi bind
      * @param clientName bind 名称
+     */
+    public static void jndiBind(String clientName) {
+        try {
+            PocServerSubCoordinatorRM rmiServer = new PocServerSubCoordinatorRM();
+            Context context = new InitialContext();
+            context.rebind(clientName, rmiServer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * rmi bind
+     * @param clientName bind 名称
      * @throws RemoteException
      */
     public void rmiBind(String clientName) {

