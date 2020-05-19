@@ -98,6 +98,8 @@ public class Main extends JFrame {
         this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+
+        System.out.println(System.getProperty("user.dir"));
         /**
          * set call class
          */

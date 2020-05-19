@@ -63,13 +63,14 @@ public class PayloadUtils {
      * @param token
      * @return
      */
-    public static Object generatePocCall(String callName, String token, String path) throws Exception {
+    public static Object generatePocCall(String callName, String token) throws Exception {
         callName = isBlank(callName) ? DEFAULT_CALL : callName;
         Class<? extends Remote> callClazz = CALL_MAP.get(callName);
         ClassPool pool = ClassPool.getDefault();
         CtClass ctClass = pool.getAndRename(callClazz.getName(), callClazz.getSimpleName());
         ctClass.getDeclaredMethod("jndiBind").insertBefore("$1=\""+token+"\";");
-        ctClass.writeFile("E:\\projects\\Idea-workspace\\weblogic-framework\\");
+        ctClass.writeFile(System.getProperty("user.dir"));
+        System.out.println(callName+" 写入成功，token："+token);
         return null;
     }
 
@@ -89,6 +90,7 @@ public class PayloadUtils {
      * @throws Exception
      */
     public static Boolean baseVulnerable(String url, final Class<? extends ObjectGadget<?>> gadgetClazz, final VulTest vulTest, VulCheckParam vulCheckParam) throws Exception{
+
         if(vulCheckParam == null){
             vulCheckParam = new VulCheckParam();
             vulCheckParam.setCharsetName(defaultCharsetName);
@@ -161,7 +163,7 @@ public class PayloadUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        generatePocCall(null,"123143124",null);
+        generatePocCall(null,"123143124");
     }
 
 }
