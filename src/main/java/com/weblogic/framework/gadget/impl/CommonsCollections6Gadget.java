@@ -102,7 +102,6 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
     @Override
     public Serializable getObject(GadgetParam param) throws Exception {
         String className = param.getClassName();
-        URLClassLoader urlClassLoader = param.getUrlClassLoader();
         byte[] bytes = param.getCodeByte();
         String[] bootArgs = param.getBootArgs();
         final Transformer[] transformers = new Transformer[] {
