@@ -37,11 +37,23 @@ public class PocServerRemoteLeasingBasis implements RemoteLeasingBasis {
         pocServer.rmiBind(clientName);
     }
 
+    /**
+     * rmi bind
+     * @param clientName bind 名称
+     */
+    public static void jndiBind(String clientName) {
+        try {
+            PocServerRemoteLeasingBasis rmiServer = new PocServerRemoteLeasingBasis();
+            Context context = new InitialContext();
+            context.rebind(clientName, rmiServer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * rmi bind
      * @param clientName bind 名称
-     * @throws RemoteException
      */
     public void rmiBind(String clientName) {
         try {

@@ -41,7 +41,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="https://baidu.com/com.bea.javascript.jar"/>
+          <text value="http://qch7ecs9e.bkt.clouddn.com/com.bea.javascript.jar"/>
         </properties>
       </component>
       <component id="247e7" class="javax.swing.JLabel">
@@ -59,7 +59,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="ldap://127.0.0.1:1099/#Poc"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="47480" class="javax.swing.JLabel" binding="vulNumberLabel">

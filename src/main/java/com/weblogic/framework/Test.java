@@ -21,6 +21,7 @@ import javassist.CtClass;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 import java.rmi.Remote;
 import static com.weblogic.framework.utils.CallUtils.CALL_MAP;
+import javax.swing.JEditorPane;
 
 /**
  * Title: Test

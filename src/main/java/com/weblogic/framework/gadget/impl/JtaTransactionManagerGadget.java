@@ -75,8 +75,16 @@ public class JtaTransactionManagerGadget implements ObjectGadget<Serializable> {
         return null;
     }
 
+    /**
+     * 获取序列化 payload
+     * @param param 参数
+     * @return
+     * @throws Exception
+     */
     @Override
     public Serializable getObject(GadgetParam param) throws Exception {
-        return null;
+        String jndiUrl = param.getJndiUrl();
+        URLClassLoader urlClassLoader = param.getUrlClassLoader();
+        return getObject(jndiUrl, urlClassLoader);
     }
 }

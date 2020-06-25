@@ -36,7 +36,7 @@ public class UrlUtils {
      */
     private UrlUtils(){}
 
-    private static final Integer DEFAULT_TIME_OUT = 5;
+    private static final Integer DEFAULT_TIME_OUT = 100;
 
     /**
      * check url 是否合法
@@ -66,14 +66,8 @@ public class UrlUtils {
      * @return
      */
     public static void checkJavascriptUrl(String javascriptUrl){
-        try{
-            String rsp = HttpUtil.get(javascriptUrl, DEFAULT_TIME_OUT);
-            if(!rsp.contains("org/mozilla/javascript/regexp/") && !rsp.contains("org/mozilla/javascript/tools/resources")){
-                throw new MyException("无法访问 javascript 文件，请配置正确的路径!");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new MyException("无法访问 javascript 文件，请配置正确的路径!");
+        if("https://baidu.com/com.bea.javascript.jar".equals(javascriptUrl)){
+            throw new MyException("请配置正确 javascript 文件的路径!");
         }
     }
 
