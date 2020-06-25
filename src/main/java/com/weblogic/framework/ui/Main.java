@@ -25,6 +25,7 @@ import com.weblogic.framework.utils.StringUtils;
 import com.weblogic.framework.utils.CallUtils;
 import com.weblogic.framework.utils.VulUtils;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,12 +33,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
-
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import static com.weblogic.framework.utils.CheckUtils.*;
 import static com.weblogic.framework.utils.ContextUtils.clearContext;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
+import static com.weblogic.framework.utils.VersionUtils.getVersionClear;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -82,6 +85,9 @@ public class Main extends JFrame {
 
     private Map<String, VulTest> vulMap = new HashMap<String, VulTest>(16);
 
+    ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(5,
+            new BasicThreadFactory.Builder().namingPattern("task-schedule-pool-%d").daemon(true).build());
+
     public Main(String title) {
         super(title);
         this.setContentPane(mainPanel);
@@ -98,11 +104,7 @@ public class Main extends JFrame {
         this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-
-        System.out.println(System.getProperty("user.dir"));
-        /**
-         * set call class
-         */
+        // set call class
         for (String className : CallUtils.CALL_NAMES) {
             callComboBox.addItem(className);
         }
@@ -177,8 +179,7 @@ public class Main extends JFrame {
         vulMap.clear();
         serverInfoText.setText("");
         cmdRspTextArea.setText("");
-        String javascriptUrl = javascriptText.getText();
-        javascriptUrl = javascriptUrl.trim();
+        String javascriptUrl = javascriptText.getText().trim();
         String callName = callComboBox.getSelectedItem().toString();
         String ldapUrl = ldapUrlText.getText();
         ldapUrl = ldapUrl.trim();
@@ -188,12 +189,21 @@ public class Main extends JFrame {
         }
         String vulName = vulComboBox.getSelectedItem().toString();
         String host = targetText.getText().trim();
+        if(isBlank(host)){
+            serverInfoText.setText("检测URL不能为空!");
+            System.out.println("检测URL不能为空!");
+            return;
+        }
+        if(!host.startsWith("http")){
+            host = "http://"+host;
+        }
         host = host.replace("\\", "/").replace("http://", "http:\\\\").replace("https://", "https:\\\\");
         if (host.lastIndexOf("/") != -1) {
             host = host.substring(0, host.lastIndexOf("/"));
         }
         host = host.replace("http:\\\\", "http://").replace("https:\\\\", "https://");
         String protocol = protocolComboBox.getSelectedItem().toString();
+        protocol = protocol.toLowerCase();
         if (isBlank(protocol)) {
             protocol = "iiop";
         } else if (protocol.contains("iiop")) {
@@ -206,24 +216,68 @@ public class Main extends JFrame {
         // 探测所有POC
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
-        serverInfoText.setText("漏洞验证中.....");
-        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
-        serverInfoText.append("漏洞验证完毕");
+        serverInfoText.append("检测协议中......\n");
+        System.out.println("[*] "+"检测协议中......");
+        boolean iiopFlag = false;
+        boolean t3Flag = false;
+        try{
+            checkIIOP(host);
+            serverInfoText.append(host+" IIOP 协议开放!\n");
+            System.out.println("[*] "+host+" IIOP 协议开放!");
+            iiopFlag = true;
+        }catch (Exception e){
+            serverInfoText.append(e.getMessage()+"\n");
+            System.err.println("[-] "+e.getMessage()+"");
+        }
+        try{
+            checkT3(host);
+            serverInfoText.append(host+" T3 协议开放!\n");
+            System.out.println("[*] "+host+" T3 协议开放!");
+            t3Flag = true;
+        }catch (Exception e){
+            serverInfoText.append(e.getMessage()+"\n");
+            System.err.println("[-] "+e.getMessage()+"");
+        }
+        if(!iiopFlag  && !t3Flag){
+            serverInfoText.append(host+" 漏洞不存在!\n");
+            System.err.println("[-] "+host+" 漏洞不存在!");
+            return;
+        }
+        serverInfoText.append("版本获取中.....\n");
+        System.out.println("[*] "+"版本获取中.....");
+        String version = getVersion(host);
+        if (isBlank(version)) {
+            serverInfoText.append(host+" 获取版本失败!\n");
+            System.err.println("[-] "+host+" 获取版本失败!");
+        }
+        serverInfoText.append(host+" version --> "+version+" !\n");
+        System.out.println("[*] "+host+" version --> "+version+" !");
+        version = getVersionClear(version);
+        serverInfoText.append(host+" version【版本切换】 --> "+version+" !\n");
+        System.out.println("[*] "+host+" version【版本切换】 --> "+version+" !");
+        serverInfoText.append("漏洞验证中.....\n");
+        System.out.println("[*] 漏洞验证中.....");
+        VulCheckParam vulCheckParam = new VulCheckParam();
+        vulCheckParam.setProtocol(protocol);
+        vulCheckParam.setVersion(version);
+        vulCheckParam.setCallName(callName);
+        vulCheckParam.setCharsetName(charsetName);
+        vulCheckParam.setJndiUrl(ldapUrl);
+        vulCheckParam.setJavascriptUrl(javascriptUrl);
+        validateVul(host,vulCheckParam, vulClasses, vulName);
+//        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
+        serverInfoText.append(host+" 漏洞验证完毕!");
+        System.out.println("[*] "+host+" 漏洞验证完毕!");
     }
 
     /**
      * 漏洞验证
-     *
-     * @param host          host
-     * @param javascriptUrl javascript url
-     * @param ldapUrl       ldap url
-     * @param charsetName   编码
-     * @param callName      回调类
-     * @param vulClasses    所有漏洞名称
-     * @param vulName       当前选择漏洞
+     * @param host 验证URL
+     * @param vulCheckParam 验证参数
+     * @param vulClasses ALL 漏洞
+     * @param vulName 漏洞名称
      */
-    public void validateVul(String host, String javascriptUrl, String ldapUrl, String charsetName, String callName, List<Class<? extends VulTest>> vulClasses, String vulName, String protocol) {
-        String tmp = "";
+    public void validateVul(String host, VulCheckParam vulCheckParam,  List<Class<? extends VulTest>> vulClasses, String vulName) {
         // 反射执行 vulClasses
         for (Class<? extends VulTest> clazz : vulClasses) {
             String simpleName = clazz.getSimpleName();
@@ -236,19 +290,7 @@ public class Main extends JFrame {
             String msg = "";
             try {
                 vulTest = clazz.newInstance();
-                String version = getVersion(host);
-                if (isBlank(version)) {
-                    return;
-                }
-                VulCheckParam vulCheckParam = new VulCheckParam();
-                vulCheckParam.setVersion(version);
-                vulCheckParam.setCallName(callName);
-                vulCheckParam.setJavascriptUrl(javascriptUrl);
-                vulCheckParam.setJndiUrl(ldapUrl);
-                vulCheckParam.setCharsetName(charsetName);
-                vulCheckParam.setProtocol(protocol);
                 flag = vulTest.vulnerable(host, vulCheckParam);
-//                flag = vulTest.vulnerable(host, javascriptUrl, ldapUrl, charsetName, callName);
             } catch (Exception e) {
                 if (e instanceof MyException) {
                     msg = e.getMessage();
@@ -271,16 +313,15 @@ public class Main extends JFrame {
             }
             String tmpStr = "";
             if (!isBlank(msg)) {
-                tmpStr = clazz.getSimpleName() + "  " + host + "  " + msg + "\n\n";
+                tmpStr = clazz.getSimpleName() + "  " + host + "  " + msg + "\n";
             } else {
                 if (flag) {
-                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞存在  " + " token : " + token + "\n";
                 } else {
-                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞不存在  " + " token : " + token + "\n\n";
+                    tmpStr = clazz.getSimpleName().replace("_", "-") + "  " + host + "  漏洞不存在  " + " token : " + token + "\n";
                 }
             }
-            tmp += tmpStr;
-            serverInfoText.setText(tmp);
+            serverInfoText.append(tmpStr + "\n");
         }
     }
 
@@ -327,7 +368,7 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        JFrame main = new Main("Weblogic 检测工具 仅供安全检测使用，勿用于非法用途");
+        JFrame main = new Main("Weblogic 检测工具 仅供安全检测使用，勿用于非法用途：v0.2.0");
         main.setVisible(true);
     }
 

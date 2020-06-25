@@ -44,7 +44,7 @@ public class VersionUtils {
     /**
      * 获取 weblogic 版本号发包内容
      */
-    private static String VERSION_T3 = "74332031322e322e310a41533a3235350a484c3a31390a4d533a31303030303030300a50553a74333a2f2f75732d6c2d627265656e733a373030310a0a";
+    public static String VERSION_T3 = "74332031322e322e310a41533a3235350a484c3a31390a4d533a31303030303030300a50553a74333a2f2f75732d6c2d627265656e733a373030310a0a";
 
     /**
      * 私有化构造防止被实例化
@@ -62,6 +62,23 @@ public class VersionUtils {
         String version = getVersionByHttp(webLogicUrl);
         if("".equals(version) || version.length() < 3){
             version = getVersionByT3(ip, port);
+        }
+        return version;
+    }
+
+    public static String getVersionClear(String version){
+        if(!isBlank(version)){
+            try{
+                if (Integer.parseInt(version.split("\\.")[0]) < 10){
+                    version = "10.3.6.0";
+                }else if (Integer.parseInt(version.split("\\.")[0]) == 12 && Integer.parseInt(version.split("\\.")[1]) == 1){
+                    version = "12.1.3.0";
+                }
+            }catch (Exception e){
+            }
+        }else{
+            System.out.println("版本获取失败，设置默认版本为10.3.6.0");
+            version = "10.3.6.0{}";
         }
         System.out.println("[*] weblogic version --> "+version);
         return version;
@@ -129,13 +146,17 @@ public class VersionUtils {
      * @return
      */
     public static String getVersionByContent(String content){
-        if (content.contains("404") && content.contains("NotFound")){
+        if ((content.contains("404") || content.contains("400")) && content.contains("NotFound")){
             return "";
         }
         content = content.replace("HELO:", "").replace(".false","").replace(".true", "");
         String getVersionRegex = "[\\d\\.]+";
         List<String> result = ReUtil.findAll(getVersionRegex, content, 0 , new ArrayList<String>());
-        return  result != null && result.size() > 0 ? result.get(0) : "";
+        String version = result != null && result.size() > 0 ? result.get(0) : "";
+        if(version.length() < 4){
+            version = "";
+        }
+        return  version;
     }
 
     /**
@@ -153,10 +174,5 @@ public class VersionUtils {
             throw new MyException("影响版本不能为空");
         }
         return Arrays.asList(vulVersions).contains(version);
-    }
-
-    public static void main(String[] args) {
-        String url = "http://10.128.133.182/";
-        getVersion("10.128.133.182",80);
     }
 }

@@ -30,13 +30,19 @@ import static com.weblogic.framework.utils.VersionUtils.getVersion;
 
 /**
  * Title: CommonsCollections6
- * Desc: CommonsCollections6
+ * Desc:
+ * <p>
+ *     攻击者可以通过 T3、IIOP 协议远程访问 Weblogic Server 服务器上的远程接口，传入恶意数据，从而获取服务器 权限并在未授权情况下远程执行任意代码。
+ *     漏洞影响版本:
+ *     Oracle WebLogic Server 10.3.6.0.0
+ *     Oracle WebLogic Server 12.1.3.0.0
+ * </p>
  * Date:2020/4/5 3:48
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
 @Dependencies({":JtaTransactionManager"})
-@Versions({"10.3.6.0", "12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
+@Versions({"10.3.6.0", "12.1.3.0"})
 @Tags({"0day"})
 public class CommonsCollections6 implements VulTest {
 
@@ -48,7 +54,7 @@ public class CommonsCollections6 implements VulTest {
     /**
      * 漏洞影响版本
      */
-    private static final String[] VUL_VERSIONS = new String[]{"10.3.5.0", "10.3.6.0", "10.3.6.0.0", "12.1.3.0", "12.1.3.0.0"};
+    private static final String[] VUL_VERSIONS = new String[]{"9.2.3.0", "10.3.5.0", "10.3.6.0", "10.3.6.0.0", "12.1.3.0", "12.1.3.0.0"};
 
     /**
      * remote
@@ -91,8 +97,5 @@ public class CommonsCollections6 implements VulTest {
     }
 
     public static void main(String[] args) throws Exception {
-        CommonsCollections6 commonsCollections6 = new CommonsCollections6();
-        Boolean flag = commonsCollections6.vulnerable("http://10.128.133.106:7001/", null);
-        System.out.println(flag);
     }
 }

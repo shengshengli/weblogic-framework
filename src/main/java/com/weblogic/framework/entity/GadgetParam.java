@@ -49,4 +49,9 @@ public class GadgetParam {
      * urlClassLoader
      */
     private URLClassLoader urlClassLoader;
+
+    /**
+     * JNDI URL
+     */
+    private String jndiUrl;
 }
