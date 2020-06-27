@@ -368,7 +368,7 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        JFrame main = new Main("Weblogic 检测工具 仅供安全检测使用，勿用于非法用途：v0.2.0");
+        JFrame main = new Main("weblogic-framework is the best tool for detecting weblogic vulnerabilities.");
         main.setVisible(true);
     }
 

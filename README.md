@@ -1,6 +1,10 @@
-# weblogic-framework
+## weblogic-framework
 
-weblogic-framework
+weblogic-framework is the best tool for detecting weblogic vulnerabilities.
+
+## 免责申明
+
+**本工具仅适用于安全技术研究，严禁使用本工具发起网络黑客攻击，造成的法律后果，请使用者自负。**
 
 ## 使用方式
 
