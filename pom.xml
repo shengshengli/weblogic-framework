@@ -51,7 +51,7 @@
                     <appendAssemblyId>true</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.weblogic.framework.ui.Main</mainClass>
+                            <mainClass>com.r4v3zn.weblogic.framework.ui.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
