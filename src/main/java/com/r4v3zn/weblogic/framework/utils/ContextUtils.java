@@ -152,4 +152,8 @@ public class ContextUtils {
         vulMap.clear();
     }
 
+    public static void main(String[] args) throws Exception {
+        Context context = getContext("iiop://10.10.10.172:7001");
+        context.unbind("testInfo");
+    }
 }

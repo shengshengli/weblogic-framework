@@ -44,7 +44,7 @@ import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
  */
 @Authors({Authors.R4V3ZN})
 @Dependencies({":coherence"})
-@Versions({"12.1.3.0", "12.2.1.3.0", "12.2.1.4.0"})
+@Versions({ "12.1.3.0", "12.2.1.0", "12.2.1.2.0", "12.2.1.3.0", "12.2.1.4.0"})
 public class CVE_2020_2883 implements VulTest {
 
     /**
@@ -55,7 +55,7 @@ public class CVE_2020_2883 implements VulTest {
     /**
      * 漏洞影响版本
      */
-    private static final String[] VUL_VERSIONS = new String[]{"12.1.3.0", "12.1.3.0.0", "12.2.1.3.0", "12.2.1.3.0.0", "12.2.1.4.0", "12.2.1.4.0.0"};
+    private static final String[] VUL_VERSIONS = new String[]{"12.1.3.0", "12.2.1.0", "12.2.1.0.0", "12.2.1.2.0", "12.2.1.2.0.0", "12.1.3.0.0", "12.2.1.3.0", "12.2.1.3.0.0", "12.2.1.4.0", "12.2.1.4.0.0"};
 
     /**
      * current context
@@ -94,8 +94,5 @@ public class CVE_2020_2883 implements VulTest {
     @Override
     public String exploit(String url, String... param) throws Exception {
         return VulUtils.exploit(url, remote, param);
-    }
-
-    public static void main(String[] args) throws Exception {
     }
 }

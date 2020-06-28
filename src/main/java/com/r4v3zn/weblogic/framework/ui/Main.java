@@ -279,6 +279,7 @@ public class Main extends JFrame {
      * @param vulName       漏洞名称
      */
     public void validateVul(String host, VulCheckParam vulCheckParam, List<Class<? extends VulTest>> vulClasses, String vulName) {
+        String version = vulCheckParam.getVersion();
         // 反射执行 vulClasses
         for (Class<? extends VulTest> clazz : vulClasses) {
             String simpleName = clazz.getSimpleName();
@@ -291,6 +292,7 @@ public class Main extends JFrame {
             String msg = "";
             try {
                 vulTest = clazz.newInstance();
+                vulCheckParam.setVersion(version);
                 flag = vulTest.vulnerable(host, vulCheckParam);
             } catch (Exception e) {
                 if (e instanceof MyException) {
