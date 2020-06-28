@@ -55,9 +55,9 @@ public class VersionUtils {
      */
     public static String getVersion(String ip, Integer port){
         String webLogicUrl = "http://"+ip+":"+port;
-        String version = getVersionByHttp(webLogicUrl);
+        String version = getVersionByT3(ip, port);
         if("".equals(version) || version.length() < 3){
-            version = getVersionByT3(ip, port);
+            version =  getVersionByHttp (webLogicUrl);
         }
         return version;
     }
@@ -74,7 +74,7 @@ public class VersionUtils {
             }
         }else{
             System.out.println("版本获取失败，设置默认版本为10.3.6.0");
-            version = "10.3.6.0{}";
+            version = "10.3.6.0";
         }
         System.out.println("[*] weblogic version --> "+version);
         return version;
