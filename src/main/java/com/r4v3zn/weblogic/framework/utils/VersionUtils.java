@@ -152,6 +152,9 @@ public class VersionUtils {
         if(version.length() < 4){
             version = "";
         }
+        if(!version.contains(".")){
+            version = "";
+        }
         return  version;
     }
 
@@ -170,5 +173,10 @@ public class VersionUtils {
             throw new MyException("影响版本不能为空");
         }
         return Arrays.asList(vulVersions).contains(version);
+    }
+
+    public static void main(String[] args) {
+        String version = getVersion("http://222.212.254.100:8101/");
+        System.out.println(version);
     }
 }
