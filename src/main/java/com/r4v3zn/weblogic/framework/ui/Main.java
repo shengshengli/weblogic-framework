@@ -86,6 +86,7 @@ public class Main extends JFrame {
     private JLabel ldapLable;
     private JComboBox callResponseComboBox;
     private JLabel callLabel;
+    private JPanel shellPanel;
 
     private Map<String, VulTest> vulMap = new HashMap<String, VulTest>(16);
 
@@ -406,15 +407,9 @@ public class Main extends JFrame {
         targetText = new JTextField();
         targetText.setText("");
         mainPanel.add(targetText, new GridConstraints(0, 1, 1, 9, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        javascriptLabel = new JLabel();
-        javascriptLabel.setText("javascript 地址");
-        mainPanel.add(javascriptLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        javascriptText = new JTextField();
-        javascriptText.setText("http://qch7ecs9e.bkt.clouddn.com/com.bea.javascript.jar");
-        mainPanel.add(javascriptText, new GridConstraints(1, 1, 1, 9, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setText("LDAP 地址");
-        mainPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ldapLable = new JLabel();
+        ldapLable.setText("LDAP 地址");
+        mainPanel.add(ldapLable, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         ldapUrlText = new JTextField();
         ldapUrlText.setText("");
         mainPanel.add(ldapUrlText, new GridConstraints(2, 1, 1, 9, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
@@ -428,7 +423,7 @@ public class Main extends JFrame {
         vulComboBox.setModel(defaultComboBoxModel1);
         mainPanel.add(vulComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 8, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 10, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         dataPanel = new JTabbedPane();
         mainPanel.add(dataPanel, new GridConstraints(5, 0, 1, 10, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         serverInfoPanel = new JPanel();
@@ -491,15 +486,31 @@ public class Main extends JFrame {
         defaultComboBoxModel3.addElement("T3");
         protocolComboBox.setModel(defaultComboBoxModel3);
         mainPanel.add(protocolComboBox, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("版本");
-        mainPanel.add(label2, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("版本");
+        mainPanel.add(label1, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         versionComboBox = new JComboBox();
         versionComboBox.setEditable(true);
         final DefaultComboBoxModel defaultComboBoxModel4 = new DefaultComboBoxModel();
         defaultComboBoxModel4.addElement("自动");
         versionComboBox.setModel(defaultComboBoxModel4);
         mainPanel.add(versionComboBox, new GridConstraints(3, 9, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        callLabel = new JLabel();
+        callLabel.setText("回显方案");
+        mainPanel.add(callLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        callResponseComboBox = new JComboBox();
+        callResponseComboBox.setEnabled(true);
+        final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
+        defaultComboBoxModel5.addElement("写内存");
+        defaultComboBoxModel5.addElement("写文件");
+        callResponseComboBox.setModel(defaultComboBoxModel5);
+        mainPanel.add(callResponseComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        javascriptLabel = new JLabel();
+        javascriptLabel.setText("javascript 地址");
+        mainPanel.add(javascriptLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        javascriptText = new JTextField();
+        javascriptText.setText("http://qch7ecs9e.bkt.clouddn.com/com.bea.javascript.jar");
+        mainPanel.add(javascriptText, new GridConstraints(1, 4, 1, 6, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
     /**
