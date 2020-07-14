@@ -186,6 +186,28 @@ public class LimitFilterGadget implements ObjectGadget<Serializable> {
     }
 
     /**
+     * 文件写入
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getWriteFileObject(GadgetParam param) throws Exception {
+        return null;
+    }
+
+    /**
+     * 加载文件
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getLoadFileObject(GadgetParam param) throws Exception {
+        return null;
+    }
+
+    /**
      * 获取序列化 payload
      * @param valueExtractors ValueExtractors
      * @param clazz 反序列化的 class

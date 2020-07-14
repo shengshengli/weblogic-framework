@@ -461,6 +461,9 @@ public class Main extends JFrame {
         cmdRspTextArea.setEditable(false);
         cmdRspTextArea.setLineWrap(true);
         cmdScrollPane.setViewportView(cmdRspTextArea);
+        shellPanel = new JPanel();
+        shellPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        dataPanel.addTab("木马写入", shellPanel);
         callText = new JLabel();
         callText.setText("回显类");
         mainPanel.add(callText, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -501,8 +504,8 @@ public class Main extends JFrame {
         callResponseComboBox = new JComboBox();
         callResponseComboBox.setEnabled(true);
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
-        defaultComboBoxModel5.addElement("写内存");
-        defaultComboBoxModel5.addElement("写文件");
+        defaultComboBoxModel5.addElement("JavaScript");
+        defaultComboBoxModel5.addElement("URLClassLoader");
         callResponseComboBox.setModel(defaultComboBoxModel5);
         mainPanel.add(callResponseComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         javascriptLabel = new JLabel();

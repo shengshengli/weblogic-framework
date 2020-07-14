@@ -58,6 +58,22 @@ public interface ObjectGadget<T> {
      */
     T getObject(GadgetParam param) throws Exception;
 
+    /**
+     * 生成文件文件写入payload
+     * @param param 参数
+     * @return
+     * @throws Exception
+     */
+    T getWriteFileObject(GadgetParam param) throws Exception;
+
+    /**
+     * 加载文件
+     * @param param Exception
+     * @return
+     * @throws Exception
+     */
+    T getLoadFileObject(GadgetParam param) throws Exception;
+
     public static class Utils {
 
         // get payload classes by classpath scanning
@@ -71,12 +87,6 @@ public interface ObjectGadget<T> {
                 }
             }
             return payloadTypes;
-        }
-        @SuppressWarnings ( "unchecked" )
-        public static void releasePayload (ObjectGadget payload, Object object ) throws Exception {
-            if ( payload instanceof ReleaseableObjectGadget ) {
-                ( (ReleaseableObjectGadget) payload ).release(object);
-            }
         }
     }
 }
