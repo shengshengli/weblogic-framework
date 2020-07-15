@@ -278,7 +278,7 @@
           <enabled value="true"/>
           <model>
             <item value="JavaScript"/>
-            <item value="URLClassLoader"/>
+            <item value="FileOutputStream"/>
           </model>
         </properties>
       </component>

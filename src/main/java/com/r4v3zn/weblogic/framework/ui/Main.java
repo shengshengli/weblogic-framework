@@ -18,6 +18,7 @@ package com.r4v3zn.weblogic.framework.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.MyException;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
@@ -26,12 +27,12 @@ import com.r4v3zn.weblogic.framework.utils.CallUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -54,6 +55,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0.0
  */
 public class Main extends JFrame {
+
+    Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     private JPanel mainPanel;
     private JTextField targetText;
@@ -174,6 +177,24 @@ public class Main extends JFrame {
                 vulMap.clear();
             }
         });
+        callResponseComboBox.addItemListener(new ItemListener() {
+            /**
+             * Invoked when an item has been selected or deselected by the user.
+             * The code written for this method performs the operations
+             * that need to occur when an item is selected (or deselected).
+             *
+             * @param e
+             */
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String call = e.getItem().toString();
+                if (isBlank(call) || call.toLowerCase().equals(CallEnum.JAVASCRIPT.getValue().toLowerCase())) {
+                    javascriptText.setEnabled(true);
+                } else if (call.toLowerCase().equals(CallEnum.FILE_OUTPUT_STREAM.getValue().toLowerCase())) {
+                    javascriptText.setEnabled(false);
+                }
+            }
+        });
     }
 
     /**
@@ -196,7 +217,7 @@ public class Main extends JFrame {
         String host = targetText.getText().trim();
         if (isBlank(host)) {
             serverInfoText.setText("检测URL不能为空!");
-            System.out.println("检测URL不能为空!");
+            log.info("检测URL不能为空!");
             return;
         }
         if (!host.startsWith("http")) {
@@ -222,49 +243,49 @@ public class Main extends JFrame {
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
         serverInfoText.append("检测协议中......\n");
-        System.out.println("[*] " + "检测协议中......");
+        log.info("[*] " + "检测协议中......");
         boolean iiopFlag = false;
         boolean t3Flag = false;
         try {
             checkIIOP(host);
             serverInfoText.append(host + " IIOP 协议开放!\n");
-            System.out.println("[*] " + host + " IIOP 协议开放!");
+            log.info("[*] " + host + " IIOP 协议开放!");
             iiopFlag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            System.err.println("[-] " + e.getMessage() + "");
+            log.error("[-] " + e.getMessage() + "");
         }
         try {
             checkT3(host);
             serverInfoText.append(host + " T3 协议开放!\n");
-            System.out.println("[*] " + host + " T3 协议开放!");
+            log.info("[*] " + host + " T3 协议开放!");
             t3Flag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            System.err.println("[-] " + e.getMessage() + "");
+            log.error("[-] " + e.getMessage() + "");
         }
         if (iiopFlag == false && t3Flag == false) {
             serverInfoText.append(host + " 漏洞不存在!\n");
-            System.err.println("[-] " + host + " 漏洞不存在!");
+            log.error("[-] " + host + " 漏洞不存在!");
             return;
         }
         serverInfoText.append("版本获取中.....\n");
-        System.out.println("[*] " + "版本获取中.....");
+        log.info("[*] " + "版本获取中.....");
         String version = versionComboBox.getSelectedItem().toString();
         if ((!isBlank(version) && "自动".equals(version)) || isBlank(version)) {
             version = getVersion(host);
             if (isBlank(version)) {
                 serverInfoText.append(host + " 获取版本失败!\n");
-                System.err.println("[-] " + host + " 获取版本失败!");
+                log.error("[-] " + host + " 获取版本失败!");
             }
         }
         serverInfoText.append(host + " version --> " + version + " !\n");
-        System.out.println("[*] " + host + " version --> " + version + " !");
+        log.info("[*] " + host + " version --> " + version + " !");
         version = getVersionClear(version);
         serverInfoText.append(host + " version【版本切换】 --> " + version + " !\n");
-        System.out.println("[*] " + host + " version【版本切换】 --> " + version + " !");
+        log.info("[*] " + host + " version【版本切换】 --> " + version + " !");
         serverInfoText.append("漏洞验证中.....\n");
-        System.out.println("[*] 漏洞验证中.....");
+        log.info("[*] 漏洞验证中.....");
         VulCheckParam vulCheckParam = new VulCheckParam();
         vulCheckParam.setProtocol(protocol);
         vulCheckParam.setVersion(version);
@@ -272,10 +293,16 @@ public class Main extends JFrame {
         vulCheckParam.setCharsetName(charsetName);
         vulCheckParam.setJndiUrl(ldapUrl);
         vulCheckParam.setJavascriptUrl(javascriptUrl);
+        String call = callResponseComboBox.getSelectedItem().toString();
+        if (isBlank(call) || call.toLowerCase().equals(CallEnum.JAVASCRIPT.getValue().toLowerCase())) {
+            vulCheckParam.setCall(CallEnum.JAVASCRIPT);
+        } else if (call.toLowerCase().equals(CallEnum.FILE_OUTPUT_STREAM.getValue().toLowerCase())) {
+            vulCheckParam.setCall(CallEnum.FILE_OUTPUT_STREAM);
+        }
         validateVul(host, vulCheckParam, vulClasses, vulName);
 //        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
         serverInfoText.append(host + " 漏洞验证完毕!");
-        System.out.println("[*] " + host + " 漏洞验证完毕!");
+        log.info("[*] " + host + " 漏洞验证完毕!");
     }
 
     /**
@@ -505,7 +532,7 @@ public class Main extends JFrame {
         callResponseComboBox.setEnabled(true);
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
         defaultComboBoxModel5.addElement("JavaScript");
-        defaultComboBoxModel5.addElement("URLClassLoader");
+        defaultComboBoxModel5.addElement("FileOutputStream");
         callResponseComboBox.setModel(defaultComboBoxModel5);
         mainPanel.add(callResponseComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         javascriptLabel = new JLabel();

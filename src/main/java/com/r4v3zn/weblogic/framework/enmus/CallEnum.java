@@ -13,43 +13,32 @@
  * limitations under the License.
  */
 
-package com.r4v3zn.weblogic.framework.call;
-
-import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
+package com.r4v3zn.weblogic.framework.enmus;
 
 /**
- * Title: WriteCall
- * Desc: 写文件回显
- * Date:2020/7/14 00:17
+ * Title: CallEnum
+ * Desc: 回显方案枚举类型
+ * Date:2020/7/15 23:21
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app
  *
  * @author R4v3zn
  * @version 1.0.0
  */
-public class WriteCall {
+public enum  CallEnum {
 
-    private WriteCall(){}
+    // JavaScript
+    // FileOutputStream
 
-    /**
-     * 文件写入
-     * @param codeBytes shell 字节码地址
-     * @param className shell class 名称
-     * @param gadget 利用 gadget
-     */
-    public static void writeFile(byte[] codeBytes, String className, ObjectGadget gadget){
+    JAVASCRIPT("JavaScript"), FILE_OUTPUT_STREAM("FileOutputStream");
 
+    private String value;
+
+    CallEnum(String value){
+        this.value = value;
     }
 
-    /**
-     * 加载 shell 字节码
-     */
-    public static void loadFile(){
-
-    }
-
-
-    public static void main(String[] args) {
-
+    public String getValue() {
+        return value;
     }
 }

@@ -15,6 +15,7 @@
 
 package com.r4v3zn.weblogic.framework.entity;
 
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import lombok.Data;
 
 /**
@@ -55,4 +56,9 @@ public class VulCheckParam {
      * 协议名称
      */
     private String protocol;
+
+    /**
+     * 回显方案
+     */
+    private CallEnum call;
 }

