@@ -17,6 +17,8 @@ package com.r4v3zn.weblogic.framework.utils;
 
 import cn.hutool.core.util.ReUtil;
 import com.r4v3zn.weblogic.framework.entity.MyException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -36,6 +38,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0.0
  */
 public class VersionUtils {
+
+    static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 获取 weblogic 版本号发包内容
@@ -73,10 +77,10 @@ public class VersionUtils {
             }catch (Exception e){
             }
         }else{
-            System.out.println("版本获取失败，设置默认版本为10.3.6.0");
+            log.error("版本获取失败，设置默认版本为10.3.6.0");
             version = "10.3.6.0";
         }
-        System.out.println("[*] weblogic version --> "+version);
+        log.info("[*] weblogic version --> "+version);
         return version;
     }
 
@@ -152,6 +156,9 @@ public class VersionUtils {
         if(version.length() < 4){
             version = "";
         }
+        if(!version.contains(".")){
+            version = "";
+        }
         return  version;
     }
 
@@ -170,5 +177,10 @@ public class VersionUtils {
             throw new MyException("影响版本不能为空");
         }
         return Arrays.asList(vulVersions).contains(version);
+    }
+
+    public static void main(String[] args) {
+        String version = getVersion("http://222.212.254.100:8101/");
+        System.out.println(version);
     }
 }

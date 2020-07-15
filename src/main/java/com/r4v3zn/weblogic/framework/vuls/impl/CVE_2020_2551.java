@@ -18,16 +18,15 @@ package com.r4v3zn.weblogic.framework.vuls.impl;
 import com.r4v3zn.weblogic.framework.annotation.Authors;
 import com.r4v3zn.weblogic.framework.annotation.Dependencies;
 import com.r4v3zn.weblogic.framework.annotation.Versions;
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.utils.PayloadUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
 import com.r4v3zn.weblogic.framework.entity.MyException;
 import com.r4v3zn.weblogic.framework.gadget.impl.JtaTransactionManagerGadget;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
-
 import javax.naming.Context;
 
-import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -87,6 +86,9 @@ public class CVE_2020_2551 implements VulTest {
      * @throws Exception 抛出异常
      */
     public Boolean vulnerable(String url, VulCheckParam vulCheckParam) throws Exception{
+        if(vulCheckParam.getCall() == CallEnum.FILE_OUTPUT_STREAM){
+            throw  new MyException("不支持该方式回显，请使用【"+CallEnum.JAVASCRIPT.getValue()+"】方式进行回显");
+        }
         String version = vulCheckParam.getVersion();
         String[] versionArr = version.split("\\.");
         if(Integer.parseInt(versionArr[0]) <= 10 || (Integer.parseInt(versionArr[0]) == 12 && Integer.parseInt(versionArr[1]) == 1)){

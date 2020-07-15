@@ -13,35 +13,34 @@
  * limitations under the License.
  */
 
-package com.r4v3zn.weblogic.framework.vuls;
+package com.r4v3zn.weblogic.framework.utils;
 
-import javax.naming.Context;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Title: BaseVulTest
+ * Title: LogUtils
  * Desc: TODO
- * Date:2020/4/21 21:50
+ * Date:2020/7/15 23:54
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app
  *
  * @author R4v3zn
  * @version 1.0.0
  */
-public class BaseVulTest {
+public class LogUtils{
 
-    /**
-     * current context
-     */
-    public Context currentContext = null;
+    public static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
-    /**
-     * remote
-     */
-    public Object remote = null;
 
-    /**
-     * bind name
-     */
-    public String bindName;
+    public static void main(String[] args) {
 
+//        log.info("123");
+//        log.trace("trace level");
+//        log.debug("debug level");
+//        log.info("info level");
+//        log.warn("warn level");
+//        log.error("error level");
+//        log.fatal("fatal level");
+    }
 }

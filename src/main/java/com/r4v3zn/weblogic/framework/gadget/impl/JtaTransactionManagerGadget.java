@@ -88,4 +88,26 @@ public class JtaTransactionManagerGadget implements ObjectGadget<Serializable> {
         URLClassLoader urlClassLoader = param.getUrlClassLoader();
         return getObject(jndiUrl, urlClassLoader);
     }
+
+    /**
+     * 文件写入
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getWriteFileObject(GadgetParam param) throws Exception {
+        return null;
+    }
+
+    /**
+     * 加载文件
+     *
+     * @throws Exception
+     * @param param
+     */
+    @Override
+    public Serializable getLoadFileObject(GadgetParam param) throws Exception {
+        return null;
+    }
 }

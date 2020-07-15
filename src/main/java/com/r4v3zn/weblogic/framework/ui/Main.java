@@ -18,6 +18,7 @@ package com.r4v3zn.weblogic.framework.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.MyException;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
@@ -26,12 +27,12 @@ import com.r4v3zn.weblogic.framework.utils.CallUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -54,6 +55,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * @version 1.0.0
  */
 public class Main extends JFrame {
+
+    Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     private JPanel mainPanel;
     private JTextField targetText;
@@ -82,6 +85,11 @@ public class Main extends JFrame {
     private JTextField ldapUrlText;
     private JLabel protocolLabel;
     private JComboBox protocolComboBox;
+    private JComboBox versionComboBox;
+    private JLabel ldapLable;
+    private JComboBox callResponseComboBox;
+    private JLabel callLabel;
+    private JPanel shellPanel;
 
     private Map<String, VulTest> vulMap = new HashMap<String, VulTest>(16);
 
@@ -101,7 +109,7 @@ public class Main extends JFrame {
         String text = serverInfoText.getText();
         text = header + VulUtils.getVulInfo() + "\n" + text;
         serverInfoText.setText(text);
-        this.setSize(1000, 600);
+        this.setSize(1250, 650);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         // set call class
@@ -169,6 +177,24 @@ public class Main extends JFrame {
                 vulMap.clear();
             }
         });
+        callResponseComboBox.addItemListener(new ItemListener() {
+            /**
+             * Invoked when an item has been selected or deselected by the user.
+             * The code written for this method performs the operations
+             * that need to occur when an item is selected (or deselected).
+             *
+             * @param e
+             */
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String call = e.getItem().toString();
+                if (isBlank(call) || call.toLowerCase().equals(CallEnum.JAVASCRIPT.getValue().toLowerCase())) {
+                    javascriptText.setEnabled(true);
+                } else if (call.toLowerCase().equals(CallEnum.FILE_OUTPUT_STREAM.getValue().toLowerCase())) {
+                    javascriptText.setEnabled(false);
+                }
+            }
+        });
     }
 
     /**
@@ -191,7 +217,7 @@ public class Main extends JFrame {
         String host = targetText.getText().trim();
         if (isBlank(host)) {
             serverInfoText.setText("检测URL不能为空!");
-            System.out.println("检测URL不能为空!");
+            log.info("检测URL不能为空!");
             return;
         }
         if (!host.startsWith("http")) {
@@ -217,46 +243,49 @@ public class Main extends JFrame {
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
         serverInfoText.append("检测协议中......\n");
-        System.out.println("[*] " + "检测协议中......");
+        log.info("[*] " + "检测协议中......");
         boolean iiopFlag = false;
         boolean t3Flag = false;
         try {
             checkIIOP(host);
             serverInfoText.append(host + " IIOP 协议开放!\n");
-            System.out.println("[*] " + host + " IIOP 协议开放!");
+            log.info("[*] " + host + " IIOP 协议开放!");
             iiopFlag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            System.err.println("[-] " + e.getMessage() + "");
+            log.error("[-] " + e.getMessage() + "");
         }
         try {
             checkT3(host);
             serverInfoText.append(host + " T3 协议开放!\n");
-            System.out.println("[*] " + host + " T3 协议开放!");
+            log.info("[*] " + host + " T3 协议开放!");
             t3Flag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            System.err.println("[-] " + e.getMessage() + "");
+            log.error("[-] " + e.getMessage() + "");
         }
-        if (!iiopFlag && !t3Flag) {
+        if (iiopFlag == false && t3Flag == false) {
             serverInfoText.append(host + " 漏洞不存在!\n");
-            System.err.println("[-] " + host + " 漏洞不存在!");
+            log.error("[-] " + host + " 漏洞不存在!");
             return;
         }
         serverInfoText.append("版本获取中.....\n");
-        System.out.println("[*] " + "版本获取中.....");
-        String version = getVersion(host);
-        if (isBlank(version)) {
-            serverInfoText.append(host + " 获取版本失败!\n");
-            System.err.println("[-] " + host + " 获取版本失败!");
+        log.info("[*] " + "版本获取中.....");
+        String version = versionComboBox.getSelectedItem().toString();
+        if ((!isBlank(version) && "自动".equals(version)) || isBlank(version)) {
+            version = getVersion(host);
+            if (isBlank(version)) {
+                serverInfoText.append(host + " 获取版本失败!\n");
+                log.error("[-] " + host + " 获取版本失败!");
+            }
         }
         serverInfoText.append(host + " version --> " + version + " !\n");
-        System.out.println("[*] " + host + " version --> " + version + " !");
+        log.info("[*] " + host + " version --> " + version + " !");
         version = getVersionClear(version);
         serverInfoText.append(host + " version【版本切换】 --> " + version + " !\n");
-        System.out.println("[*] " + host + " version【版本切换】 --> " + version + " !");
+        log.info("[*] " + host + " version【版本切换】 --> " + version + " !");
         serverInfoText.append("漏洞验证中.....\n");
-        System.out.println("[*] 漏洞验证中.....");
+        log.info("[*] 漏洞验证中.....");
         VulCheckParam vulCheckParam = new VulCheckParam();
         vulCheckParam.setProtocol(protocol);
         vulCheckParam.setVersion(version);
@@ -264,10 +293,16 @@ public class Main extends JFrame {
         vulCheckParam.setCharsetName(charsetName);
         vulCheckParam.setJndiUrl(ldapUrl);
         vulCheckParam.setJavascriptUrl(javascriptUrl);
+        String call = callResponseComboBox.getSelectedItem().toString();
+        if (isBlank(call) || call.toLowerCase().equals(CallEnum.JAVASCRIPT.getValue().toLowerCase())) {
+            vulCheckParam.setCall(CallEnum.JAVASCRIPT);
+        } else if (call.toLowerCase().equals(CallEnum.FILE_OUTPUT_STREAM.getValue().toLowerCase())) {
+            vulCheckParam.setCall(CallEnum.FILE_OUTPUT_STREAM);
+        }
         validateVul(host, vulCheckParam, vulClasses, vulName);
 //        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
         serverInfoText.append(host + " 漏洞验证完毕!");
-        System.out.println("[*] " + host + " 漏洞验证完毕!");
+        log.info("[*] " + host + " 漏洞验证完毕!");
     }
 
     /**
@@ -375,6 +410,7 @@ public class Main extends JFrame {
         main.setVisible(true);
     }
 
+
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
@@ -391,25 +427,19 @@ public class Main extends JFrame {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(6, 8, new Insets(10, 10, 10, 10), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(6, 10, new Insets(10, 10, 10, 10), -1, -1));
         targetLabel = new JLabel();
         targetLabel.setText("目标地址");
         mainPanel.add(targetLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         targetText = new JTextField();
         targetText.setText("");
-        mainPanel.add(targetText, new GridConstraints(0, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        javascriptLabel = new JLabel();
-        javascriptLabel.setText("javascript 地址");
-        mainPanel.add(javascriptLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        javascriptText = new JTextField();
-        javascriptText.setText("http://qch7ecs9e.bkt.clouddn.com/com.bea.javascript.jar");
-        mainPanel.add(javascriptText, new GridConstraints(1, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setText("LDAP 地址");
-        mainPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(targetText, new GridConstraints(0, 1, 1, 9, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        ldapLable = new JLabel();
+        ldapLable.setText("LDAP 地址");
+        mainPanel.add(ldapLable, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         ldapUrlText = new JTextField();
         ldapUrlText.setText("");
-        mainPanel.add(ldapUrlText, new GridConstraints(2, 1, 1, 7, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        mainPanel.add(ldapUrlText, new GridConstraints(2, 1, 1, 9, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         vulNumberLabel = new JLabel();
         vulNumberLabel.setText("漏洞编号");
         mainPanel.add(vulNumberLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -420,9 +450,9 @@ public class Main extends JFrame {
         vulComboBox.setModel(defaultComboBoxModel1);
         mainPanel.add(vulComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 8, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        mainPanel.add(spacer1, new GridConstraints(4, 0, 1, 10, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         dataPanel = new JTabbedPane();
-        mainPanel.add(dataPanel, new GridConstraints(5, 0, 1, 8, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        mainPanel.add(dataPanel, new GridConstraints(5, 0, 1, 10, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         serverInfoPanel = new JPanel();
         serverInfoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         dataPanel.addTab("漏洞验证", serverInfoPanel);
@@ -458,6 +488,9 @@ public class Main extends JFrame {
         cmdRspTextArea.setEditable(false);
         cmdRspTextArea.setLineWrap(true);
         cmdScrollPane.setViewportView(cmdRspTextArea);
+        shellPanel = new JPanel();
+        shellPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        dataPanel.addTab("木马写入", shellPanel);
         callText = new JLabel();
         callText.setText("回显类");
         mainPanel.add(callText, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -483,6 +516,31 @@ public class Main extends JFrame {
         defaultComboBoxModel3.addElement("T3");
         protocolComboBox.setModel(defaultComboBoxModel3);
         mainPanel.add(protocolComboBox, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("版本");
+        mainPanel.add(label1, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        versionComboBox = new JComboBox();
+        versionComboBox.setEditable(true);
+        final DefaultComboBoxModel defaultComboBoxModel4 = new DefaultComboBoxModel();
+        defaultComboBoxModel4.addElement("自动");
+        versionComboBox.setModel(defaultComboBoxModel4);
+        mainPanel.add(versionComboBox, new GridConstraints(3, 9, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        callLabel = new JLabel();
+        callLabel.setText("回显方案");
+        mainPanel.add(callLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        callResponseComboBox = new JComboBox();
+        callResponseComboBox.setEnabled(true);
+        final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
+        defaultComboBoxModel5.addElement("JavaScript");
+        defaultComboBoxModel5.addElement("FileOutputStream");
+        callResponseComboBox.setModel(defaultComboBoxModel5);
+        mainPanel.add(callResponseComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        javascriptLabel = new JLabel();
+        javascriptLabel.setText("javascript 地址");
+        mainPanel.add(javascriptLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        javascriptText = new JTextField();
+        javascriptText.setText("http://qch7ecs9e.bkt.clouddn.com/com.bea.javascript.jar");
+        mainPanel.add(javascriptText, new GridConstraints(1, 4, 1, 6, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
     /**

