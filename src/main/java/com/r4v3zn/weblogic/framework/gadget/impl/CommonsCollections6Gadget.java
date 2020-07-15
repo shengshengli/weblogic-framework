@@ -118,6 +118,7 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
      */
     @Override
     public Serializable getWriteFileObject(GadgetParam param) throws Exception {
+        // TODO: 文件写入
         byte[] codeByte = param.getCodeByte();
         String className = param.getClassName()+".class";
         FileOutputStream.class.getConstructor(String.class).newInstance(className);
@@ -138,6 +139,7 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
      */
     @Override
     public Serializable getLoadFileObject(GadgetParam param) throws Exception {
+        // TODO: 文件加载
         return null;
     }
 
