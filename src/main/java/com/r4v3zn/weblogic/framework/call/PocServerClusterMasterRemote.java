@@ -16,6 +16,7 @@
 package com.r4v3zn.weblogic.framework.call;
 
 import weblogic.cluster.singleton.ClusterMasterRemote;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.*;

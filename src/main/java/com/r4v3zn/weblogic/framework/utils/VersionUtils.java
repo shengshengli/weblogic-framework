@@ -17,11 +17,8 @@ package com.r4v3zn.weblogic.framework.utils;
 
 import cn.hutool.core.util.ReUtil;
 import com.r4v3zn.weblogic.framework.entity.MyException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
@@ -39,7 +36,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 public class VersionUtils {
 
-    static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
+//    static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 获取 weblogic 版本号发包内容
@@ -77,10 +74,10 @@ public class VersionUtils {
             }catch (Exception e){
             }
         }else{
-            log.error("版本获取失败，设置默认版本为10.3.6.0");
+            // log.error("版本获取失败，设置默认版本为10.3.6.0");
             version = "10.3.6.0";
         }
-        log.info("[*] weblogic version --> "+version);
+        // log.info("[*] weblogic version --> "+version);
         return version;
     }
 

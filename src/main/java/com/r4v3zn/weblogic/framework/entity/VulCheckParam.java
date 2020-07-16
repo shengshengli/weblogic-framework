@@ -16,16 +16,15 @@
 package com.r4v3zn.weblogic.framework.entity;
 
 import com.r4v3zn.weblogic.framework.enmus.CallEnum;
-import lombok.Data;
 
 /**
  * Title: VulCheckParam
  * Desc: 漏洞验证参数实体类
  * Date: 2020/4/19 17:24
  *
+ * @author 0nise
  * @version 1.0.0
  */
-@Data
 public class VulCheckParam {
     /**
      * JNDI Url
@@ -61,4 +60,63 @@ public class VulCheckParam {
      * 回显方案
      */
     private CallEnum call;
+
+    public VulCheckParam() {
+    }
+
+    public String getJndiUrl() {
+        return this.jndiUrl;
+    }
+
+    public String getJavascriptUrl() {
+        return this.javascriptUrl;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public String getCharsetName() {
+        return this.charsetName;
+    }
+
+    public String getCallName() {
+        return this.callName;
+    }
+
+    public String getProtocol() {
+        return this.protocol;
+    }
+
+    public CallEnum getCall() {
+        return this.call;
+    }
+
+    public void setJndiUrl(String jndiUrl) {
+        this.jndiUrl = jndiUrl;
+    }
+
+    public void setJavascriptUrl(String javascriptUrl) {
+        this.javascriptUrl = javascriptUrl;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setCharsetName(String charsetName) {
+        this.charsetName = charsetName;
+    }
+
+    public void setCallName(String callName) {
+        this.callName = callName;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setCall(CallEnum call) {
+        this.call = call;
+    }
 }

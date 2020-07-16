@@ -17,9 +17,9 @@ package com.r4v3zn.weblogic.framework.gadget.impl;
 
 import com.r4v3zn.weblogic.framework.annotation.Authors;
 import com.r4v3zn.weblogic.framework.annotation.Dependencies;
-import com.r4v3zn.weblogic.framework.utils.Gadgets;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
+import com.r4v3zn.weblogic.framework.utils.Gadgets;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

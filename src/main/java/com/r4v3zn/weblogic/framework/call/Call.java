@@ -19,9 +19,6 @@ import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Title: Call
  * Desc: Call
@@ -31,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  */
 public interface Call {
 
-    Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
+    // Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 执行回显方案前置

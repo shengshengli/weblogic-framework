@@ -16,13 +16,27 @@
 
 <Configuration status="WARN">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        <Console name="INFO" target="SYSTEM_OUT" direct="true">
+            <PatternLayout pattern="[*] %d{HH:mm:ss} %-5level - %msg%xEx%n" />
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" />
+        </Console>
+        <Console name="ERROR" target="SYSTEM_ERR">
+            <PatternLayout pattern="[-] %d{HH:mm:ss} %-5level - %msg%xEx%n" />
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" />
         </Console>
     </Appenders>
+
+    <!-- 指定logger的设置，additivity指示是否遵循缺省的继承机制-->
+<!--    <appender name="ca" class="CallbackAppender">-->
+<!--        <layout class="org.apache.log4j.PatternLayout">-->
+<!--            <param name="ConversionPattern"-->
+<!--                   value="[%d{dd HH:mm:ss,SSS\} %-5p] [%t] %c{2\} - %m%n" />-->
+<!--        </layout>-->
+<!--    </appender>-->
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="INFO" />
+            <appender-ref ref="ERROR"/>
         </Root>
     </Loggers>
 </Configuration>

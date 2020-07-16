@@ -15,8 +15,6 @@
 
 package com.r4v3zn.weblogic.framework.entity;
 
-import lombok.Data;
-
 import java.net.URLClassLoader;
 
 /**
@@ -26,10 +24,7 @@ import java.net.URLClassLoader;
  *
  * @version 1.0.0
  */
-@Data
 public class GadgetParam {
-    // final byte[] codeByte, final String[] bootArgs, String className, URLClassLoader urlClassLoader
-
     /**
      * 字节码
      */
@@ -54,4 +49,47 @@ public class GadgetParam {
      * JNDI URL
      */
     private String jndiUrl;
+
+    public GadgetParam() {
+    }
+
+    public byte[] getCodeByte() {
+        return this.codeByte;
+    }
+
+    public String[] getBootArgs() {
+        return this.bootArgs;
+    }
+
+    public String getClassName() {
+        return this.className;
+    }
+
+    public URLClassLoader getUrlClassLoader() {
+        return this.urlClassLoader;
+    }
+
+    public String getJndiUrl() {
+        return this.jndiUrl;
+    }
+
+    public void setCodeByte(byte[] codeByte) {
+        this.codeByte = codeByte;
+    }
+
+    public void setBootArgs(String[] bootArgs) {
+        this.bootArgs = bootArgs;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public void setUrlClassLoader(URLClassLoader urlClassLoader) {
+        this.urlClassLoader = urlClassLoader;
+    }
+
+    public void setJndiUrl(String jndiUrl) {
+        this.jndiUrl = jndiUrl;
+    }
 }

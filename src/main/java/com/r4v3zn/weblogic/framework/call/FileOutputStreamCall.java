@@ -14,12 +14,17 @@
  */
 package com.r4v3zn.weblogic.framework.call;
 
-import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.io.IoBuilder;
+
+import java.io.PrintWriter;
+import java.sql.DriverManager;
 
 /**
  * Title: WriteCall
@@ -31,9 +36,9 @@ import lombok.extern.log4j.Log4j2;
  * @author R4v3zn
  * @version 1.0.0
  */
-@Log4j2
 public class FileOutputStreamCall implements Call {
 
+   static Logger logger= LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 执行回显方案前置
@@ -59,5 +64,13 @@ public class FileOutputStreamCall implements Call {
         }catch (Exception e){
         }
         return contextPojo;
+    }
+
+    public static void main(String[] args) {
+        logger.info("aa");
+        logger.error("aa");
+        logger.debug("aa");
+        logger.warn("aa");
+        logger.info("aa");
     }
 }

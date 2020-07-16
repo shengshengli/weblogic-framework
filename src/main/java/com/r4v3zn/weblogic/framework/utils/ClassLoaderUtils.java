@@ -15,8 +15,6 @@
 
 package com.r4v3zn.weblogic.framework.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,7 +29,7 @@ import java.net.URLClassLoader;
  */
 public class ClassLoaderUtils {
 
-   static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
+   // static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     /**
      * 私有化构造防止被实例化
@@ -51,7 +49,7 @@ public class ClassLoaderUtils {
         for (int i = 0; i < jarNames.length; i++) {
             String jarName = jarNames[i];
             String path = basePath + version+"/"+ jarName;
-            log.info("[*] load class "+jarName+" version --> "+version);
+            // log.info("[*] load class "+jarName+" version --> "+version);
             urls[i] = new URL("file:"+path);
         }
         return new URLClassLoader(urls,Thread.currentThread().getContextClassLoader());
