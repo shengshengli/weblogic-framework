@@ -15,7 +15,6 @@
 
 package com.r4v3zn.weblogic.framework.entity;
 
-import lombok.Data;
 import javax.naming.Context;
 import java.net.URLClassLoader;
 
@@ -23,9 +22,9 @@ import java.net.URLClassLoader;
  * Title: ContextPojo
  * Desc: 内容对象
  * Date:2020/4/3 11:30
+ * @author 0nise
  * @version 1.0.0
  */
-@Data
 public class ContextPojo {
 
 
@@ -38,6 +37,9 @@ public class ContextPojo {
      * url class loader
      */
     private URLClassLoader urlClassLoader;
+
+    public ContextPojo() {
+    }
 
     public Context getContext() {
         return context;
@@ -54,4 +56,5 @@ public class ContextPojo {
     public void setUrlClassLoader(URLClassLoader urlClassLoader) {
         this.urlClassLoader = urlClassLoader;
     }
+
 }

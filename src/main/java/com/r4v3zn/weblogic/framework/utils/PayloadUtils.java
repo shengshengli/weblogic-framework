@@ -22,16 +22,18 @@ import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.ContextPojo;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.entity.MyException;
-import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
+import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
 import com.r4v3zn.weblogic.framework.vuls.impl.CVE_2020_2551;
 import javassist.ClassPool;
 import javassist.CtClass;
+
 import javax.naming.Context;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.Remote;
+
 import static com.r4v3zn.weblogic.framework.config.CharsetConfig.defaultCharsetName;
 import static com.r4v3zn.weblogic.framework.utils.CallUtils.*;
 import static com.r4v3zn.weblogic.framework.utils.VersionUtils.checkVersion;
@@ -146,7 +148,6 @@ public class PayloadUtils {
             ReflectionUtils.setFieldValue(vulTest, "currentContext", context);
             ReflectionUtils.setFieldValue(vulTest, "remote", objectCall);
             String result = vulTest.exploit(url, "echo a136d86442181f45a4446f5fb8a49f7f", charsetName);
-            System.out.println(result);
             return result.contains("a136d86442181f45a4446f5fb8a49f7f");
         }catch (Exception e){
             return false;

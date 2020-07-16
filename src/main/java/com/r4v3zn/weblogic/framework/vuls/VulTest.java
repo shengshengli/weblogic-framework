@@ -15,8 +15,8 @@
 
 package com.r4v3zn.weblogic.framework.vuls;
 
-import com.r4v3zn.weblogic.framework.utils.StringUtils;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
+import com.r4v3zn.weblogic.framework.utils.StringUtils;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;

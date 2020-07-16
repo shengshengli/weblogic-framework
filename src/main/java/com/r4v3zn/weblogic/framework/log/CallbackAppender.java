@@ -13,31 +13,18 @@
  * limitations under the License.
  */
 
-package com.r4v3zn.weblogic.framework.utils;
+package com.r4v3zn.weblogic.framework.log;
 
 /**
- * Title: LogUtils
+ * Title: CallbackAppender
  * Desc: TODO
- * Date:2020/7/15 23:54
+ * Date:2020/7/17 01:32
  * Email:woo0nise@gmail.com
  * Company:www.j2ee.app
  *
  * @author R4v3zn
  * @version 1.0.0
  */
-public class LogUtils{
+public class CallbackAppender {
 
-  //  public static Logger log = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
-
-
-    public static void main(String[] args) {
-
-//        log.info("123");
-//        log.trace("trace level");
-//        log.debug("debug level");
-//        log.info("info level");
-//        log.warn("warn level");
-//        log.error("error level");
-//        log.fatal("fatal level");
-    }
 }

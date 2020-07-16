@@ -27,7 +27,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 
 import java.io.Serializable;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 

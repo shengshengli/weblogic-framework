@@ -19,12 +19,13 @@ import com.r4v3zn.weblogic.framework.annotation.Authors;
 import com.r4v3zn.weblogic.framework.annotation.Dependencies;
 import com.r4v3zn.weblogic.framework.annotation.Versions;
 import com.r4v3zn.weblogic.framework.enmus.CallEnum;
+import com.r4v3zn.weblogic.framework.entity.MyException;
+import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
+import com.r4v3zn.weblogic.framework.gadget.impl.JtaTransactionManagerGadget;
 import com.r4v3zn.weblogic.framework.utils.PayloadUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
-import com.r4v3zn.weblogic.framework.entity.MyException;
-import com.r4v3zn.weblogic.framework.gadget.impl.JtaTransactionManagerGadget;
-import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
+
 import javax.naming.Context;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;

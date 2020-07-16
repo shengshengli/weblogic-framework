@@ -5,53 +5,21 @@
 
 package weblogic.corba.cos.naming;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Properties;
-import org.omg.CORBA.Any;
-import org.omg.CORBA.MARSHAL;
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
-import org.omg.CORBA.ObjectHelper;
-import org.omg.CORBA.portable.ApplicationException;
-import org.omg.CORBA.portable.Delegate;
-import org.omg.CORBA.portable.InputStream;
-import org.omg.CORBA.portable.ObjectImpl;
-import org.omg.CORBA.portable.OutputStream;
-import org.omg.CORBA.portable.RemarshalException;
-import org.omg.CosNaming.BindingIteratorHelper;
-import org.omg.CosNaming.BindingIteratorHolder;
-import org.omg.CosNaming.BindingListHelper;
-import org.omg.CosNaming.BindingListHolder;
-import org.omg.CosNaming.NameComponent;
-import org.omg.CosNaming.NameHelper;
-import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextHelper;
-import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
-import org.omg.CosNaming.NamingContextExtPackage.InvalidAddress;
-import org.omg.CosNaming.NamingContextExtPackage.InvalidAddressHelper;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-import org.omg.CosNaming.NamingContextExtPackage.URLStringHelper;
-import org.omg.CosNaming.NamingContextPackage.AlreadyBound;
-import org.omg.CosNaming.NamingContextPackage.AlreadyBoundHelper;
-import org.omg.CosNaming.NamingContextPackage.InvalidName;
-import org.omg.CosNaming.NamingContextPackage.InvalidNameHelper;
-import org.omg.CosNaming.NamingContextPackage.NotEmpty;
-import org.omg.CosNaming.NamingContextPackage.NotEmptyHelper;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.CannotProceed;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.CannotProceedHelper;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.NotFound;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.NotFoundHelper;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.TypeNotSupported;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.TypeNotSupportedHelper;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.WNameComponent;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.WNameHelper;
-import weblogic.corba.cos.naming.NamingContextAnyPackage.WStringNameHelper;
+import org.omg.CORBA.*;
+import org.omg.CORBA.portable.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextExtPackage.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import weblogic.corba.cos.naming.NamingContextAnyPackage.*;
 import weblogic.iiop.IIOPInputStream;
 import weblogic.iiop.IOR;
 import weblogic.iiop.RequestMessage;
 import weblogic.iiop.spi.MessageStream;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Properties;
 
 public class _NamingContextAnyStub extends ObjectImpl implements NamingContextAny {
     private static String[] __ids = new String[]{"IDL:weblogic/corba/cos/naming/NamingContextAny:1.0", "IDL:omg.org/CosNaming/NamingContextExt:1.0", "IDL:omg.org/CosNaming/NamingContext:1.0"};

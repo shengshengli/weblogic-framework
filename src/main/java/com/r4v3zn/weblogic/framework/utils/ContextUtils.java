@@ -20,6 +20,7 @@ import com.r4v3zn.weblogic.framework.entity.MyException;
 import com.r4v3zn.weblogic.framework.manager.WeblogicTrustManager;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
 import weblogic.jndi.Environment;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.lang.reflect.Field;
@@ -27,7 +28,6 @@ import java.net.URLClassLoader;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

@@ -21,24 +21,25 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.r4v3zn.weblogic.framework.enmus.CallEnum;
 import com.r4v3zn.weblogic.framework.entity.MyException;
 import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
-import com.r4v3zn.weblogic.framework.vuls.VulTest;
-import com.r4v3zn.weblogic.framework.utils.StringUtils;
 import com.r4v3zn.weblogic.framework.utils.CallUtils;
+import com.r4v3zn.weblogic.framework.utils.StringUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
-import lombok.SneakyThrows;
+import com.r4v3zn.weblogic.framework.vuls.VulTest;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Field;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import static com.r4v3zn.weblogic.framework.utils.CheckUtils.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import static com.r4v3zn.weblogic.framework.utils.CheckUtils.checkIIOP;
+import static com.r4v3zn.weblogic.framework.utils.CheckUtils.checkT3;
 import static com.r4v3zn.weblogic.framework.utils.ContextUtils.clearContext;
 import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
 import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersionClear;
@@ -123,11 +124,9 @@ public class Main extends JFrame {
              *
              * @param e
              */
-            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Thread(new Runnable() {
-                    @SneakyThrows
                     @Override
                     public void run() {
                         validateVul();
@@ -243,47 +242,47 @@ public class Main extends JFrame {
         final List<Class<? extends VulTest>> vulClasses = new ArrayList<Class<? extends VulTest>>(VulTest.Utils.getVulTest());
         Collections.sort(vulClasses, new StringUtils.ToStringComparator());
         serverInfoText.append("检测协议中......\n");
-        log.info("[*] " + "检测协议中......");
+        log.info("检测协议中......");
         boolean iiopFlag = false;
         boolean t3Flag = false;
         try {
             checkIIOP(host);
             serverInfoText.append(host + " IIOP 协议开放!\n");
-            log.info("[*] " + host + " IIOP 协议开放!");
+            log.info(host + " IIOP 协议开放!");
             iiopFlag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            log.error("[-] " + e.getMessage() + "");
+            log.error(e.getMessage() + "");
         }
         try {
             checkT3(host);
             serverInfoText.append(host + " T3 协议开放!\n");
-            log.info("[*] " + host + " T3 协议开放!");
+            log.info(host + " T3 协议开放!");
             t3Flag = true;
         } catch (Exception e) {
             serverInfoText.append(e.getMessage() + "\n");
-            log.error("[-] " + e.getMessage() + "");
+            log.error(e.getMessage() + "");
         }
         if (iiopFlag == false && t3Flag == false) {
             serverInfoText.append(host + " 漏洞不存在!\n");
-            log.error("[-] " + host + " 漏洞不存在!");
+            log.error(host + " 漏洞不存在!");
             return;
         }
         serverInfoText.append("版本获取中.....\n");
-        log.info("[*] " + "版本获取中.....");
+        log.info("版本获取中.....");
         String version = versionComboBox.getSelectedItem().toString();
         if ((!isBlank(version) && "自动".equals(version)) || isBlank(version)) {
             version = getVersion(host);
             if (isBlank(version)) {
                 serverInfoText.append(host + " 获取版本失败!\n");
-                log.error("[-] " + host + " 获取版本失败!");
+                log.error(host + " 获取版本失败!");
             }
         }
         serverInfoText.append(host + " version --> " + version + " !\n");
-        log.info("[*] " + host + " version --> " + version + " !");
+        log.info(host + " version --> " + version + " !");
         version = getVersionClear(version);
         serverInfoText.append(host + " version【版本切换】 --> " + version + " !\n");
-        log.info("[*] " + host + " version【版本切换】 --> " + version + " !");
+        log.info(host + " version【版本切换】 --> " + version + " !");
         serverInfoText.append("漏洞验证中.....\n");
         log.info("[*] 漏洞验证中.....");
         VulCheckParam vulCheckParam = new VulCheckParam();
@@ -302,7 +301,7 @@ public class Main extends JFrame {
         validateVul(host, vulCheckParam, vulClasses, vulName);
 //        validateVul(host, javascriptUrl, ldapUrl, charsetName, callName, vulClasses, vulName, protocol);
         serverInfoText.append(host + " 漏洞验证完毕!");
-        log.info("[*] " + host + " 漏洞验证完毕!");
+        log.info(host + " 漏洞验证完毕!");
     }
 
     /**

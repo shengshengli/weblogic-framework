@@ -4,23 +4,25 @@
 //
 
 package weblogic.iiop;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
-import javax.naming.NamingException;
+
 import org.omg.CORBA.Object;
 import org.omg.CORBA.SystemException;
 import org.omg.CosNaming.NamingContextHelper;
 import weblogic.corba.j2ee.naming.NameParser;
-import weblogic.corba.j2ee.naming.Utils;
 import weblogic.corba.j2ee.naming.NameParser.URLInfo;
+import weblogic.corba.j2ee.naming.Utils;
 import weblogic.diagnostics.debug.DebugLogger;
 import weblogic.kernel.Kernel;
 import weblogic.utils.Debug;
 import weblogic.utils.DebugCategory;
 import weblogic.utils.concurrent.locks.Mutex;
+
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 public final class IORManager {
     private static final DebugLogger debugIIOPDetail = DebugLogger.getDebugLogger("DebugIIOPDetail");

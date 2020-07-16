@@ -5,16 +5,6 @@
 
 package weblogic.iiop;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.rmi.ConnectIOException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.UnmarshalException;
 import org.omg.CORBA.Object;
 import weblogic.corba.cos.transactions.OTSHelper;
 import weblogic.corba.utils.RemoteInfo;
@@ -34,6 +24,17 @@ import weblogic.transaction.TransactionHelper;
 import weblogic.transaction.TransactionManager;
 import weblogic.utils.Debug;
 import weblogic.utils.DebugCategory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.rmi.ConnectIOException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 
 public final class IIOPRemoteRef implements ActivatableRemoteReference, ForwardReference, Externalizable, IORDelegate {
     static final long serialVersionUID = 7205760308016316442L;

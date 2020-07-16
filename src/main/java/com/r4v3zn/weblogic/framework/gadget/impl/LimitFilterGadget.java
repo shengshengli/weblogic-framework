@@ -20,8 +20,9 @@ import com.r4v3zn.weblogic.framework.annotation.Dependencies;
 import com.r4v3zn.weblogic.framework.entity.GadgetParam;
 import com.r4v3zn.weblogic.framework.gadget.ObjectGadget;
 import org.mozilla.classfile.DefiningClassLoader;
+
 import javax.management.BadAttributeValueExpException;
-import java.io.*;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.URL;

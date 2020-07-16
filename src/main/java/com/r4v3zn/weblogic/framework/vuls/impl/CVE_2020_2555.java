@@ -18,16 +18,13 @@ package com.r4v3zn.weblogic.framework.vuls.impl;
 import com.r4v3zn.weblogic.framework.annotation.Authors;
 import com.r4v3zn.weblogic.framework.annotation.Dependencies;
 import com.r4v3zn.weblogic.framework.annotation.Versions;
+import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
+import com.r4v3zn.weblogic.framework.gadget.impl.LimitFilterGadget;
 import com.r4v3zn.weblogic.framework.utils.PayloadUtils;
 import com.r4v3zn.weblogic.framework.utils.VulUtils;
-import com.r4v3zn.weblogic.framework.gadget.impl.LimitFilterGadget;
-import com.r4v3zn.weblogic.framework.entity.VulCheckParam;
 import com.r4v3zn.weblogic.framework.vuls.VulTest;
 
 import javax.naming.Context;
-
-import static com.r4v3zn.weblogic.framework.utils.ContextUtils.rebind;
-import static com.r4v3zn.weblogic.framework.utils.VersionUtils.getVersion;
 
 /**
  * Title: CVE-2020-2555

@@ -17,7 +17,6 @@ package com.r4v3zn.weblogic.framework.translator;
 
 
 import javassist.*;
-import java.net.InetAddress;
 
 /**
  * Title: MyTranslator
