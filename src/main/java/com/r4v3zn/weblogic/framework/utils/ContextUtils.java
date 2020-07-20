@@ -127,7 +127,6 @@ public class ContextUtils {
             context.unbind(name);
             return true;
         }catch (Exception e){
-            e.printStackTrace();
             return false;
         }
     }

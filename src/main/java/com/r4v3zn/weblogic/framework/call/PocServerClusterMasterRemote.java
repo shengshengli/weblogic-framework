@@ -26,6 +26,7 @@ import java.rmi.RemoteException;
  * Title: com.weblogic.framework.call.RmiPocServerClusterMasterRemote
  * Desc: PocServer for ClusterMasterRemote
  * Date:2020/3/22 0:36
+ * @author 0nise
  * @version 1.0.0
  */
 public class PocServerClusterMasterRemote implements ClusterMasterRemote {
