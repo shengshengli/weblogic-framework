@@ -20,6 +20,7 @@ import weblogic.transaction.internal.SubCoordinatorRM;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +44,14 @@ public class PocServerSubCoordinatorRM implements SubCoordinatorRM {
      * @param clientName bind 名称
      */
     public static void jndiBind(String clientName) {
+        //patch weblogic Nat
+        try {
+            Field enableProtocolSwitch = Class.forName("weblogic.rjvm.ConnectionManagerServer").getDeclaredField("enableProtocolSwitch");
+            enableProtocolSwitch.setAccessible(true);
+            enableProtocolSwitch.set(null,true);
+        }catch (Throwable e){
+
+        }
         try {
             PocServerSubCoordinatorRM rmiServer = new PocServerSubCoordinatorRM();
             Context context = new InitialContext();

@@ -20,6 +20,7 @@ import weblogic.cluster.singleton.ClusterMasterRemote;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.rmi.RemoteException;
 
 /**
@@ -44,6 +45,14 @@ public class PocServerClusterMasterRemote implements ClusterMasterRemote {
     }
 
     public static void jndiBind(String clientName) {
+        //patch weblogic Nat
+        try {
+            Field enableProtocolSwitch = Class.forName("weblogic.rjvm.ConnectionManagerServer").getDeclaredField("enableProtocolSwitch");
+            enableProtocolSwitch.setAccessible(true);
+            enableProtocolSwitch.set(null,true);
+        }catch (Throwable e){
+
+        }
         try {
             if("".equals(clientName)){
                 return;
